@@ -132,10 +132,11 @@ public class ToolInitializerTest {
     System.out.println(args);
 
     assertEquals("create", args.get(0));
-    assertEquals("--config-file", args.get(1));
-    assertEquals("cluster.yaml", args.get(2));
-    assertEquals("--kubeconfig", args.get(3));
-    assertEquals("/home/concord/.kube/config", args.get(4));
+    assertEquals("cluster", args.get(1));
+    assertEquals("--config-file", args.get(2));
+    assertEquals("cluster.yaml", args.get(3));
+    assertEquals("--kubeconfig", args.get(4));
+    assertEquals("/home/concord/.kube/config", args.get(5));
   }
 
   @Test
