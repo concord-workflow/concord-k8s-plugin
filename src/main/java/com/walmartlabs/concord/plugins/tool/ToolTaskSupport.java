@@ -1,23 +1,29 @@
 package com.walmartlabs.concord.plugins.tool;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.walmartlabs.concord.sdk.Context;
 import com.walmartlabs.concord.sdk.LockService;
+import com.walmartlabs.concord.sdk.Task;
 import io.airlift.command.Command;
 import io.airlift.command.CommandResult;
+import java.io.File;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import javax.inject.Named;
 import javax.tools.Tool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class ToolTaskSupport implements ToolTask {
+public abstract class ToolTaskSupport implements Task {
 
   private static final Logger logger = LoggerFactory.getLogger(ToolTaskSupport.class);
 
@@ -35,6 +41,9 @@ public abstract class ToolTaskSupport implements ToolTask {
   }
 
   public void execute(Context context) throws Exception {
+
+    // Task name taken from the @Named annotation
+    String taskName = this.getClass().getAnnotationsByType(Named.class)[0].value();
 
     Path workDir = Paths.get((String) context.getVariable(com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY));
     if (workDir == null) {
@@ -57,13 +66,13 @@ public abstract class ToolTaskSupport implements ToolTask {
     ToolConfiguration toolConfiguration = toolConfigurator.createConfiguration(configurationAsMap, ToolConfiguration.class);
 
     // Retrieve the specific command as specified by the "command" key in the configuration
-    ToolCommand toolCommand = commands.get(toolCommandName);
+    ToolCommand toolCommand = commands.get(taskName + "/" + toolCommandName);
 
     // Apply the configuration to the command
     toolConfigurator.configureCommand(variables(context), toolCommand);
 
     // Initialize the specific tool and make it available to concord for use
-    ToolInitializationResult toolInitializationResult = toolInitializer.initialize(workDir, toolDescriptor(toolConfiguration), toolConfiguration.debug());
+    ToolInitializationResult toolInitializationResult = toolInitializer.initialize(workDir, toolDescriptor(taskName, toolConfiguration), toolConfiguration.debug());
 
     // Build up the arguments for the execution of this tool: executable +
     List<String> args = Lists.newArrayList();
@@ -92,9 +101,9 @@ public abstract class ToolTaskSupport implements ToolTask {
     return variables;
   }
 
-  protected ToolDescriptor toolDescriptor(ToolConfiguration toolConfiguration) {
+  protected ToolDescriptor toolDescriptor(String taskName, ToolConfiguration toolConfiguration) throws Exception {
 
-    ToolDescriptor toolDescriptor = toolDescriptor();
+    ToolDescriptor toolDescriptor = fromResource(taskName);
 
     // Update the version if overriden by the user
     if(toolConfiguration.version() != null) {
@@ -111,5 +120,12 @@ public abstract class ToolTaskSupport implements ToolTask {
 
   protected String processId(Context context) {
     return (String) context.getVariable(com.walmartlabs.concord.sdk.Constants.Context.TX_ID_KEY);
+  }
+
+  public static ToolDescriptor fromResource(String taskName) throws Exception {
+    ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+    try(InputStream inputStream = ToolTaskSupport.class.getClassLoader().getResourceAsStream(taskName + "/" + "toolDescriptor.yml")) {
+      return mapper.readValue(inputStream, ToolDescriptor.class);
+    }
   }
 }

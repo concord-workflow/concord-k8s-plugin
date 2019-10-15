@@ -18,15 +18,11 @@ import com.google.common.collect.Maps;
 import com.walmartlabs.concord.common.IOUtils;
 import com.walmartlabs.concord.plugins.k8s.eksctl.EksCtlTask;
 import com.walmartlabs.concord.plugins.k8s.eksctl.commands.Create;
-import com.walmartlabs.concord.plugins.k8s.helm.HelmTask;
-import com.walmartlabs.concord.plugins.k8s.kubectl.KubeCtlTask;
-import com.walmartlabs.concord.plugins.tool.ImmutableToolDescriptor;
 import com.walmartlabs.concord.plugins.tool.ToolCommand;
 import com.walmartlabs.concord.plugins.tool.ToolDescriptor;
-import com.walmartlabs.concord.plugins.tool.ToolDescriptor.NamingStyle;
-import com.walmartlabs.concord.plugins.tool.ToolDescriptor.Packaging;
 import com.walmartlabs.concord.plugins.tool.ToolInitializationResult;
 import com.walmartlabs.concord.plugins.tool.ToolInitializer;
+import com.walmartlabs.concord.plugins.tool.ToolTaskSupport;
 import com.walmartlabs.concord.sdk.Context;
 import com.walmartlabs.concord.sdk.DependencyManager;
 import com.walmartlabs.concord.sdk.ImmutableBucketInfo;
@@ -100,32 +96,20 @@ public class ToolInitializerTest {
     deleteDirectory(workingDirectory);
 
     ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("eksctl"));
-
-    ToolDescriptor toolDescriptor = ImmutableToolDescriptor.builder()
-        .id("eksctl")
-        .name("EksCtl")
-        .executable("eksctl")
-        .architecture("amd64")
-        .namingStyle(NamingStyle.CAPITALIZE)
-        .packaging(Packaging.TARGZ)
-        .defaultVersion(EksCtlTask.DEFAULT_VERSION)
-        .urlTemplate(EksCtlTask.URL_TEMPLATE)
-        .build();
-
+    ToolDescriptor toolDescriptor = ToolTaskSupport.fromResource("eksctl");
     ToolInitializationResult result = toolInitializer.initialize(workingDirectory, toolDescriptor);
 
     assertTrue(result.executable().toFile().exists());
     assertTrue(Files.isExecutable(result.executable()));
 
     deleteDirectory(workingDirectory);
-
   }
 
   @Test
   public void validateEksCtlTask() throws Exception {
 
     ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("eksctl"));
-    Map<String, ToolCommand> commands = ImmutableMap.of("create", new Create());
+    Map<String, ToolCommand> commands = ImmutableMap.of("eksctl/create", new Create());
     EksCtlTask task = new EksCtlTask(commands, lockService, toolInitializer);
 
     //
@@ -153,7 +137,7 @@ public class ToolInitializerTest {
 
     task.execute(context);
 
-    assertTrue(varAsString(context,"commandLineArguments")
+    assertTrue(varAsString(context, "commandLineArguments")
         .contains("eksctl create cluster -f cluster.yaml --kubeconfig /home/concord/.kube/config"));
   }
 
@@ -164,18 +148,7 @@ public class ToolInitializerTest {
     deleteDirectory(workingDirectory);
 
     ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("helm"));
-
-    ToolDescriptor toolDescriptor = ImmutableToolDescriptor.builder()
-        .id("helm")
-        .name("Helm")
-        .executable("helm")
-        .architecture("amd64")
-        .namingStyle(NamingStyle.LOWER)
-        .packaging(Packaging.TARGZ_STRIP)
-        .defaultVersion(HelmTask.DEFAULT_VERSION)
-        .urlTemplate(HelmTask.URL_TEMPLATE)
-        .build();
-
+    ToolDescriptor toolDescriptor = ToolTaskSupport.fromResource("helm");
     ToolInitializationResult result = toolInitializer.initialize(workingDirectory, toolDescriptor);
 
     assertTrue(result.executable().toFile().exists());
@@ -191,18 +164,7 @@ public class ToolInitializerTest {
     deleteDirectory(workingDirectory);
 
     ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("kubectl"));
-
-    ToolDescriptor toolDescriptor = ImmutableToolDescriptor.builder()
-        .id("kubectl")
-        .name("KubeCtl")
-        .executable("kubectl")
-        .architecture("amd64")
-        .namingStyle(NamingStyle.LOWER)
-        .packaging(Packaging.FILE)
-        .defaultVersion(KubeCtlTask.DEFAULT_VERSION)
-        .urlTemplate(KubeCtlTask.URL_TEMPLATE)
-        .build();
-
+    ToolDescriptor toolDescriptor = ToolTaskSupport.fromResource("kubectl");
     ToolInitializationResult result = toolInitializer.initialize(workingDirectory, toolDescriptor);
 
     assertTrue(result.executable().toFile().exists());

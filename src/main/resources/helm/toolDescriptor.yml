@@ -1,0 +1,9 @@
+---
+id: helm
+name: Helm
+executable: helm
+architecture: amd64
+namingStyle: LOWER
+packaging: TARGZ_STRIP
+defaultVersion: v2.14.3
+urlTemplate: https://get.helm.sh/helm-{version}-{os}-{arch}.tar.gz

@@ -1,0 +1,9 @@
+---
+id: eksctl
+name: EksCtl
+executable: eksctl
+architecture: amd64
+namingStyle: CAPITALIZE
+packaging: TARGZ
+defaultVersion: 0.6.0
+urlTemplate: https://github.com/weaveworks/eksctl/releases/download/{version}/eksctl_{os}_{arch}.tar.gz

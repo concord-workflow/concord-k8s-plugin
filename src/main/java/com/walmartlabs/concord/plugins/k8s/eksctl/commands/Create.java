@@ -9,7 +9,7 @@ import java.util.List;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-@Named("create")
+@Named("eksctl/create")
 @Singleton
 public class Create implements ToolCommand {
 

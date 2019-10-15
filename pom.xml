@@ -60,6 +60,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
         </dependency>
@@ -120,4 +125,34 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+      <pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>io.takari.maven.plugins</groupId>
+            <artifactId>takari-lifecycle-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>default-sisu-index</id>
+                <phase>process-classes</phase>
+                <goals>
+                  <goal>sisu-index</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>default-sisu-test-index</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>sisu-test-index</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <deployAtEnd>true</deployAtEnd>
+            </configuration>
+          </plugin>
+        </plugins>
+      </pluginManagement>
+    </build>
 </project>

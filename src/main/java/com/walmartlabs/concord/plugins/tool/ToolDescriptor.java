@@ -1,9 +1,11 @@
 package com.walmartlabs.concord.plugins.tool;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import javax.annotation.Nullable;
 import org.immutables.value.Value;
 
 @Value.Immutable
+@JsonDeserialize(as = ImmutableToolDescriptor.class)
 public abstract class ToolDescriptor {
 
   public abstract String id();
