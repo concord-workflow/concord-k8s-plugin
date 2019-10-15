@@ -1,7 +1,6 @@
 package com.walmartlabs.concord.plugins.k8s.eksctl;
 
 
-import com.walmartlabs.concord.plugins.k8s.eksctl.config.EksCtlConfiguration;
 import com.walmartlabs.concord.plugins.tool.ImmutableToolDescriptor;
 import com.walmartlabs.concord.plugins.tool.ToolCommand;
 import com.walmartlabs.concord.plugins.tool.ToolDescriptor;

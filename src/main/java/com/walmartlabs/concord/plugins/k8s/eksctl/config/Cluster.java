@@ -7,7 +7,14 @@ public class Cluster {
   @JsonProperty
   private String configFile;
 
+  @JsonProperty
+  private String kubeConfig;
+
   public String configFile() {
     return configFile;
+  }
+
+  public String kubeConfig() {
+    return kubeConfig;
   }
 }

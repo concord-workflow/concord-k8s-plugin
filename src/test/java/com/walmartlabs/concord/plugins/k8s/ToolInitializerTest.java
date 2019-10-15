@@ -17,8 +17,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.walmartlabs.concord.common.IOUtils;
 import com.walmartlabs.concord.plugins.k8s.eksctl.EksCtlTask;
-import com.walmartlabs.concord.plugins.k8s.eksctl.config.Cluster;
-import com.walmartlabs.concord.plugins.k8s.eksctl.config.Create;
+import com.walmartlabs.concord.plugins.k8s.eksctl.commands.Create;
 import com.walmartlabs.concord.plugins.k8s.helm.HelmTask;
 import com.walmartlabs.concord.plugins.k8s.kubectl.KubeCtlTask;
 import com.walmartlabs.concord.plugins.tool.ImmutableToolDescriptor;
@@ -135,6 +134,7 @@ public class ToolInitializerTest {
     //     command: create
     //     cluster:
     //       configFile: cluster.yaml
+    //       kubeConfig: /home/concord/.kube/config
     //
 
     Map<String, Object> args = Maps.newHashMap(mapBuilder()
@@ -143,7 +143,9 @@ public class ToolInitializerTest {
         .put("dryRun", true)
         .put("command", "create")
         .put("cluster",
-            mapBuilder().put("configFile", "cluster.yaml")
+            mapBuilder()
+                .put("configFile", "cluster.yaml")
+                .put("kubeConfig", "/home/concord/.kube/config")
                 .build())
         .build());
 
@@ -151,7 +153,8 @@ public class ToolInitializerTest {
 
     task.execute(context);
 
-    assertTrue(varAsString(context,"commandLineArguments").contains("eksctl create cluster -f cluster.yaml"));
+    assertTrue(varAsString(context,"commandLineArguments")
+        .contains("eksctl create cluster -f cluster.yaml --kubeconfig /home/concord/.kube/config"));
   }
 
   @Test

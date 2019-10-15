@@ -8,6 +8,12 @@ public class ToolConfiguration {
   private String command;
 
   @JsonProperty
+  private String version;
+
+  @JsonProperty
+  private String url;
+
+  @JsonProperty
   private boolean debug;
 
   @JsonProperty
@@ -15,6 +21,14 @@ public class ToolConfiguration {
 
   public String command() {
     return command;
+  }
+
+  public String version() {
+    return version;
+  }
+
+  public String url() {
+    return url;
   }
 
   public boolean debug() {

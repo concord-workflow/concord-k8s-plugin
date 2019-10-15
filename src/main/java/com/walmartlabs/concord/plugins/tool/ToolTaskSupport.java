@@ -3,7 +3,6 @@ package com.walmartlabs.concord.plugins.tool;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.walmartlabs.concord.plugins.k8s.eksctl.config.EksCtlConfiguration;
 import com.walmartlabs.concord.sdk.Context;
 import com.walmartlabs.concord.sdk.LockService;
 import io.airlift.command.Command;
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import javax.inject.Inject;
+import javax.tools.Tool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +23,7 @@ public abstract class ToolTaskSupport implements ToolTask {
 
   protected final LockService lockService;
   protected final ToolInitializer toolInitializer;
-  protected final ToolConfigurationMapper toolConfigurationMapper;
+  protected final ToolConfigurator toolConfigurator;
   protected final Map<String,ToolCommand> commands;
 
   public ToolTaskSupport(Map<String, ToolCommand> commands, LockService lockService, ToolInitializer toolInitializer) {
@@ -32,7 +31,7 @@ public abstract class ToolTaskSupport implements ToolTask {
     this.commands = commands;
     this.lockService = lockService;
     this.toolInitializer = toolInitializer;
-    this.toolConfigurationMapper = new ToolConfigurationMapper();
+    this.toolConfigurator = new ToolConfigurator();
   }
 
   public void execute(Context context) throws Exception {
@@ -45,20 +44,26 @@ public abstract class ToolTaskSupport implements ToolTask {
     // Retrieve the name of the command from the configuration
     String toolCommandName = (String) context.getVariable("command");
 
-    // Retrieve the configuration as a map from the context
+    // Retrieve the configuration as a createConfiguration from the context
     Map<String, Object> configurationAsMap = variables(context);
 
-    // Retrieve the common configuration elements for all commands
-    ToolConfiguration config = toolConfigurationMapper.map(configurationAsMap, ToolConfiguration.class);
+    // Retrieve the common configuration elements for all commands:
+    //
+    // version
+    // url
+    // debug
+    // dryRun
+    //
+    ToolConfiguration toolConfiguration = toolConfigurator.createConfiguration(configurationAsMap, ToolConfiguration.class);
 
     // Retrieve the specific command as specified by the "command" key in the configuration
     ToolCommand toolCommand = commands.get(toolCommandName);
 
     // Apply the configuration to the command
-    toolConfigurationMapper.configureCommand(variables(context), toolCommand);
+    toolConfigurator.configureCommand(variables(context), toolCommand);
 
     // Initialize the specific tool and make it available to concord for use
-    ToolInitializationResult toolInitializationResult = toolInitializer.initialize(workDir, toolDescriptor(), config.debug());
+    ToolInitializationResult toolInitializationResult = toolInitializer.initialize(workDir, toolDescriptor(toolConfiguration), toolConfiguration.debug());
 
     // Build up the arguments for the execution of this tool: executable +
     List<String> args = Lists.newArrayList();
@@ -69,7 +74,7 @@ public abstract class ToolTaskSupport implements ToolTask {
         .setDirectory(workDir.toFile())
         .setTimeLimit(20, TimeUnit.MINUTES);
 
-    if (config.dryRun()) {
+    if (toolConfiguration.dryRun()) {
       String commandLineArguments = String.join(" ", command.getCommand());
       context.setVariable("commandLineArguments", String.join(" ", command.getCommand()));
       System.out.println(commandLineArguments);
@@ -85,6 +90,23 @@ public abstract class ToolTaskSupport implements ToolTask {
       variables.put(key, context.getVariable(key));
     }
     return variables;
+  }
+
+  protected ToolDescriptor toolDescriptor(ToolConfiguration toolConfiguration) {
+
+    ToolDescriptor toolDescriptor = toolDescriptor();
+
+    // Update the version if overriden by the user
+    if(toolConfiguration.version() != null) {
+      toolDescriptor = ImmutableToolDescriptor.copyOf(toolDescriptor).withVersion(toolConfiguration.version());
+    }
+
+    // Update the url if overriden by the user
+    if(toolConfiguration.url() != null) {
+      toolDescriptor = ImmutableToolDescriptor.copyOf(toolDescriptor).withUrlTemplate(toolConfiguration.url());
+    }
+
+    return toolDescriptor;
   }
 
   protected String processId(Context context) {

@@ -5,16 +5,16 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 
-public class ToolConfigurationMapper {
+public class ToolConfigurator {
 
   protected final ObjectMapper mapper;
 
-  public ToolConfigurationMapper() {
+  public ToolConfigurator() {
     mapper = new ObjectMapper();
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
 
-  public <T extends ToolConfiguration> T map(Map<String, Object> input, Class<?> clazz) {
+  public <T extends ToolConfiguration> T createConfiguration(Map<String, Object> input, Class<?> clazz) {
     JavaType type = mapper.getTypeFactory().constructType(clazz);
     return mapper.convertValue(input, type);
   }
