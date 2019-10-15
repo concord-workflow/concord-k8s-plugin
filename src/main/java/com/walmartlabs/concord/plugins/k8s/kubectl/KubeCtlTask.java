@@ -1,6 +1,5 @@
 package com.walmartlabs.concord.plugins.k8s.kubectl;
 
-
 import com.walmartlabs.concord.plugins.tool.ToolCommand;
 import com.walmartlabs.concord.plugins.tool.ToolInitializer;
 import com.walmartlabs.concord.plugins.tool.ToolTaskSupport;
