@@ -1,4 +1,4 @@
-package ca.vanzyl.concord.plugins.k8s;
+package com.walmartlabs.concord.plugins.tool;
 
 import javax.annotation.Nullable;
 import org.immutables.value.Value;
@@ -28,14 +28,14 @@ public abstract class ToolDescriptor {
 
   public abstract NamingStyle namingStyle();
 
-  enum Packaging {
+  public enum Packaging {
     FILE,
     TARGZ,
     TARGZ_STRIP,
     ZIP
   }
 
-  enum NamingStyle {
+  public enum NamingStyle {
     LOWER,
     UPPER,
     CAPITALIZE

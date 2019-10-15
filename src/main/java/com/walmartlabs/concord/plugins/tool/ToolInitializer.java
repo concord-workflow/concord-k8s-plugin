@@ -1,10 +1,10 @@
-package ca.vanzyl.concord.plugins.k8s;
+package com.walmartlabs.concord.plugins.tool;
 
-import static ca.vanzyl.concord.plugins.k8s.ToolDescriptor.Packaging.TARGZ;
-import static ca.vanzyl.concord.plugins.k8s.ToolDescriptor.Packaging.TARGZ_STRIP;
+import static com.walmartlabs.concord.plugins.tool.ToolDescriptor.Packaging.TARGZ;
+import static com.walmartlabs.concord.plugins.tool.ToolDescriptor.Packaging.TARGZ_STRIP;
 
-import ca.vanzyl.concord.plugins.k8s.ToolDescriptor.NamingStyle;
-import ca.vanzyl.concord.plugins.k8s.ToolDescriptor.Packaging;
+import com.walmartlabs.concord.plugins.tool.ToolDescriptor.NamingStyle;
+import com.walmartlabs.concord.plugins.tool.ToolDescriptor.Packaging;
 import com.walmartlabs.concord.sdk.DependencyManager;
 import io.tesla.proviso.archive.UnArchiver;
 import java.net.URI;

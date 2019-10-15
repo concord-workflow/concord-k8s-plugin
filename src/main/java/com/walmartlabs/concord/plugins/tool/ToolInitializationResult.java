@@ -1,4 +1,4 @@
-package ca.vanzyl.concord.plugins.k8s;
+package com.walmartlabs.concord.plugins.tool;
 
 import java.nio.file.Path;
 import org.immutables.value.Value;

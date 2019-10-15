@@ -1,0 +1,93 @@
+package com.walmartlabs.concord.plugins.tool;
+
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.walmartlabs.concord.plugins.k8s.eksctl.config.EksCtlConfiguration;
+import com.walmartlabs.concord.sdk.Context;
+import com.walmartlabs.concord.sdk.LockService;
+import io.airlift.command.Command;
+import io.airlift.command.CommandResult;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public abstract class ToolTaskSupport implements ToolTask {
+
+  private static final Logger logger = LoggerFactory.getLogger(ToolTaskSupport.class);
+
+  protected final LockService lockService;
+  protected final ToolInitializer toolInitializer;
+  protected final ToolConfigurationMapper toolConfigurationMapper;
+  protected final Map<String,ToolCommand> commands;
+
+  public ToolTaskSupport(Map<String, ToolCommand> commands, LockService lockService, ToolInitializer toolInitializer) {
+    System.out.println(commands);
+    this.commands = commands;
+    this.lockService = lockService;
+    this.toolInitializer = toolInitializer;
+    this.toolConfigurationMapper = new ToolConfigurationMapper();
+  }
+
+  public void execute(Context context) throws Exception {
+
+    Path workDir = Paths.get((String) context.getVariable(com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY));
+    if (workDir == null) {
+      throw new IllegalArgumentException("Can't determine the current '" + com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY + "'");
+    }
+
+    // Retrieve the name of the command from the configuration
+    String toolCommandName = (String) context.getVariable("command");
+
+    // Retrieve the configuration as a map from the context
+    Map<String, Object> configurationAsMap = variables(context);
+
+    // Retrieve the common configuration elements for all commands
+    ToolConfiguration config = toolConfigurationMapper.map(configurationAsMap, configurationClass());
+
+    // Retrieve the specific command as specified by the "command" key in the configuration
+    ToolCommand toolCommand = commands.get(toolCommandName);
+
+    // Apply the configuration to the command
+    toolConfigurationMapper.configureCommand(variables(context), toolCommand);
+
+    // Initialize the specific tool and make it available to concord for use
+    ToolInitializationResult toolInitializationResult = toolInitializer.initialize(workDir, toolDescriptor(), config.debug());
+
+    // Build up the arguments for the execution of this tool: executable +
+    List<String> args = Lists.newArrayList();
+    args.add(toolInitializationResult.executable().toFile().getAbsolutePath());
+    args.addAll(toolCommand.commandLineArguments());
+
+    Command command = new Command(args.toArray(new String[0]))
+        .setDirectory(workDir.toFile())
+        .setTimeLimit(20, TimeUnit.MINUTES);
+
+    if (config.dryRun()) {
+      String commandLineArguments = String.join(" ", command.getCommand());
+      context.setVariable("commandLineArguments", String.join(" ", command.getCommand()));
+      System.out.println(commandLineArguments);
+    } else {
+      CommandResult commandResult = command.execute(Executors.newCachedThreadPool());
+      System.out.println(commandResult.getCommandOutput());
+    }
+  }
+
+  protected Map<String, Object> variables(Context context) {
+    Map<String, Object> variables = Maps.newHashMap();
+    for (String key : context.getVariableNames()) {
+      variables.put(key, context.getVariable(key));
+    }
+    return variables;
+  }
+
+  protected String processId(Context context) {
+    return (String) context.getVariable(com.walmartlabs.concord.sdk.Constants.Context.TX_ID_KEY);
+  }
+}
