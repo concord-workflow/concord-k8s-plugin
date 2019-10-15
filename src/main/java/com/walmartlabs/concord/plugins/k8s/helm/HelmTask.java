@@ -41,10 +41,5 @@ public class HelmTask extends ToolTaskSupport {
         .urlTemplate(URL_TEMPLATE)
         .build();
   }
-
-  @Override
-  public Class<?> configurationClass() {
-    return null;
-  }
 }
 

@@ -5,6 +5,4 @@ import com.walmartlabs.concord.sdk.Task;
 public interface ToolTask extends Task {
 
   ToolDescriptor toolDescriptor();
-
-  Class<?> configurationClass();
 }

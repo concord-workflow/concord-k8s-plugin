@@ -2,7 +2,7 @@ package com.walmartlabs.concord.plugins.tool;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public abstract class ToolConfiguration {
+public class ToolConfiguration {
 
   @JsonProperty
   private String command;

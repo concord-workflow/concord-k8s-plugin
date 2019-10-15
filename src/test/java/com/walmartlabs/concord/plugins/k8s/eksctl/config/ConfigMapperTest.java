@@ -11,19 +11,20 @@ import org.junit.Test;
 public class ConfigMapperTest {
 
   @Test
-  public void validateConfigMapper() {
+  public void validateConfigMapper() throws Exception {
 
     Map<String, Object> input = mapBuilder()
-        .put("create",
-            mapBuilder().put("cluster",
-                mapBuilder().put("configFile", "cluster.yaml")
-                    .build())
+        .put("command", "create")
+        .put("cluster",
+            mapBuilder().put("configFile", "cluster.yaml")
                 .build())
         .build();
 
-    EksCtlConfiguration config = new ToolConfigurationMapper().map(input, EksCtlConfiguration.class);
+    Create create = new Create();
 
-    assertEquals("cluster.yaml", config.create().cluster().configFile());
+    new ToolConfigurationMapper().configureCommand(input, create);
+
+    assertEquals("cluster.yaml", create.cluster().configFile());
   }
 
   public static Builder<String, Object> mapBuilder() {

@@ -49,7 +49,7 @@ public abstract class ToolTaskSupport implements ToolTask {
     Map<String, Object> configurationAsMap = variables(context);
 
     // Retrieve the common configuration elements for all commands
-    ToolConfiguration config = toolConfigurationMapper.map(configurationAsMap, configurationClass());
+    ToolConfiguration config = toolConfigurationMapper.map(configurationAsMap, ToolConfiguration.class);
 
     // Retrieve the specific command as specified by the "command" key in the configuration
     ToolCommand toolCommand = commands.get(toolCommandName);

@@ -50,12 +50,4 @@ public class EksCtlTask extends ToolTaskSupport {
         .urlTemplate(URL_TEMPLATE)
         .build();
   }
-
-  //
-  // Maybe this can be done by convention but that's a little magical {{toolTaskName}}+Configuration
-  //
-  @Override
-  public Class<?> configurationClass() {
-    return EksCtlConfiguration.class;
-  }
 }

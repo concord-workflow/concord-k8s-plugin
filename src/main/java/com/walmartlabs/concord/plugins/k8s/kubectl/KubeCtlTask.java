@@ -41,9 +41,4 @@ public class KubeCtlTask extends ToolTaskSupport {
         .urlTemplate(URL_TEMPLATE)
         .build();
   }
-
-  @Override
-  public Class<?> configurationClass() {
-    return null;
-  }
 }
