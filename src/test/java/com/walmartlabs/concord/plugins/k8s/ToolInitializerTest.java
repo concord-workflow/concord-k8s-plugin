@@ -6,6 +6,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.walmartlabs.concord.plugins.k8s.eksctl.config.ConfigMapperTest.mapBuilder;
 import static com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY;
 import static com.walmartlabs.concord.sdk.Constants.Request.PROCESS_INFO_KEY;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -19,6 +20,7 @@ import com.walmartlabs.concord.common.IOUtils;
 import com.walmartlabs.concord.plugins.k8s.eksctl.EksCtlTask;
 import com.walmartlabs.concord.plugins.k8s.eksctl.commands.Create;
 import com.walmartlabs.concord.plugins.tool.ToolCommand;
+import com.walmartlabs.concord.plugins.tool.ToolConfigurator;
 import com.walmartlabs.concord.plugins.tool.ToolDescriptor;
 import com.walmartlabs.concord.plugins.tool.ToolInitializationResult;
 import com.walmartlabs.concord.plugins.tool.ToolInitializer;
@@ -46,6 +48,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import okhttp3.Call;
@@ -106,6 +109,36 @@ public class ToolInitializerTest {
   }
 
   @Test
+  public void validateCommandLineGeneration() throws Exception {
+
+    ToolConfigurator toolConfigurator = new ToolConfigurator();
+
+    Map<String, Object> configuration = Maps.newHashMap(mapBuilder()
+        .put(PROCESS_INFO_KEY, Collections.singletonMap("sessionKey", "xyz"))
+        .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
+        .put("dryRun", true)
+        .put("command", "create")
+        .put("cluster",
+            mapBuilder()
+                .put("configFile", "cluster.yaml")
+                .put("kubeConfig", "/home/concord/.kube/config")
+                .build())
+        .build());
+
+    Create create = new Create();
+    toolConfigurator.configureCommand(configuration, create);
+    List<String> args = create.generateCommandLineArguments("create");
+
+    System.out.println(args);
+
+    assertEquals("create", args.get(0));
+    assertEquals("--config-file", args.get(1));
+    assertEquals("cluster.yaml", args.get(2));
+    assertEquals("--kubeconfig", args.get(3));
+    assertEquals("/home/concord/.kube/config", args.get(4));
+  }
+
+  @Test
   public void validateEksCtlTask() throws Exception {
 
     ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("eksctl"));
@@ -138,7 +171,7 @@ public class ToolInitializerTest {
     task.execute(context);
 
     assertTrue(varAsString(context, "commandLineArguments")
-        .contains("eksctl create cluster -f cluster.yaml --kubeconfig /home/concord/.kube/config"));
+        .contains("eksctl create cluster --config-file cluster.yaml --kubeconfig /home/concord/.kube/config"));
   }
 
   @Test

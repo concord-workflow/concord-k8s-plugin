@@ -77,7 +77,7 @@ public abstract class ToolTaskSupport implements Task {
     // Build up the arguments for the execution of this tool: executable +
     List<String> args = Lists.newArrayList();
     args.add(toolInitializationResult.executable().toFile().getAbsolutePath());
-    args.addAll(toolCommand.commandLineArguments());
+    args.addAll(toolCommand.generateCommandLineArguments(toolCommandName));
 
     Command command = new Command(args.toArray(new String[0]))
         .setDirectory(workDir.toFile())
