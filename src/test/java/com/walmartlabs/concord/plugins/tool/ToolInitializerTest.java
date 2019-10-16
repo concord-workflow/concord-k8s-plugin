@@ -121,7 +121,7 @@ public class ToolInitializerTest {
 
     Create create = new Create();
     toolConfigurator.configureCommand(configuration, create);
-    List<String> args = create.generateCommandLineArguments("create");
+    List<String> args = ToolTaskSupport.generateCommandLineArguments("create", create);
 
     System.out.println(args);
 

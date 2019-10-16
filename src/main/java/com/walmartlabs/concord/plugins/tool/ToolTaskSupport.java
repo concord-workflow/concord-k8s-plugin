@@ -8,10 +8,11 @@ import com.google.common.collect.Maps;
 import com.walmartlabs.concord.sdk.Context;
 import com.walmartlabs.concord.sdk.LockService;
 import com.walmartlabs.concord.sdk.Task;
+import io.airlift.airline.Option;
 import io.airlift.command.Command;
 import io.airlift.command.CommandResult;
-import java.io.File;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -19,7 +20,6 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Named;
-import javax.tools.Tool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +30,7 @@ public abstract class ToolTaskSupport implements Task {
   protected final LockService lockService;
   protected final ToolInitializer toolInitializer;
   protected final ToolConfigurator toolConfigurator;
-  protected final Map<String,ToolCommand> commands;
+  protected final Map<String, ToolCommand> commands;
 
   public ToolTaskSupport(Map<String, ToolCommand> commands, LockService lockService, ToolInitializer toolInitializer) {
     System.out.println(commands);
@@ -77,7 +77,7 @@ public abstract class ToolTaskSupport implements Task {
     // Build up the arguments for the execution of this tool: executable +
     List<String> args = Lists.newArrayList();
     args.add(toolInitializationResult.executable().toFile().getAbsolutePath());
-    args.addAll(toolCommand.generateCommandLineArguments(toolCommandName));
+    args.addAll(generateCommandLineArguments(toolCommandName, toolCommand));
 
     Command command = new Command(args.toArray(new String[0]))
         .setDirectory(workDir.toFile())
@@ -106,12 +106,12 @@ public abstract class ToolTaskSupport implements Task {
     ToolDescriptor toolDescriptor = fromResource(taskName);
 
     // Update the version if overriden by the user
-    if(toolConfiguration.version() != null) {
+    if (toolConfiguration.version() != null) {
       toolDescriptor = ImmutableToolDescriptor.copyOf(toolDescriptor).withVersion(toolConfiguration.version());
     }
 
     // Update the url if overriden by the user
-    if(toolConfiguration.url() != null) {
+    if (toolConfiguration.url() != null) {
       toolDescriptor = ImmutableToolDescriptor.copyOf(toolDescriptor).withUrlTemplate(toolConfiguration.url());
     }
 
@@ -122,9 +122,37 @@ public abstract class ToolTaskSupport implements Task {
     return (String) context.getVariable(com.walmartlabs.concord.sdk.Constants.Context.TX_ID_KEY);
   }
 
+  public static List<String> generateCommandLineArguments(String commandName, Object command) throws Exception {
+    //
+    // eksctl create cluster --config-file cluster.yaml --kubeconfig /home/concord/.kube/config
+    //
+    List<String> arguments = Lists.newArrayList(commandName);
+    for (Field field : command.getClass().getDeclaredFields()) {
+      field.setAccessible(true);
+      Object operand = field.get(command);
+      if (operand != null) {
+        arguments.add(field.getName());
+        for (Field configuration : operand.getClass().getDeclaredFields()) {
+          Option option = configuration.getAnnotation(Option.class);
+          if (option != null) {
+            configuration.setAccessible(true);
+            Object value = configuration.get(operand);
+            if (value != null) {
+              // --config-file
+              arguments.add(option.name()[0]);
+              // cluster.yml
+              arguments.add((String) value);
+            }
+          }
+        }
+      }
+    }
+    return arguments;
+  }
+
   public static ToolDescriptor fromResource(String taskName) throws Exception {
     ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-    try(InputStream inputStream = ToolTaskSupport.class.getClassLoader().getResourceAsStream(taskName + "/" + "descriptor.yml")) {
+    try (InputStream inputStream = ToolTaskSupport.class.getClassLoader().getResourceAsStream(taskName + "/" + "descriptor.yml")) {
       return mapper.readValue(inputStream, ToolDescriptor.class);
     }
   }
