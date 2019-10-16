@@ -7,6 +7,7 @@ properties:
 definitions:
 
   EksCtlConfiguration:
+    type: object
     additionalProperties: false
     properties:
       Create:
@@ -14,19 +15,19 @@ definitions:
         $schema: http://json-schema.org/draft-04/schema#
 
   Create:
-    additionalProperties: false
+    type: object
     javaInterfaces: [ 'com.walmartlabs.concord.plugins.tool.ToolCommand' ]
+    additionalProperties: false
     properties:
       Cluster:
         $ref: '#/definitions/Cluster'
         $schema: http://json-schema.org/draft-04/schema#
-    type: object
 
   Cluster:
+    type: object
     additionalProperties: false
     properties:
       configFile:
         type: string
       kubeConfig:
         type: string
-    type: object      
