@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.plugins.k8s.eksctl.config;
+package com.walmartlabs.concord.plugins.tool;
 
 import static org.junit.Assert.assertEquals;
 
@@ -9,7 +9,7 @@ import com.walmartlabs.concord.plugins.tool.ToolConfigurator;
 import java.util.Map;
 import org.junit.Test;
 
-public class ConfigMapperTest {
+public class ToolConfiguratorTest {
 
   @Test
   public void validateConfigMapper() throws Exception {

@@ -1,9 +1,9 @@
-package com.walmartlabs.concord.plugins.k8s;
+package com.walmartlabs.concord.plugins.tool;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.walmartlabs.concord.plugins.k8s.eksctl.config.ConfigMapperTest.mapBuilder;
+import static com.walmartlabs.concord.plugins.tool.ToolConfiguratorTest.mapBuilder;
 import static com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY;
 import static com.walmartlabs.concord.sdk.Constants.Request.PROCESS_INFO_KEY;
 import static org.junit.Assert.assertEquals;
@@ -19,12 +19,6 @@ import com.google.common.collect.Maps;
 import com.walmartlabs.concord.common.IOUtils;
 import com.walmartlabs.concord.plugins.k8s.eksctl.EksCtlTask;
 import com.walmartlabs.concord.plugins.k8s.eksctl.commands.Create;
-import com.walmartlabs.concord.plugins.tool.ToolCommand;
-import com.walmartlabs.concord.plugins.tool.ToolConfigurator;
-import com.walmartlabs.concord.plugins.tool.ToolDescriptor;
-import com.walmartlabs.concord.plugins.tool.ToolInitializationResult;
-import com.walmartlabs.concord.plugins.tool.ToolInitializer;
-import com.walmartlabs.concord.plugins.tool.ToolTaskSupport;
 import com.walmartlabs.concord.sdk.Context;
 import com.walmartlabs.concord.sdk.DependencyManager;
 import com.walmartlabs.concord.sdk.ImmutableBucketInfo;
