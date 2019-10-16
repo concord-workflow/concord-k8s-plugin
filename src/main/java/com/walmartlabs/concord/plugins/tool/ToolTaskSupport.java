@@ -124,7 +124,7 @@ public abstract class ToolTaskSupport implements Task {
 
   public static ToolDescriptor fromResource(String taskName) throws Exception {
     ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-    try(InputStream inputStream = ToolTaskSupport.class.getClassLoader().getResourceAsStream(taskName + "/" + "toolDescriptor.yml")) {
+    try(InputStream inputStream = ToolTaskSupport.class.getClassLoader().getResourceAsStream(taskName + "/" + "descriptor.yml")) {
       return mapper.readValue(inputStream, ToolDescriptor.class);
     }
   }
