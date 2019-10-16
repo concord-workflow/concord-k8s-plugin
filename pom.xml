@@ -132,8 +132,33 @@
     </dependencies>
 
     <build>
+      <plugins>
+        <plugin>
+          <groupId>org.jsonschema2pojo</groupId>
+          <artifactId>jsonschema2pojo-maven-plugin</artifactId>
+          <version>1.0.1</version>
+          <executions>
+            <execution>
+              <id>eksctl-model</id>
+              <configuration>
+                <sourcePaths>
+                  <sourcePath>${basedir}/src/main/resources/eksctl/schema/configuration.yml</sourcePath>
+                </sourcePaths>
+                <targetPackage>com.walmartlabs.concord.plugins.k8s.eksctl.config.model</targetPackage>
+                <sourceType>yamlschema</sourceType>
+                <generateBuilders>true</generateBuilders>
+              </configuration>
+              <goals>
+                <goal>generate</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+
       <pluginManagement>
         <plugins>
+          <!-- We should bake this into the Takari parent with a switch -->
           <plugin>
             <groupId>io.takari.maven.plugins</groupId>
             <artifactId>takari-lifecycle-plugin</artifactId>
