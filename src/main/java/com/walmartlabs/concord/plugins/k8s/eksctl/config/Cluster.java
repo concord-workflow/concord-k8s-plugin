@@ -10,12 +10,24 @@ public class Cluster {
     private String name;
 
     @JsonProperty
+    @Option(name = {"--version"})
+    private String version;
+
+    @JsonProperty
     @Option(name = {"--config-file"})
     private String configFile;
 
     @JsonProperty
     @Option(name = {"--kubeconfig"})
     private String kubeConfig;
+
+    public String name() {
+        return name;
+    }
+
+    public String version() {
+        return version;
+    }
 
     public String configFile() {
         return configFile;
