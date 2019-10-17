@@ -5,19 +5,23 @@ import io.airlift.airline.Option;
 
 public class Cluster {
 
-  @JsonProperty
-  @Option(name = {"--config-file"})
-  private String configFile;
+    @JsonProperty
+    @Option(name = {"--name"})
+    private String name;
 
-  @JsonProperty
-  @Option(name = {"--kubeconfig"})
-  private String kubeConfig;
+    @JsonProperty
+    @Option(name = {"--config-file"})
+    private String configFile;
 
-  public String configFile() {
-    return configFile;
-  }
+    @JsonProperty
+    @Option(name = {"--kubeconfig"})
+    private String kubeConfig;
 
-  public String kubeConfig() {
-    return kubeConfig;
-  }
+    public String configFile() {
+        return configFile;
+    }
+
+    public String kubeConfig() {
+        return kubeConfig;
+    }
 }

@@ -1,10 +1,14 @@
 package com.walmartlabs.concord.plugins.k8s.eksctl.config.file;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fireeye.k8s.*;
-import com.walmartlabs.TestSupport;
-import com.walmartlabs.concord.plugins.k8s.eksctl.config.file.ClusterGenerationRequestProcessor;
+import com.fireeye.k8s.Cluster;
+import com.fireeye.k8s.ClusterGenerationRequest;
+import com.fireeye.k8s.Network;
+import com.fireeye.k8s.Product;
+import com.fireeye.k8s.Subnets;
+import com.fireeye.k8s.Vpc;
 import com.google.common.collect.ImmutableList;
+import com.walmartlabs.TestSupport;
 import org.junit.Test;
 
 import java.io.File;

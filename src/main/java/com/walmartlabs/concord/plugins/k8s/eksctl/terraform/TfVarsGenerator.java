@@ -3,7 +3,11 @@ package com.walmartlabs.concord.plugins.k8s.eksctl.terraform;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fireeye.k8s.ClusterGenerationRequest;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -31,7 +35,7 @@ import java.util.Map;
 public class TfVarsGenerator {
 
     public void generate(ClusterGenerationRequest request, File file) throws IOException {
-        Map<String,Object> tfvars = new LinkedHashMap();
+        Map<String, Object> tfvars = new LinkedHashMap();
         tfvars.put("aws-region", request.getCluster().getRegion());
         tfvars.put("vpc-cidr", request.getCluster().getVpc().getCidr());
         tfvars.put("vpc-name", request.getCluster().getVpc().getName());
@@ -39,20 +43,20 @@ public class TfVarsGenerator {
         tfvars.put("environment", request.getCluster().getEnvironment());
         tfvars.put("costcenter", request.getProduct().getCostCenter());
         int i = 1;
-        Map<String,Object> publicSubnet = new LinkedHashMap<>();
-        for(String s : request.getCluster().getVpc().getNetwork().getSubnets().getPublic()) {
+        Map<String, Object> publicSubnet = new LinkedHashMap<>();
+        for (String s : request.getCluster().getVpc().getNetwork().getSubnets().getPublic()) {
             publicSubnet.put(s, i);
             i++;
         }
         tfvars.put("public_subnet_map", publicSubnet);
-        Map<String,Object> privateSubnet = new LinkedHashMap<>();
-        for(String s : request.getCluster().getVpc().getNetwork().getSubnets().getPrivate()) {
+        Map<String, Object> privateSubnet = new LinkedHashMap<>();
+        for (String s : request.getCluster().getVpc().getNetwork().getSubnets().getPrivate()) {
             privateSubnet.put(s, i);
             i++;
         }
         tfvars.put("private_subnet_map", privateSubnet);
 
-        try(Writer writer = new OutputStreamWriter(new FileOutputStream(file))) {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(file))) {
             new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(writer, tfvars);
         }
     }

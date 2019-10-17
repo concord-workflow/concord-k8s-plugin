@@ -16,7 +16,7 @@ public abstract class TestSupport {
     protected File target(String name) {
 
         File target = new File(basedir, "target/" + name);
-        if(!target.getParentFile().exists()) {
+        if (!target.getParentFile().exists()) {
             target.getParentFile().mkdirs();
         }
         return target;

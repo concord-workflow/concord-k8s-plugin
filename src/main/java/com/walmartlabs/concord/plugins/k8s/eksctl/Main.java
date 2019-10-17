@@ -21,17 +21,17 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        if(args.length != 2) {
+        if (args.length != 2) {
             System.err.println("java -jar k8s-tools.jar <tf | eksctl> <cluster-request-yml");
             System.exit(1);
         }
 
-        if(args[0].equalsIgnoreCase("tf")) {
+        if (args[0].equalsIgnoreCase("tf")) {
 
             ClusterGenerationRequestProcessor processor = new ClusterGenerationRequestProcessor();
             processor.process(new File(args[1]));
 
-        } else if(args[0].equalsIgnoreCase("eksctl")) {
+        } else if (args[0].equalsIgnoreCase("eksctl")) {
 
             File requestFile = new File(args[1]);
             ClusterGenerationRequestProcessor processor = new ClusterGenerationRequestProcessor();

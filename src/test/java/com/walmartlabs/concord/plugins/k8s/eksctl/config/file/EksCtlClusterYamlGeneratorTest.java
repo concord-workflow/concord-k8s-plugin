@@ -6,7 +6,11 @@ import com.walmartlabs.TestSupport;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -81,7 +85,7 @@ public class EksCtlClusterYamlGeneratorTest extends TestSupport {
         generator.clusterYml(cluster, outputStream);
 
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        try(InputStream inputStream = new FileInputStream(clusterYml)) {
+        try (InputStream inputStream = new FileInputStream(clusterYml)) {
             Map<String, Object> yaml = mapper.readValue(inputStream, Map.class);
 
             assertEquals("magic-cluster", ((Map) yaml.get("metadata")).get("name"));
@@ -116,12 +120,12 @@ public class EksCtlClusterYamlGeneratorTest extends TestSupport {
 
         File clusterAutoScalerYml = new File(basedir, "target/cluster-autoscaler.yml");
         OutputStream autoScalerOutputStream = new FileOutputStream(clusterAutoScalerYml);
-        generator.mustache(cluster, autoScalerOutputStream , "eksctl/templates/autoscaler.mustache");
+        generator.mustache(cluster, autoScalerOutputStream, "eksctl/templates/autoscaler.mustache");
 
 
-        try(InputStream inputStream = new FileInputStream(clusterAutoScalerYml)) {
+        try (InputStream inputStream = new FileInputStream(clusterAutoScalerYml)) {
             Map<String, Object> yaml = mapper.readValue(inputStream, Map.class);
-            assertEquals("--node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/magic-cluster",((List)((Map)((List)((Map)((Map)((Map)((Map)((Map)yaml.get("spec"))).get("template"))).get("spec")).get("containers")).get(0)).get("command")).get(6));
+            assertEquals("--node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/magic-cluster", ((List) ((Map) ((List) ((Map) ((Map) ((Map) ((Map) ((Map) yaml.get("spec"))).get("template"))).get("spec")).get("containers")).get(0)).get("command")).get(6));
         }
     }
 }

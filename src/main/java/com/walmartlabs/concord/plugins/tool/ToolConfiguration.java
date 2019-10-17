@@ -4,38 +4,38 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ToolConfiguration {
 
-  @JsonProperty
-  private String command;
+    @JsonProperty
+    private String command;
 
-  @JsonProperty
-  private String version;
+    @JsonProperty
+    private String version;
 
-  @JsonProperty
-  private String url;
+    @JsonProperty
+    private String url;
 
-  @JsonProperty
-  private boolean debug;
+    @JsonProperty
+    private boolean debug;
 
-  @JsonProperty
-  private boolean dryRun;
+    @JsonProperty
+    private boolean dryRun;
 
-  public String command() {
-    return command;
-  }
+    public String command() {
+        return command;
+    }
 
-  public String version() {
-    return version;
-  }
+    public String version() {
+        return version;
+    }
 
-  public String url() {
-    return url;
-  }
+    public String url() {
+        return url;
+    }
 
-  public boolean debug() {
-    return debug;
-  }
+    public boolean debug() {
+        return debug;
+    }
 
-  public boolean dryRun() {
-    return dryRun;
-  }
+    public boolean dryRun() {
+        return dryRun;
+    }
 }

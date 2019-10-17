@@ -51,10 +51,10 @@ public class ClusterInfo {
     }
 
     public List<Tag> tags() {
-        List<Tag> tags  =  new ArrayList<>();
-        Map<String, String> m =   (Map<String, String>) (((Map) map.get("tags")).get("value"));
-        for(Map.Entry<String,String> e: m.entrySet()){
-            tags.add(new Tag(e.getKey(),e.getValue()));
+        List<Tag> tags = new ArrayList<>();
+        Map<String, String> m = (Map<String, String>) (((Map) map.get("tags")).get("value"));
+        for (Map.Entry<String, String> e : m.entrySet()) {
+            tags.add(new Tag(e.getKey(), e.getValue()));
         }
         return tags;
     }
