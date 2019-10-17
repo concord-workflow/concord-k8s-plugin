@@ -3,8 +3,6 @@ package com.walmartlabs.concord.plugins.k8s.eksctl.config.file;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.walmartlabs.TestSupport;
-import com.walmartlabs.concord.plugins.k8s.eksctl.config.file.ClusterInfo;
-import com.walmartlabs.concord.plugins.k8s.eksctl.config.file.EksCtlClusterYmlGenerator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,6 +25,7 @@ public class EksCtlClusterYamlGeneratorTest extends TestSupport {
     public void validateTerraformOutputParser() throws Exception {
 
         EksCtlClusterYmlGenerator generator = new EksCtlClusterYmlGenerator("magic-cluster", "us-west-2", "1.14");
+        // This is the output produced by terraform that will be used to create the eksctl configuration
         ClusterInfo cluster = generator.parse(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
 
         assertEquals("magic-cluster", cluster.name());
@@ -79,7 +78,7 @@ public class EksCtlClusterYamlGeneratorTest extends TestSupport {
 
         File clusterYml = new File(basedir, "target/cluster.yml");
         OutputStream outputStream = new FileOutputStream(clusterYml);
-        generator.clusterYml(cluster, outputStream , "eksctl/templates/cluster.mustache");
+        generator.clusterYml(cluster, outputStream);
 
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try(InputStream inputStream = new FileInputStream(clusterYml)) {
@@ -117,7 +116,7 @@ public class EksCtlClusterYamlGeneratorTest extends TestSupport {
 
         File clusterAutoScalerYml = new File(basedir, "target/cluster-autoscaler.yml");
         OutputStream autoScalerOutputStream = new FileOutputStream(clusterAutoScalerYml);
-        generator.clusterYml(cluster, autoScalerOutputStream , "eksctl/templates/autoscaler.mustache");
+        generator.mustache(cluster, autoScalerOutputStream , "eksctl/templates/autoscaler.mustache");
 
 
         try(InputStream inputStream = new FileInputStream(clusterAutoScalerYml)) {

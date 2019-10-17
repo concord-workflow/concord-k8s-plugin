@@ -44,10 +44,10 @@ public class Main {
 
             File eksCtlYmlFile = new File(requestFile.getParentFile(), request.getCluster().getName() + "-eksctl.yml");
             System.out.println("EksCtl YAML: " + eksCtlYmlFile);
-            generator.clusterYml(cluster, new FileOutputStream(eksCtlYmlFile), "cluster.mustache");
+            generator.clusterYml(cluster, new FileOutputStream(eksCtlYmlFile));
             File autoscalerFile = new File(requestFile.getParentFile(), request.getCluster().getName() + "-autoscaler.yml");
             System.out.println("Eks Autoscaler YAML: " + autoscalerFile);
-            generator.clusterYml(cluster, new FileOutputStream(autoscalerFile), "autoscaler.mustache");
+            generator.autoscalerYml(cluster, new FileOutputStream(autoscalerFile));
 
         } else {
 
