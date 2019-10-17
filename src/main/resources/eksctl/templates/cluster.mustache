@@ -1,0 +1,41 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: {{cluster.name}}
+  region: {{cluster.region}}
+  version: "{{cluster.k8sVersion}}"
+vpc:
+  id: "{{cluster.vpcId}}"
+  cidr: "{{cluster.vpcCidr}}"
+  subnets:
+    private:
+      {{#cluster.privateSubnets}}
+      {{id}}:
+        id: "{{subnet}}"
+        cidr: "{{cidr}}"
+      {{/cluster.privateSubnets}}
+    public:
+      {{#cluster.publicSubnets}}
+      {{id}}:
+        id: "{{subnet}}"
+        cidr: "{{cidr}}"
+      {{/cluster.publicSubnets}}
+iam:
+  serviceRoleARN: "{{cluster.serviceRoleArn}}"
+nodeGroups:
+  - name: standard-worker-group-1
+    labels: {pool: standard-worker-group-1}
+    instanceType: m5.large
+    desiredCapacity: 3
+    minSize: 1
+    maxSize: 15
+    volumeSize: 200
+    volumeType: gp2
+    iam:
+      instanceProfileARN: "{{cluster.instanceProfileArn}}"
+      instanceRoleARN: "{{cluster.instanceRoleArn}}"
+    privateNetworking: true
+    tags:
+      {{#cluster.tags}}
+      '{{key}}': '{{value}}'
+      {{/cluster.tags}}
