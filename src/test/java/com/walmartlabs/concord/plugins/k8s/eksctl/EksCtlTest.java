@@ -18,12 +18,10 @@ import org.junit.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import static com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY;
-import static com.walmartlabs.concord.sdk.Constants.Request.PROCESS_INFO_KEY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -61,7 +59,7 @@ public class EksCtlTest extends TestSupport {
                 .put("cluster",
                         mapBuilder()
                                 .put("configFile", "cluster.yaml")
-                                .put("kubeConfig", "/home/concord/.kube/config")
+                                .put("kubeconfig", "/home/concord/.kube/config")
                                 .build())
                 .build();
 
@@ -70,7 +68,7 @@ public class EksCtlTest extends TestSupport {
         toolConfigurator.configureCommand(input, create);
 
         assertEquals("cluster.yaml", create.cluster().configFile());
-        assertEquals("/home/concord/.kube/config", create.cluster().kubeConfig());
+        assertEquals("/home/concord/.kube/config", create.cluster().kubeconfig());
     }
 
     @Test
@@ -82,7 +80,7 @@ public class EksCtlTest extends TestSupport {
                         mapBuilder()
                                 .put("name", "cluster-001")
                                 .put("version", "1.14")
-                                .put("kubeConfig", "/home/concord/.kube/config")
+                                .put("kubeconfig", "/home/concord/.kube/config")
                                 .build())
                 .build();
 
@@ -92,7 +90,7 @@ public class EksCtlTest extends TestSupport {
 
         assertEquals("cluster-001", create.cluster().name());
         assertEquals("1.14", create.cluster().version());
-        assertEquals("/home/concord/.kube/config", create.cluster().kubeConfig());
+        assertEquals("/home/concord/.kube/config", create.cluster().kubeconfig());
     }
 
     @Test
@@ -101,14 +99,12 @@ public class EksCtlTest extends TestSupport {
         ToolConfigurator toolConfigurator = new ToolConfigurator();
 
         Map<String, Object> configuration = Maps.newHashMap(mapBuilder()
-                .put(PROCESS_INFO_KEY, Collections.singletonMap("sessionKey", "xyz"))
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
-                .put("dryRun", true)
                 .put("command", "create")
                 .put("cluster",
                         mapBuilder()
                                 .put("configFile", "cluster.yaml")
-                                .put("kubeConfig", "/home/concord/.kube/config")
+                                .put("kubeconfig", "/home/concord/.kube/config")
                                 .build())
                 .build());
 
@@ -132,15 +128,13 @@ public class EksCtlTest extends TestSupport {
         ToolConfigurator toolConfigurator = new ToolConfigurator();
 
         Map<String, Object> configuration = Maps.newHashMap(mapBuilder()
-                .put(PROCESS_INFO_KEY, Collections.singletonMap("sessionKey", "xyz"))
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
-                .put("dryRun", true)
                 .put("command", "create")
                 .put("cluster",
                         mapBuilder()
                                 .put("name", "cluster-001")
                                 .put("version", "1.14")
-                                .put("kubeConfig", "/home/concord/.kube/config")
+                                .put("kubeconfig", "/home/concord/.kube/config")
                                 .build())
                 .build());
 
@@ -173,18 +167,17 @@ public class EksCtlTest extends TestSupport {
         //     command: create
         //     cluster:
         //       configFile: cluster.yaml
-        //       kubeConfig: /home/concord/.kube/config
+        //       kubeconfig: /home/concord/.kube/config
         //
 
         Map<String, Object> args = Maps.newHashMap(mapBuilder()
-                .put(PROCESS_INFO_KEY, Collections.singletonMap("sessionKey", "xyz"))
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
                 .put("dryRun", true)
                 .put("command", "create")
                 .put("cluster",
                         mapBuilder()
                                 .put("configFile", "cluster.yaml")
-                                .put("kubeConfig", "/home/concord/.kube/config")
+                                .put("kubeconfig", "/home/concord/.kube/config")
                                 .build())
                 .build());
 
@@ -210,11 +203,10 @@ public class EksCtlTest extends TestSupport {
         //     cluster:
         //       name: cluster-001
         //       version: 1.14
-        //       kubeConfig: /home/concord/.kube/config
+        //       kubeconfig: /home/concord/.kube/config
         //
 
         Map<String, Object> args = Maps.newHashMap(mapBuilder()
-                .put(PROCESS_INFO_KEY, Collections.singletonMap("sessionKey", "xyz"))
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
                 .put("dryRun", true)
                 .put("command", "create")
@@ -222,7 +214,12 @@ public class EksCtlTest extends TestSupport {
                         mapBuilder()
                                 .put("name", "cluster-001")
                                 .put("version", "1.14")
-                                .put("kubeConfig", "/home/concord/.kube/config")
+                                .put("kubeconfig", "/home/concord/.kube/config")
+                                .build())
+                .put("envars",
+                        mapBuilder()
+                                .put("AWS_ACCESS_KEY_ID", "aws-access-key")
+                                .put("AWS_SECRET_ACCESS_KEY", "aws-secret-key")
                                 .build())
                 .build());
 
@@ -232,5 +229,11 @@ public class EksCtlTest extends TestSupport {
         System.out.println(commandLine);
         assertTrue(varAsString(context, "commandLineArguments")
                 .contains("eksctl create cluster --name cluster-001 --version 1.14 --kubeconfig /home/concord/.kube/config"));
+
+        System.out.println(context.getVariable("envars"));
+
+        // If these were placed in the context they were added to the environment of the executed command
+        assertEquals("aws-access-key", varAsMap(context, "envars").get("AWS_ACCESS_KEY_ID"));
+        assertEquals("aws-secret-key", varAsMap(context, "envars").get("AWS_SECRET_ACCESS_KEY"));
     }
 }

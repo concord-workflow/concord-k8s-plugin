@@ -10,6 +10,10 @@ public class Cluster {
     private String name;
 
     @JsonProperty
+    @Option(name = {"--region"})
+    private String region;
+
+    @JsonProperty
     @Option(name = {"--version"})
     private String version;
 
@@ -19,7 +23,7 @@ public class Cluster {
 
     @JsonProperty
     @Option(name = {"--kubeconfig"})
-    private String kubeConfig;
+    private String kubeconfig;
 
     public String name() {
         return name;
@@ -33,7 +37,7 @@ public class Cluster {
         return configFile;
     }
 
-    public String kubeConfig() {
-        return kubeConfig;
+    public String kubeconfig() {
+        return kubeconfig;
     }
 }

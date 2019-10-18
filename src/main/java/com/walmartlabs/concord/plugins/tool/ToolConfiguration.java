@@ -2,6 +2,8 @@ package com.walmartlabs.concord.plugins.tool;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Map;
+
 public class ToolConfiguration {
 
     @JsonProperty
@@ -18,6 +20,9 @@ public class ToolConfiguration {
 
     @JsonProperty
     private boolean dryRun;
+
+    @JsonProperty("envars")
+    protected Map<String,String> envars;
 
     public String command() {
         return command;
@@ -37,5 +42,9 @@ public class ToolConfiguration {
 
     public boolean dryRun() {
         return dryRun;
+    }
+
+    public Map<String,String> envars() {
+        return envars;
     }
 }

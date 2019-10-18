@@ -65,13 +65,14 @@ public abstract class TestSupport {
 
         System.out.println("Using the following:");
         System.out.println();
-        System.out.println("AWS Access Key ID: " + awsCredentials.accessKey);
-        System.out.println("   AWS Secret Key: " + awsCredentials.secretKey);
-        System.out.println("          workDir: " + workDir);
+        if (awsCredentials != null) {
+            System.out.println("AWS Access Key ID: " + awsCredentials.accessKey);
+            System.out.println("AWS Secret Key   : " + awsCredentials.secretKey);
+        }
+        System.out.println("workDir: " + workDir);
         System.out.println();
 
         Files.createDirectories(workDir);
-        //dstDir = workDir;
 
         lockService = mock(LockService.class);
         secretService = createSecretService(workDir);
@@ -96,6 +97,10 @@ public abstract class TestSupport {
     //
     protected String varAsString(Context context, String name) {
         return ((String) context.getVariable(name));
+    }
+
+    protected Map<String,String> varAsMap(Context context, String name) {
+        return ((Map<String,String>) context.getVariable(name));
     }
 
     //
@@ -203,16 +208,18 @@ public abstract class TestSupport {
     private AWSCredentials awsCredentials() {
         AWSCredentials awsCredentials = new AWSCredentials();
         File awsCredentialsFile = new File(System.getProperty("user.home"), ".aws/credentials");
-        if (awsCredentialsFile.exists()) {
-            Map<String, Properties> awsCredentialsIni = parseIni(awsCredentialsFile);
-            if (awsCredentialsIni != null) {
-                Properties concordAwsCredentials = awsCredentialsIni.get(CONCORD_AWS_CREDENTIALS_KEY);
-                if (concordAwsCredentials == null) {
-                    throw new RuntimeException("You must have a [" + CONCORD_AWS_CREDENTIALS_KEY + "] stanza in your ~/.aws/credentials !");
-                }
-                awsCredentials.accessKey = concordAwsCredentials.getProperty("aws_access_key_id");
-                awsCredentials.secretKey = concordAwsCredentials.getProperty("aws_secret_access_key");
+        if (!awsCredentialsFile.exists()) {
+            return null;
+        }
+
+        Map<String, Properties> awsCredentialsIni = parseIni(awsCredentialsFile);
+        if (awsCredentialsIni != null) {
+            Properties concordAwsCredentials = awsCredentialsIni.get(CONCORD_AWS_CREDENTIALS_KEY);
+            if (concordAwsCredentials == null) {
+                throw new RuntimeException("You must have a [" + CONCORD_AWS_CREDENTIALS_KEY + "] stanza in your ~/.aws/credentials !");
             }
+            awsCredentials.accessKey = concordAwsCredentials.getProperty("aws_access_key_id");
+            awsCredentials.secretKey = concordAwsCredentials.getProperty("aws_secret_access_key");
         }
 
         if (awsCredentials.accessKey.isEmpty() && awsCredentials.secretKey.isEmpty()) {

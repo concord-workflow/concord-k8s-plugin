@@ -119,6 +119,13 @@ public abstract class ToolTaskSupport implements Task {
                 .setDirectory(workDir.toFile())
                 .setTimeLimit(20, TimeUnit.MINUTES);
 
+        // Add any envars to the command line execution and store them in the context
+        if (toolConfiguration.envars() != null) {
+            Map<String,String> envars = toolConfiguration.envars();
+            command.addEnvironment(envars);
+            context.setVariable("envars", envars);
+        }
+
         if (toolConfiguration.dryRun()) {
             String commandLineArguments = String.join(" ", command.getCommand());
             context.setVariable("commandLineArguments", String.join(" ", command.getCommand()));

@@ -7,9 +7,9 @@ import com.walmartlabs.concord.plugins.tool.ToolCommand;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-@Named("eksctl/create")
+@Named("eksctl/delete")
 @Singleton
-public class Create implements ToolCommand {
+public class Delete implements ToolCommand {
 
     @JsonProperty("cluster")
     private Cluster cluster;
@@ -17,4 +17,5 @@ public class Create implements ToolCommand {
     public Cluster cluster() {
         return cluster;
     }
+
 }
