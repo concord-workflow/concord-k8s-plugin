@@ -21,8 +21,6 @@ public class ToolConfigurator {
     }
 
     public void configureCommand(Map<String, Object> configuration, ToolCommand command) throws Exception {
-        System.out.println(configuration);
         mapper.readerForUpdating(command).readValue(mapper.writeValueAsString(configuration));
     }
-
 }

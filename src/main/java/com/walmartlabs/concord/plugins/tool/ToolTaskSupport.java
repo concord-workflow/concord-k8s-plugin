@@ -3,14 +3,14 @@ package com.walmartlabs.concord.plugins.tool;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.walmartlabs.concord.sdk.Context;
 import com.walmartlabs.concord.sdk.LockService;
 import com.walmartlabs.concord.sdk.Task;
 import io.airlift.airline.Option;
-import io.airlift.command.Command;
-import io.airlift.command.CommandResult;
+import io.airlift.units.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +34,6 @@ public abstract class ToolTaskSupport implements Task {
     protected final Map<String, ToolCommand> commands;
 
     public ToolTaskSupport(Map<String, ToolCommand> commands, LockService lockService, ToolInitializer toolInitializer) {
-        System.out.println(commands);
         this.commands = commands;
         this.lockService = lockService;
         this.toolInitializer = toolInitializer;
@@ -45,21 +44,51 @@ public abstract class ToolTaskSupport implements Task {
         //
         // eksctl create cluster --config-file cluster.yaml --kubeconfig /home/concord/.kube/config
         //
+        // kubectl apply -f 00-helm/tiller-rbac.yml
+        //
         List<String> arguments = Lists.newArrayList(commandName);
         for (Field field : command.getClass().getDeclaredFields()) {
             field.setAccessible(true);
             Object operand = field.get(command);
             if (operand != null) {
-                arguments.add(field.getName());
-                for (Field configuration : operand.getClass().getDeclaredFields()) {
-                    Option option = configuration.getAnnotation(Option.class);
+                if (operand.getClass().isPrimitive() || Boolean.class.isAssignableFrom(operand.getClass()) || String.class.isAssignableFrom(operand.getClass())) {
+                    Option option = field.getAnnotation(Option.class);
                     if (option != null) {
-                        configuration.setAccessible(true);
-                        Object value = configuration.get(operand);
+                        Object value = field.get(command);
                         if (value != null) {
-                            // --config-file
                             arguments.add(option.name()[0]);
-                            // cluster.yml
+                            arguments.add((String) value);
+                        }
+                    } else {
+                        Flag flag = field.getAnnotation(Flag.class);
+                        if (flag != null) {
+                            arguments.add(flag.name()[0]);
+                        }
+                        OptionWithEquals optionWithEquals = field.getAnnotation(OptionWithEquals.class);
+                        if (optionWithEquals != null) {
+                            Object value = field.get(command);
+                            if (value != null) {
+                                arguments.add(optionWithEquals.name()[0] + "=" + value);
+                            }
+                        }
+                    }
+                } else {
+                    Omit omit = field.getAnnotation(Omit.class);
+                    if (omit == null) {
+                        arguments.add(field.getName());
+                    }
+                    for (Field configuration : operand.getClass().getDeclaredFields()) {
+                        Option option = configuration.getAnnotation(Option.class);
+                        if (option != null) {
+                            configuration.setAccessible(true);
+                            Object value = configuration.get(operand);
+                            if (value != null) {
+                                arguments.add(option.name()[0]);
+                                arguments.add((String) value);
+                            }
+                        } else {
+                            configuration.setAccessible(true);
+                            Object value = configuration.get(operand);
                             arguments.add((String) value);
                         }
                     }
@@ -78,8 +107,13 @@ public abstract class ToolTaskSupport implements Task {
 
     public void execute(Context context) throws Exception {
 
-        // Task name taken from the @Named annotation
-        String taskName = this.getClass().getAnnotationsByType(Named.class)[0].value();
+        // Task name taken from the @Named annotation. Inside of Guice a generate wrapper is created, but for testing
+        // where we are not wiring with Guice we need to look at the class directly.
+        Named named = this.getClass().getSuperclass().getAnnotation(Named.class);
+        if (named == null) {
+            named = this.getClass().getAnnotation(Named.class);
+        }
+        String taskName = named.value();
 
         Path workDir = Paths.get((String) context.getVariable(com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY));
         if (workDir == null) {
@@ -104,36 +138,94 @@ public abstract class ToolTaskSupport implements Task {
         // Retrieve the specific command as specified by the "command" key in the configuration
         ToolCommand toolCommand = commands.get(taskName + "/" + toolCommandName);
 
+        if (toolCommand == null) {
+            throw new RuntimeException(String.format("Cannot find the command '%s'/%s'", taskName, toolCommandName));
+        }
+
         // Apply the configuration to the command
         toolConfigurator.configureCommand(variables(context), toolCommand);
 
+        ToolDescriptor toolDescriptor = toolDescriptor(taskName, toolConfiguration);
+
         // Initialize the specific tool and make it available to concord for use
-        ToolInitializationResult toolInitializationResult = toolInitializer.initialize(workDir, toolDescriptor(taskName, toolConfiguration), toolConfiguration.debug());
+        ToolInitializationResult toolInitializationResult = toolInitializer.initialize(workDir, toolDescriptor, toolConfiguration.debug());
+
+        logger.info("We have successfully initialized {} version {}.", toolDescriptor.name(), toolDescriptor.version());
 
         // Build up the arguments for the execution of this tool: executable +
         List<String> args = Lists.newArrayList();
         args.add(toolInitializationResult.executable().toFile().getAbsolutePath());
         args.addAll(generateCommandLineArguments(toolCommandName, toolCommand));
 
-        Command command = new Command(args.toArray(new String[0]))
-                .setDirectory(workDir.toFile())
-                .setTimeLimit(20, TimeUnit.MINUTES);
+        CliCommand command = new CliCommand(
+                args,
+                ImmutableSet.of(0),
+                workDir,
+                toolConfiguration.envars(),
+                Duration.succinctDuration(20, TimeUnit.MINUTES)
+        );
 
-        // Add any envars to the command line execution and store them in the context
-        if (toolConfiguration.envars() != null) {
-            Map<String,String> envars = toolConfiguration.envars();
-            command.addEnvironment(envars);
-            context.setVariable("envars", envars);
+        if (toolCommand.idempotencyCheckCommand() != null) {
+
+            String s = toolCommand.idempotencyCheckCommand();
+            s = mustache(s, "executable", toolInitializationResult.executable().toFile().getAbsolutePath());
+            logger.info("idempotencyCheckCommand: " + s);
+
+            //
+            // "{{executable}} get cluster --name {{name}} --region {{region}} -o json"
+            //
+            CliCommand idempotencyCheck = new CliCommand(
+                    Lists.newArrayList(s.split(" ")),
+                    ImmutableSet.of(0),
+                    workDir,
+                    toolConfiguration.envars(),
+                    Duration.succinctDuration(20, TimeUnit.MINUTES));
+
+            CliCommand.Result result = idempotencyCheck.execute(Executors.newCachedThreadPool());
+
+            if (result.getCode() == 0) {
+
+                logger.info("This command has already run successfully: " + command.getCommand());
+                //
+                // The task we are intending to run has already executed successfully. It is the job of the idempotency
+                // command to ask if what we intend to do has already been done.
+                //
+                return;
+            }
         }
 
+        /*
+        Command command = new Command(
+                args,
+                ImmutableSet.of(0),
+                workDir.toFile(),
+                toolConfiguration.envars(),
+                Duration.succinctDuration(20, TimeUnit.MINUTES)
+        );
+        */
+
+        context.setVariable("envars", toolConfiguration.envars());
+
+        String commandLineArguments = String.join(" ", command.getCommand());
         if (toolConfiguration.dryRun()) {
-            String commandLineArguments = String.join(" ", command.getCommand());
             context.setVariable("commandLineArguments", String.join(" ", command.getCommand()));
-            System.out.println(commandLineArguments);
+            logger.info(commandLineArguments);
         } else {
-            CommandResult commandResult = command.execute(Executors.newCachedThreadPool());
-            System.out.println(commandResult.getCommandOutput());
+            logger.info("Executing: " + commandLineArguments);
+            logger.info("Envars: " + command.getEnvironment());
+            CliCommand.Result commandResult = command.execute(Executors.newCachedThreadPool());
+            logger.info("commandResult.getCode() = " + commandResult.getCode());
+            logger.info("commandResult.getStderr() = " + commandResult.getStderr());
+            logger.info("commandResult.getStdout() = " + commandResult.getStdout());
+            //logger.info(commandResult.getCommandOutput());
+
+            // If there is some post-processing this command wants to execute then do so
+            toolCommand.postProcess(workDir, context);
         }
+    }
+
+    private String mustache(String s, String var, String replacement) {
+        return s.replaceAll("\\{\\{" + var + "\\}\\}", replacement);
     }
 
     protected Map<String, Object> variables(Context context) {

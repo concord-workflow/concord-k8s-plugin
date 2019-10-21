@@ -64,7 +64,6 @@ public class EksCtlTest extends TestSupport {
                 .build();
 
         Create create = new Create();
-
         toolConfigurator.configureCommand(input, create);
 
         assertEquals("cluster.yaml", create.cluster().configFile());
@@ -85,7 +84,6 @@ public class EksCtlTest extends TestSupport {
                 .build();
 
         Create create = new Create();
-
         toolConfigurator.configureCommand(input, create);
 
         assertEquals("cluster-001", create.cluster().name());
@@ -184,9 +182,11 @@ public class EksCtlTest extends TestSupport {
         Context context = new MockContext(args);
         task.execute(context);
         String commandLine = varAsString(context, "commandLineArguments");
+
         System.out.println(commandLine);
-        assertTrue(varAsString(context, "commandLineArguments")
-                .contains("eksctl create cluster --config-file cluster.yaml --kubeconfig /home/concord/.kube/config"));
+
+        String expectedCommandLine = "eksctl create cluster --config-file cluster.yaml --kubeconfig /home/concord/.kube/config";
+        assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
     }
 
     @Test
@@ -213,6 +213,7 @@ public class EksCtlTest extends TestSupport {
                 .put("cluster",
                         mapBuilder()
                                 .put("name", "cluster-001")
+                                .put("region", "us-west-2")
                                 .put("version", "1.14")
                                 .put("kubeconfig", "/home/concord/.kube/config")
                                 .build())
@@ -226,13 +227,15 @@ public class EksCtlTest extends TestSupport {
         Context context = new MockContext(args);
         task.execute(context);
         String commandLine = varAsString(context, "commandLineArguments");
+
         System.out.println(commandLine);
-        assertTrue(varAsString(context, "commandLineArguments")
-                .contains("eksctl create cluster --name cluster-001 --version 1.14 --kubeconfig /home/concord/.kube/config"));
+
+        String expectedCommandLine = "eksctl create cluster --name cluster-001 --version 1.14 --kubeconfig /home/concord/.kube/config";
+        assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
 
         System.out.println(context.getVariable("envars"));
 
-        // If these were placed in the context they were added to the environment of the executed command
+        // If these were placed in the context, then they were added to the environment of the executed command
         assertEquals("aws-access-key", varAsMap(context, "envars").get("AWS_ACCESS_KEY_ID"));
         assertEquals("aws-secret-key", varAsMap(context, "envars").get("AWS_SECRET_ACCESS_KEY"));
     }

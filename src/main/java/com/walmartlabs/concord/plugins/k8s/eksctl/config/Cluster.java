@@ -25,8 +25,10 @@ public class Cluster {
     @Option(name = {"--kubeconfig"})
     private String kubeconfig;
 
-    public String name() {
-        return name;
+    public String name() { return name; }
+
+    public String region() {
+        return region;
     }
 
     public String version() {

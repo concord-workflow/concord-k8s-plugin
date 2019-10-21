@@ -1,0 +1,10 @@
+---
+id: aws-iam-authenticator
+name: AWS IAM Authenticator
+executable: aws-iam-authenticator
+architecture: amd64
+namingStyle: LOWER
+packaging: FILE
+defaultVersion: 0.4.0
+location: /home/concord/bin
+urlTemplate: https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v{version}/aws-iam-authenticator_{version}_{os}_{arch}

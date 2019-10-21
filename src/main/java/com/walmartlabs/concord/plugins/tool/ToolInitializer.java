@@ -7,11 +7,13 @@ import io.tesla.proviso.archive.UnArchiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 import static com.walmartlabs.concord.plugins.tool.ToolDescriptor.Packaging.TARGZ;
@@ -45,6 +47,7 @@ public class ToolInitializer {
 
     private final DependencyManager dependencyManager;
 
+    @Inject
     public ToolInitializer(DependencyManager dependencyManager) {
         this.dependencyManager = dependencyManager;
     }
@@ -94,9 +97,15 @@ public class ToolInitializer {
 
     public ToolInitializationResult initialize(Path workDir, ToolDescriptor toolDescriptor, boolean debug) throws Exception {
 
-        Path targetDirectory = workDir.resolve("." + toolDescriptor.id()); // .eksctl, .terraform, .helm, etc
-        if (!Files.exists(targetDirectory)) {
-            Files.createDirectories(targetDirectory);
+        Path targetDirectory;
+        if (toolDescriptor.location() != null) {
+            // This is assumed to be an existing location
+            targetDirectory = Paths.get(toolDescriptor.location());
+        } else {
+            targetDirectory = workDir.resolve("." + toolDescriptor.id()); // .eksctl, .terraform, .helm, etc
+            if (!Files.exists(targetDirectory)) {
+                Files.createDirectories(targetDirectory);
+            }
         }
 
         Path executable = targetDirectory.resolve(toolDescriptor.executable());

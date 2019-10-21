@@ -16,7 +16,7 @@ definitions:
 
   Create:
     type: object
-    javaInterfaces: [ 'com.walmartlabs.concord.plugins.tool.ToolCommand' ]
+    existingJavaType: 'com.walmartlabs.concord.plugins.tool.ToolCommandSupport'
     additionalProperties: false
     properties:
       Cluster:

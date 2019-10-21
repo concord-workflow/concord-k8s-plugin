@@ -1,6 +1,7 @@
 package com.walmartlabs.concord.plugins.tool;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
 
@@ -45,6 +46,18 @@ public class ToolConfiguration {
     }
 
     public Map<String,String> envars() {
-        return envars;
+        return envars != null ? envars : ImmutableMap.of();
+    }
+
+    @Override
+    public String toString() {
+        return "ToolConfiguration{" +
+                "command='" + command + '\'' +
+                ", version='" + version + '\'' +
+                ", url='" + url + '\'' +
+                ", debug=" + debug +
+                ", dryRun=" + dryRun +
+                ", envars=" + envars +
+                '}';
     }
 }

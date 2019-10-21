@@ -1,7 +1,7 @@
 ---
 id: kubectl
 name: KubeCtl
-executable: eksctl
+executable: kubectl
 architecture: amd64
 namingStyle: LOWER
 packaging: FILE

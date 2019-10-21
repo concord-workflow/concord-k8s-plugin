@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.Map;
 
-@Named("helm")
+@Named("kubectl")
 public class KubeCtlTask extends ToolTaskSupport {
 
     @InjectVariable("defaults")

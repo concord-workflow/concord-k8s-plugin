@@ -27,6 +27,9 @@ public abstract class ToolDescriptor {
     public abstract String defaultVersion();
 
     @Nullable
+    public abstract String location();
+
+    @Nullable
     public abstract String userSpecifiedUrl();
 
     public abstract NamingStyle namingStyle();
