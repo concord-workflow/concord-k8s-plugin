@@ -52,7 +52,7 @@ public class SecretsTask implements Task {
             try {
                 String secretMaterial = secretService.exportAsString(context, instanceId, organization, name, null);
                 if(!fileContainingSecret.getParentFile().exists()) {
-                    Files.createDirectories(fileContainingSecret.toPath());
+                    Files.createDirectories(fileContainingSecret.getParentFile().toPath());
                 }
                 Files.write(fileContainingSecret.toPath(), secretMaterial.getBytes());
             } catch (Exception e) {
