@@ -18,6 +18,10 @@ public class Chart {
     private String version;
 
     @JsonProperty
+    @Option(name = {"--values"})
+    private String values;
+
+    @JsonProperty
     private String value;
 
     public String name() { return name; }
@@ -27,4 +31,6 @@ public class Chart {
     public String version() { return version; }
 
     public String value() { return value; }
+
+    public String values() { return values; }
 }

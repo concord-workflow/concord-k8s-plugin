@@ -112,7 +112,16 @@
           <groupId>com.github.spullara.mustache.java</groupId>
           <artifactId>compiler</artifactId>
           <version>0.9.6</version>
-        </dependency>        
+        </dependency>
+        <!-- Secrets -->
+        <dependency>
+            <groupId>com.walmartlabs.concord</groupId>
+            <artifactId>concord-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp</groupId>
+            <artifactId>okhttp</artifactId>
+        </dependency>
         <!-- Test -->
         <dependency>
             <groupId>junit</groupId>

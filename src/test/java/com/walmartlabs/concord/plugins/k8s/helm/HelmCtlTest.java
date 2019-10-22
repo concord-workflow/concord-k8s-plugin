@@ -122,6 +122,7 @@ public class HelmCtlTest extends TestSupport {
                                 .put("namespace", "kube-system")
                                 .put("version", "1.4.2")
                                 .put("value", "stable/sealed-secrets")
+                                .put("values", "values.yml")
                                 .build())
                 .put("envars",
                         mapBuilder()
@@ -137,7 +138,7 @@ public class HelmCtlTest extends TestSupport {
 
         System.out.println(commandLine);
 
-        String expectedCommandLine = "helm install --name sealed-secrets --namespace kube-system --version 1.4.2 stable/sealed-secrets";
+        String expectedCommandLine = "helm install --name sealed-secrets --namespace kube-system --version 1.4.2 --values values.yml stable/sealed-secrets";
         assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
 
         System.out.println(context.getVariable("envars"));

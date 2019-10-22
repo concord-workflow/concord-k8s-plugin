@@ -99,13 +99,13 @@ public class ToolInitializer {
 
         Path targetDirectory;
         if (toolDescriptor.location() != null) {
-            // This is assumed to be an existing location
             targetDirectory = Paths.get(toolDescriptor.location());
         } else {
             targetDirectory = workDir.resolve("." + toolDescriptor.id()); // .eksctl, .terraform, .helm, etc
-            if (!Files.exists(targetDirectory)) {
-                Files.createDirectories(targetDirectory);
-            }
+        }
+
+        if (!Files.exists(targetDirectory)) {
+            Files.createDirectories(targetDirectory);
         }
 
         Path executable = targetDirectory.resolve(toolDescriptor.executable());
