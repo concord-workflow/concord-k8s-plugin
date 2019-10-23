@@ -16,7 +16,6 @@ import javax.inject.Named;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
 @Named("secret")
 public class SecretsTask implements Task {
@@ -51,7 +50,7 @@ public class SecretsTask implements Task {
             //
             try {
                 String secretMaterial = secretService.exportAsString(context, instanceId, organization, name, null);
-                if(!fileContainingSecret.getParentFile().exists()) {
+                if (!fileContainingSecret.getParentFile().exists()) {
                     Files.createDirectories(fileContainingSecret.getParentFile().toPath());
                 }
                 Files.write(fileContainingSecret.toPath(), secretMaterial.getBytes());
@@ -65,12 +64,6 @@ public class SecretsTask implements Task {
             try {
                 SecretsClient secretsClient = new SecretsClient(apiClient(context));
                 String fileContents = new String(Files.readAllBytes(Paths.get(file)));
-                //
-                // This is a total hard-coded hack for now. Generalize this handling. This is for the kubeconfig
-                // to override where the aws-iam-authenticator binary is located.
-                //
-                fileContents = fileContents.replace("command: aws-iam-authenticator", "command: /home/concord/bin/aws-iam-authenticator");
-                // Now we want to write out the new file with the replaced path
                 Files.write(fileContainingSecret.toPath(), fileContents.getBytes());
                 secretsClient.addPlainSecret(organization, name, false, null, fileContents.getBytes());
                 logger.info("The secret '{}' has been successfully stored in the {} organization.", name, organization);
