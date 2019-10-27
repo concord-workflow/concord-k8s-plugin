@@ -17,6 +17,8 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+// This is in a K8s tree but this is strictly for interacting with Concord's secrets store.
+
 @Named("secret")
 public class SecretsTask implements Task {
 

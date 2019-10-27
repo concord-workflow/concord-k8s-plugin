@@ -3,6 +3,8 @@ package com.walmartlabs.concord.plugins.k8s.helm.config;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.airlift.airline.Option;
 
+import java.util.Map;
+
 public class Chart {
 
     @JsonProperty
@@ -22,6 +24,9 @@ public class Chart {
     private String values;
 
     @JsonProperty
+    private Map<String,String> externals;
+
+    @JsonProperty
     private String value;
 
     public String name() { return name; }
@@ -33,4 +38,6 @@ public class Chart {
     public String value() { return value; }
 
     public String values() { return values; }
+
+    public Map<String,String> externals() { return externals; }
 }

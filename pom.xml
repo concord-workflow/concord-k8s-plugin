@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -13,7 +14,7 @@
     <packaging>takari-jar</packaging>
 
     <properties>
-      <takari.annotationProcessing>proc</takari.annotationProcessing>
+        <takari.annotationProcessing>proc</takari.annotationProcessing>
     </properties>
 
     <dependencyManagement>
@@ -76,16 +77,16 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-          <groupId>com.google.guava</groupId>
-          <artifactId>guava</artifactId>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
         <dependency>
-          <groupId>com.google.errorprone</groupId>
-          <artifactId>error_prone_annotations</artifactId>
+            <groupId>com.google.errorprone</groupId>
+            <artifactId>error_prone_annotations</artifactId>
         </dependency>
         <dependency>
-          <groupId>com.google.code.findbugs</groupId>
-          <artifactId>jsr305</artifactId>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
         </dependency>
         <!-- ToolInitializer -->
         <dependency>
@@ -104,14 +105,14 @@
             <version>1.0</version>
         </dependency>
         <dependency>
-          <groupId>io.airlift</groupId>
-          <artifactId>airline</artifactId>
-          <version>0.8</version>
+            <groupId>io.airlift</groupId>
+            <artifactId>airline</artifactId>
+            <version>0.8</version>
         </dependency>
         <dependency>
-          <groupId>com.github.spullara.mustache.java</groupId>
-          <artifactId>compiler</artifactId>
-          <version>0.9.6</version>
+            <groupId>com.github.spullara.mustache.java</groupId>
+            <artifactId>compiler</artifactId>
+            <version>0.9.6</version>
         </dependency>
         <!-- Secrets -->
         <dependency>
@@ -121,6 +122,11 @@
         <dependency>
             <groupId>com.squareup.okhttp</groupId>
             <artifactId>okhttp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>kubernetes-client</artifactId>
+            <version>4.6.1</version>
         </dependency>
         <!-- Test -->
         <dependency>
@@ -162,71 +168,72 @@
     </dependencies>
 
     <build>
-      <plugins>
-        <plugin>
-          <groupId>org.jsonschema2pojo</groupId>
-          <artifactId>jsonschema2pojo-maven-plugin</artifactId>
-          <version>1.0.1</version>
-          <executions>
-            <execution>
-              <id>eksctl-model</id>
-              <configuration>
-                <sourcePaths>
-                  <sourcePath>${basedir}/src/main/resources/eksctl/schema/configuration.yml</sourcePath>
-                </sourcePaths>
-                <targetPackage>com.walmartlabs.concord.plugins.k8s.eksctl.config.model</targetPackage>
-                <sourceType>yamlschema</sourceType>
-                <generateBuilders>true</generateBuilders>
-              </configuration>
-              <goals>
-                <goal>generate</goal>
-              </goals>
-            </execution>
-            <execution>
-              <id>k8s-model</id>
-              <configuration>
-                <sourcePaths>
-                  <sourcePath>${basedir}/src/test/resources/eksctl/cluster-generation-request.yml</sourcePath>
-                </sourcePaths>
-                <targetPackage>com.fireeye.k8s</targetPackage>
-                <sourceType>yaml</sourceType>
-                <generateBuilders>true</generateBuilders>
-              </configuration>
-              <goals>
-                <goal>generate</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
-
-      <pluginManagement>
         <plugins>
-          <!-- We should bake this into the Takari parent with a switch -->
-          <plugin>
-            <groupId>io.takari.maven.plugins</groupId>
-            <artifactId>takari-lifecycle-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>default-sisu-index</id>
-                <phase>process-classes</phase>
-                <goals>
-                  <goal>sisu-index</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>default-sisu-test-index</id>
-                <phase>process-test-classes</phase>
-                <goals>
-                  <goal>sisu-test-index</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <deployAtEnd>true</deployAtEnd>
-            </configuration>
-          </plugin>
+            <plugin>
+                <groupId>org.jsonschema2pojo</groupId>
+                <artifactId>jsonschema2pojo-maven-plugin</artifactId>
+                <version>1.0.1</version>
+                <executions>
+                    <execution>
+                        <id>eksctl-model</id>
+                        <configuration>
+                            <sourcePaths>
+                                <sourcePath>${basedir}/src/main/resources/eksctl/schema/configuration.yml</sourcePath>
+                            </sourcePaths>
+                            <targetPackage>com.walmartlabs.concord.plugins.k8s.eksctl.config.model</targetPackage>
+                            <sourceType>yamlschema</sourceType>
+                            <generateBuilders>true</generateBuilders>
+                        </configuration>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>k8s-model</id>
+                        <configuration>
+                            <sourcePaths>
+                                <sourcePath>${basedir}/src/test/resources/eksctl/cluster-generation-request.yml
+                                </sourcePath>
+                            </sourcePaths>
+                            <targetPackage>com.fireeye.k8s</targetPackage>
+                            <sourceType>yaml</sourceType>
+                            <generateBuilders>true</generateBuilders>
+                        </configuration>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
-      </pluginManagement>
+
+        <pluginManagement>
+            <plugins>
+                <!-- We should bake this into the Takari parent with a switch -->
+                <plugin>
+                    <groupId>io.takari.maven.plugins</groupId>
+                    <artifactId>takari-lifecycle-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>default-sisu-index</id>
+                            <phase>process-classes</phase>
+                            <goals>
+                                <goal>sisu-index</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>default-sisu-test-index</id>
+                            <phase>process-test-classes</phase>
+                            <goals>
+                                <goal>sisu-test-index</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <deployAtEnd>true</deployAtEnd>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 </project>

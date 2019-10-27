@@ -1,8 +1,7 @@
-package com.walmartlabs.concord.plugins.k8s.eksctl.config.file;
+package com.walmartlabs.concord.plugins.k8s.eksctl.generators;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fireeye.k8s.ClusterGenerationRequest;
-import com.walmartlabs.concord.plugins.k8s.eksctl.generators.TfVarsGenerator;
 
 import java.io.File;
 import java.io.FileInputStream;
