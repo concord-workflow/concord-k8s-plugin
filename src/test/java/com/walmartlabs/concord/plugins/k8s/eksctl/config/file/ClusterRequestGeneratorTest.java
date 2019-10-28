@@ -9,6 +9,7 @@ import com.fireeye.k8s.Subnets;
 import com.fireeye.k8s.Vpc;
 import com.google.common.collect.ImmutableList;
 import com.walmartlabs.TestSupport;
+import com.walmartlabs.concord.plugins.k8s.eksctl.config.file.ClusterGenerationRequestProcessor;
 import org.junit.Test;
 
 import java.io.File;

@@ -28,8 +28,7 @@ public class EksCtlClusterYamlGeneratorTest extends TestSupport {
     @Test
     public void validateTerraformOutputParser() throws Exception {
 
-        EksCtlClusterYmlGenerator generator = new EksCtlClusterYmlGenerator("magic-cluster", "us-west-2", "1.14");
-        // This is the output produced by terraform that will be used to create the eksctl configuration
+        EksCtlYmlGenerator generator = new EksCtlYmlGenerator("magic-cluster", "us-west-2", "1.14");
         ClusterInfo cluster = generator.parse(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
 
         assertEquals("magic-cluster", cluster.name());
@@ -79,10 +78,9 @@ public class EksCtlClusterYamlGeneratorTest extends TestSupport {
         assertEquals("fe_common.product", cluster.tags().get(2).key());
         assertEquals("voltron", cluster.tags().get(2).value());
 
-
         File clusterYml = new File(basedir, "target/cluster.yml");
         OutputStream outputStream = new FileOutputStream(clusterYml);
-        generator.clusterYml(cluster, outputStream);
+        generator.generateClusterYml(cluster, outputStream);
 
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try (InputStream inputStream = new FileInputStream(clusterYml)) {
@@ -120,8 +118,7 @@ public class EksCtlClusterYamlGeneratorTest extends TestSupport {
 
         File clusterAutoScalerYml = new File(basedir, "target/cluster-autoscaler.yml");
         OutputStream autoScalerOutputStream = new FileOutputStream(clusterAutoScalerYml);
-        generator.mustache(cluster, autoScalerOutputStream, "eksctl/templates/autoscaler.mustache");
-
+        generator.generateAutoscalerYml(cluster, autoScalerOutputStream);
 
         try (InputStream inputStream = new FileInputStream(clusterAutoScalerYml)) {
             Map<String, Object> yaml = mapper.readValue(inputStream, Map.class);

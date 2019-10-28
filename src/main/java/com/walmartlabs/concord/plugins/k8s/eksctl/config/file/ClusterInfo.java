@@ -59,7 +59,6 @@ public class ClusterInfo {
         return tags;
     }
 
-
     public List<Subnet> privateSubnets() {
         List<Subnet> privateSubnets = new ArrayList<>();
         Map<String, Map<String, String>> m = ((Map<String, Map<String, String>>) (((Map) map.get("private_subnets")).get("value")));
