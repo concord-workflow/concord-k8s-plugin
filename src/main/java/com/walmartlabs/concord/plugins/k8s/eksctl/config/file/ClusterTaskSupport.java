@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 public abstract class ClusterTaskSupport implements Task {
@@ -35,5 +37,14 @@ public abstract class ClusterTaskSupport implements Task {
             ClusterGenerationRequest request = yamlMapper.readValue(reader, ClusterGenerationRequest.class);
             return request;
         }
+    }
+
+    protected Path workDir(Context context) {
+        // TODO: put this in the shared abstraction
+        Path workDir = Paths.get((String) context.getVariable(com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY));
+        if (workDir == null) {
+            throw new IllegalArgumentException("Can't determine the current '" + com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY + "'");
+        }
+        return workDir;
     }
 }

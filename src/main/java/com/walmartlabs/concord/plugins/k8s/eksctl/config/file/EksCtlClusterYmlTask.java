@@ -9,8 +9,11 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Map;
 
-@Named("eksctl-cluster-yml")
+@Named("eksctlYml")
 public class EksCtlClusterYmlTask extends ClusterTaskSupport {
 
     private static final Logger logger = LoggerFactory.getLogger(EksCtlClusterYmlTask.class);
@@ -23,15 +26,32 @@ public class EksCtlClusterYmlTask extends ClusterTaskSupport {
     @Override
     public void execute(Context context) throws Exception {
 
-        // - task: eksctl-cluster-yml
+        // - task: eksctlYml
         //   in:
         //     clusterRequest: "${clusterRequestYml}"
         //     vpcTerraformOutput: "${result.data}"
 
         String clusterRequest = (String) context.getVariable("clusterRequest");
-        String vpcTerraformOutput = (String) context.getVariable("vpcTerraformOutput");
-        ClusterGenerationRequest request = read(new File(clusterRequest));
-        EksCtlYmlGenerator generator = new EksCtlYmlGenerator();
 
+        Map<String,Object> terraformOutputAsMap = (Map<String,Object>) context.getVariable("vpcTerraformOutput");
+
+        //String vpcTerraformOutput = (String) context.getVariable("vpcTerraformOutput");
+        ClusterGenerationRequest request = read(new File(clusterRequest));
+
+        Path workDir = workDir(context);
+
+        EksCtlYmlGenerator generator = new EksCtlYmlGenerator();
+        // Generate the cluster.yml for EksCtl and the autoscaler.yml in the workdirectory
+        generator.generate(request, terraformOutputAsMap, workDir.toFile());
+
+        // Display the cluster.yml
+        Path clusterYml = workDir.resolve("cluster.yml");
+        String clusterYmlContent = new String(Files.readAllBytes(clusterYml));
+        logger.info("cluster.yml:\n" + clusterYmlContent);
+
+        // Display the cluster.yml
+        Path autoscalerYml = workDir.resolve("autoscaler.yml");
+        String autoscalerYmlContent = new String(Files.readAllBytes(autoscalerYml));
+        logger.info("autoscaler.yml:\n" + autoscalerYmlContent);
     }
 }

@@ -17,7 +17,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-// This is in a K8s tree but this is strictly for interacting with Concord's secrets store.
+//TODO:  Let's make this kubeconfig specific
 
 @Named("secret")
 public class SecretsTask implements Task {
@@ -51,11 +51,17 @@ public class SecretsTask implements Task {
             // and place it in the correct location.
             //
             try {
+                // TODO: This service swallows exceptions and just reports errors
                 String secretMaterial = secretService.exportAsString(context, instanceId, organization, name, null);
-                if (!fileContainingSecret.getParentFile().exists()) {
-                    Files.createDirectories(fileContainingSecret.getParentFile().toPath());
+                if (secretMaterial != null) {
+                    // We were able to retrieve the kubeconfig
+                    if (!fileContainingSecret.getParentFile().exists()) {
+                        Files.createDirectories(fileContainingSecret.getParentFile().toPath());
+                    }
+                    Files.write(fileContainingSecret.toPath(), secretMaterial.getBytes());
+                } else {
+                    logger.info("We are expecting a cluster creation operation to produce a kubeconfig file.");
                 }
-                Files.write(fileContainingSecret.toPath(), secretMaterial.getBytes());
             } catch (Exception e) {
                 throw new Exception(String.format("Error storing the secret %s to %s.", name, file));
             }

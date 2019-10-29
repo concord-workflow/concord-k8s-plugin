@@ -53,7 +53,9 @@ public class ClusterGenerationRequestProcessor {
         Map<String,Object> tfvars = new LinkedHashMap();
         tfvars.put("aws-region", request.getCluster().getRegion());
         tfvars.put("vpc-cidr", request.getCluster().getVpc().getCidr());
-        tfvars.put("vpc-name", request.getCluster().getVpc().getName());
+        // Base the vpc name off the identity
+        String vpcName = String.format("vpc-%s-%s-%s", request.getCluster().getName(), request.getCluster().getEnvironment(), request.getCluster().getRegion());
+        tfvars.put("vpc-name", vpcName);
         tfvars.put("product", request.getProduct().getName());
         tfvars.put("environment", request.getCluster().getEnvironment());
         tfvars.put("costcenter", request.getProduct().getCostCenter());
