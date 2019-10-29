@@ -99,9 +99,9 @@ public abstract class ToolTaskSupport implements Task {
                 Duration.succinctDuration(20, TimeUnit.MINUTES)
         );
 
-        if (toolCommand.idempotencyCheckCommand() != null) {
+        if (toolCommand.idempotencyCheckCommand(context) != null) {
 
-            String idempotencyCheckCommand = toolCommand.idempotencyCheckCommand();
+            String idempotencyCheckCommand = toolCommand.idempotencyCheckCommand(context);
             idempotencyCheckCommand = mustache(idempotencyCheckCommand, "executable", toolInitializationResult.executable().toFile().getAbsolutePath());
             logger.info("idempotencyCheckCommand: " + idempotencyCheckCommand);
 

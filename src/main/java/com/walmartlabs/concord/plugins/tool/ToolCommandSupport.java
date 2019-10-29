@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 public class ToolCommandSupport implements ToolCommand {
 
     @Override
-    public String idempotencyCheckCommand() {
+    public String idempotencyCheckCommand(Context context) {
         return null;
     }
 
@@ -21,5 +21,9 @@ public class ToolCommandSupport implements ToolCommand {
             throw new IllegalArgumentException("Can't determine the current '" + com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY + "'");
         }
         return workDir;
+    }
+
+    protected String variableAsString(Context context, String name) {
+        return (String) context.getVariable(name);
     }
 }

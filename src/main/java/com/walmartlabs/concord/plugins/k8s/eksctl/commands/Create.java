@@ -23,9 +23,18 @@ public class Create extends ToolCommandSupport {
      * command has already run successfully.
      */
     @Override
-    public String idempotencyCheckCommand() {
-        //TODO: if a configuration file is used we need to store it somewhere to use or parse it again to get
-        // out the right values here.
-        return String.format("{{executable}} get cluster --name %s --region %s -o json", cluster.name(), cluster.region());
+    public String idempotencyCheckCommand(Context context) {
+
+        String clusterName;
+        String clusterRegion;
+        if(cluster != null) {
+            clusterName = cluster.name();
+            clusterRegion = cluster.region();
+        } else {
+            clusterName = variableAsString(context, "clusterName");
+            clusterRegion = variableAsString(context, "region");
+        }
+
+        return String.format("{{executable}} get cluster --name %s --region %s -o json", clusterName, clusterRegion);
     }
 }

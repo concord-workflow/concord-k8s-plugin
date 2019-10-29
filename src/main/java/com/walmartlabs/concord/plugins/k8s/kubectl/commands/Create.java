@@ -3,6 +3,7 @@ package com.walmartlabs.concord.plugins.k8s.kubectl.commands;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.walmartlabs.concord.plugins.k8s.kubectl.config.Namespace;
 import com.walmartlabs.concord.plugins.tool.ToolCommandSupport;
+import com.walmartlabs.concord.sdk.Context;
 
 import javax.inject.Named;
 
@@ -18,7 +19,7 @@ public class Create extends ToolCommandSupport {
     // type the create command supports.
 
     @Override
-    public String idempotencyCheckCommand() {
+    public String idempotencyCheckCommand(Context context) {
         return String.format("{{executable}} get namespace %s", namespace.name());
     }
 }

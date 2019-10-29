@@ -21,7 +21,7 @@ public class Install extends ToolCommandSupport {
     }
 
     @Override
-    public String idempotencyCheckCommand() {
+    public String idempotencyCheckCommand(Context context) {
         return String.format("{{executable}} status %s", chart.name());
     }
 

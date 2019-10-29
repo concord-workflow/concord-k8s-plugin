@@ -6,7 +6,7 @@ import java.nio.file.Path;
 
 public interface ToolCommand {
 
-    String idempotencyCheckCommand();
+    String idempotencyCheckCommand(Context context);
 
     void postProcess(Path workDir, Context context) throws Exception;
 }
