@@ -24,22 +24,8 @@ public class Create extends ToolCommandSupport {
      */
     @Override
     public String idempotencyCheckCommand() {
+        //TODO: if a configuration file is used we need to store it somewhere to use or parse it again to get
+        // out the right values here.
         return String.format("{{executable}} get cluster --name %s --region %s -o json", cluster.name(), cluster.region());
-    }
-
-    @Override
-    public void postProcess(Path workDir, Context context) throws Exception {
-
-        /*
-        String kubeconfigFile = cluster.kubeconfig();
-        Path kubeConfigPath = Paths.get(kubeconfigFile);
-        String kubeconfigContent = new String(Files.readAllBytes(kubeConfigPath));
-
-        // ${workDir}/.aws-iam-authenticator/aws-iam-authenticator
-        String awsIamAuthenticator = String.format("%s/.aws-iam-authenticator/aws-iam-authenticator", workDir.toFile().getAbsolutePath());
-        kubeconfigContent = kubeconfigContent.replaceAll("aws-iam-authenticator", awsIamAuthenticator);
-
-        Files.write(kubeConfigPath, kubeconfigContent.getBytes(), StandardOpenOption.CREATE_NEW);
-        */
     }
 }
