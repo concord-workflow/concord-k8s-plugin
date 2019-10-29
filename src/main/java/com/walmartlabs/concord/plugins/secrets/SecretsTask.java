@@ -50,20 +50,23 @@ public class SecretsTask implements Task {
             // The file containing our secret is not present on this agent. We are going to retrieve it
             // and place it in the correct location.
             //
+            String secretMaterial = null;
             try {
                 // TODO: This service swallows exceptions and just reports errors
-                String secretMaterial = secretService.exportAsString(context, instanceId, organization, name, null);
+                secretMaterial = secretService.exportAsString(context, instanceId, organization, name, null);
                 if (secretMaterial != null) {
                     // We were able to retrieve the kubeconfig
                     if (!fileContainingSecret.getParentFile().exists()) {
                         Files.createDirectories(fileContainingSecret.getParentFile().toPath());
                     }
                     Files.write(fileContainingSecret.toPath(), secretMaterial.getBytes());
-                } else {
-                    logger.info("We are expecting a cluster creation operation to produce a kubeconfig file.");
                 }
             } catch (Exception e) {
-                throw new Exception(String.format("Error storing the secret %s to %s.", name, file));
+                if(secretMaterial == null) {
+                    logger.info("We are expecting a cluster creation operation to produce a kubeconfig file.");
+                } else {
+                    throw new Exception(String.format("Error storing the secret %s to %s.", name, file));
+                }
             }
         } else {
             //

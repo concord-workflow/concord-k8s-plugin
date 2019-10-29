@@ -76,10 +76,14 @@ public class SecretsTask implements Task {
                 String key = e.getKey();
                 // The value is what we take from Concord's secret store using the entry value as the key for the secret to extract
                 String value = secretService.exportAsString(context, instanceId, organization, e.getValue(), null);
-                // base64 encode the value as the k8s client doesn't do this by default (which is misleading from their tests)
-                secretData.put(key, base64(value));
-                // Send the secret to the cluster with the given namespace
-                secretsClient.addSecret(k8sNamespace, secretName, secretData);
+                if(value != null) {
+                    // base64 encode the value as the k8s client doesn't do this by default (which is misleading from their tests)
+                    secretData.put(key, base64(value));
+                    // Send the secret to the cluster with the given namespace
+                    secretsClient.addSecret(k8sNamespace, secretName, secretData);
+                } else {
+                    logger.error("We cannot find the secret '%s' in the organization '%s' to sync to the k8s cluster.", e.getValue(), organization);
+                }
             }
         }
     }
