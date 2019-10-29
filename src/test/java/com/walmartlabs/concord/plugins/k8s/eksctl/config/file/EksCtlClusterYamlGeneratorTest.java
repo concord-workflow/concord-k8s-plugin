@@ -66,6 +66,8 @@ public class EksCtlClusterYamlGeneratorTest extends TestSupport {
         assertEquals("subnet-0ecb4ed179e11c4d3", cluster.publicSubnets().get(2).subnet());
         assertEquals("10.189.24.0/21", cluster.publicSubnets().get(2).cidr());
 
+
+        assertEquals("cpie-dev-02", cluster.vpcName());
         assertEquals(3, cluster.tags().size());
 
         assertEquals("fe_common.cost_center", cluster.tags().get(0).key());

@@ -1,12 +1,6 @@
 package com.walmartlabs.concord.plugins.k8s.eksctl.config.file;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +41,10 @@ public class ClusterInfo {
 
     public String vpcCidr() {
         return (String) ((Map) ((Map) terraformOutput.get("vpc")).get("value")).get("cidr_block");
+    }
+
+    public String vpcName() {
+        return (String) ((Map) ((Map) ((Map) terraformOutput.get("vpc")).get("value")).get("tags")).get("Name");
     }
 
     public String serviceRoleArn() {
