@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +39,6 @@ public class SecretsTask implements Task {
     @Override
     public void execute(Context context) throws Exception {
 
-        System.out.println("context.getVariableNames() = " + context.getVariableNames());
-
         //
         // - task: k8sSecretSync
         //   in:
@@ -53,8 +53,8 @@ public class SecretsTask implements Task {
         //           shared: fluentbitSharedKey
         //
 
-
-        SecretsClient secretsClient = new SecretsClient(new File("/Users/jvanzyl/.kube/kubeconfig-ajay-003"));
+        Path kubeconfigFile = Paths.get((String)context.getVariable("kubeconfigFile"));
+        SecretsClient secretsClient = new SecretsClient(kubeconfigFile.toFile());
 
         // Concord
         String instanceId = (String) context.getVariable(Constants.Context.TX_ID_KEY);
