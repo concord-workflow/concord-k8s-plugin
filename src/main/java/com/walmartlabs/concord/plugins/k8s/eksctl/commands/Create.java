@@ -27,7 +27,7 @@ public class Create extends ToolCommandSupport {
 
         String clusterName;
         String clusterRegion;
-        if(cluster != null) {
+        if(cluster.name() != null && cluster.region() != null)  {
             clusterName = cluster.name();
             clusterRegion = cluster.region();
         } else {

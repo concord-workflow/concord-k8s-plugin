@@ -36,6 +36,9 @@ public class SecretsTask implements Task {
 
     @Override
     public void execute(Context context) throws Exception {
+
+        System.out.println("context.getVariableNames() = " + context.getVariableNames());
+
         //
         // - task: k8sSecretSync
         //   in:
