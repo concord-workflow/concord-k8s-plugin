@@ -3,14 +3,7 @@ package com.walmartlabs.concord.plugins.k8s.eksctl.config.file;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fireeye.k8s.ClusterGenerationRequest;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

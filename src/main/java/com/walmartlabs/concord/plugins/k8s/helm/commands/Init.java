@@ -6,7 +6,6 @@ import com.walmartlabs.concord.plugins.tool.ToolCommandSupport;
 import io.airlift.airline.Option;
 
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 @Named("helm/init")
 public class Init extends ToolCommandSupport {

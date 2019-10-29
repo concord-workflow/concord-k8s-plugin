@@ -5,7 +5,6 @@ import com.walmartlabs.concord.plugins.k8s.eksctl.config.Cluster;
 import com.walmartlabs.concord.plugins.tool.ToolCommandSupport;
 
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 @Named("eksctl/delete")
 public class Delete extends ToolCommandSupport {
