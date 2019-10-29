@@ -2,23 +2,18 @@ package com.walmartlabs.concord.plugins.k8s.eksctl.config.file;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fireeye.k8s.ClusterGenerationRequest;
-import com.google.common.collect.Maps;
-import com.walmartlabs.concord.sdk.Constants;
 import com.walmartlabs.concord.sdk.Context;
-import com.walmartlabs.concord.sdk.ProjectInfo;
 import com.walmartlabs.concord.sdk.SecretService;
 import com.walmartlabs.concord.sdk.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 
 public abstract class ClusterTaskSupport implements Task {
 
