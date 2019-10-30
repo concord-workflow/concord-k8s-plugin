@@ -1,6 +1,7 @@
 package com.walmartlabs.concord.plugins.k8s.eksctl.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.walmartlabs.concord.plugins.tool.Flag;
 import io.airlift.airline.Option;
 
 public class Cluster {
@@ -25,6 +26,10 @@ public class Cluster {
     @Option(name = {"--kubeconfig"})
     private String kubeconfig;
 
+    @JsonProperty
+    @Flag(name = {"--wait"})
+    private boolean wait;
+
     public String name() { return name; }
 
     public String region() {
@@ -41,5 +46,9 @@ public class Cluster {
 
     public String kubeconfig() {
         return kubeconfig;
+    }
+
+    public boolean waitForCompletion() {
+        return wait;
     }
 }
