@@ -208,7 +208,11 @@ public abstract class ToolTaskSupport implements Task {
                         } else {
                             Flag flag = configuration.getAnnotation(Flag.class);
                             if (flag != null) {
-                                arguments.add(flag.name()[0]);
+                                configuration.setAccessible(true);
+                                boolean value = (boolean) configuration.get(operand);
+                                if(value) {
+                                    arguments.add(flag.name()[0]);
+                                }
                             } else {
                                 configuration.setAccessible(true);
                                 Object value = configuration.get(operand);
