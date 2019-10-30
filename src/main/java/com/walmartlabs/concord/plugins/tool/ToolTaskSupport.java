@@ -145,15 +145,17 @@ public abstract class ToolTaskSupport implements Task {
             context.setVariable("commandLineArguments", String.join(" ", command.getCommand()));
             logger.info(commandLineArguments);
         } else {
+            //
+            // Command pre-processing
+            //
+            toolCommand.preProcess(workDir, context);
             logger.info("Executing: " + commandLineArguments);
             logger.info("Envars: " + command.getEnvironment());
             CliCommand.Result commandResult = command.execute(Executors.newCachedThreadPool());
-            logger.info("commandResult.getCode() = " + commandResult.getCode());
-            logger.info("commandResult.getStderr() = " + commandResult.getStderr());
-            logger.info("commandResult.getStdout() = " + commandResult.getStdout());
-            //logger.info(commandResult.getCommandOutput());
-
-            // If there is some post-processing this command wants to execute then do so
+            logger.info("exit code: " + commandResult.getCode());
+            //
+            // Command post-processing
+            //
             toolCommand.postProcess(workDir, context);
         }
     }
@@ -205,12 +207,25 @@ public abstract class ToolTaskSupport implements Task {
                                 arguments.add(option.name()[0]);
                                 arguments.add((String) value);
                             }
+                        } else if (configuration.getAnnotation(KeyValue.class) != null) {
+                            KeyValue annotion = configuration.getAnnotation(KeyValue.class);
+                            configuration.setAccessible(true);
+                            Object fieldValue = configuration.get(operand);
+                            if (fieldValue != null) {
+                                // --set
+                                String parameter = annotion.name();
+                                List<String> kvs = (List<String>) fieldValue;
+                                for(String e : kvs) {
+                                    // --set ingress.hostname=bob.fetesting.com
+                                    arguments.add(String.format("%s %s", parameter, e));
+                                }
+                            }
                         } else {
                             Flag flag = configuration.getAnnotation(Flag.class);
                             if (flag != null) {
                                 configuration.setAccessible(true);
                                 boolean value = (boolean) configuration.get(operand);
-                                if(value) {
+                                if (value) {
                                     arguments.add(flag.name()[0]);
                                 }
                             } else {

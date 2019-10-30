@@ -5,7 +5,7 @@ import com.walmartlabs.concord.sdk.Context;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class ToolCommandSupport implements ToolCommand {
+public abstract class ToolCommandSupport implements ToolCommand {
 
     @Override
     public String idempotencyCheckCommand(Context context) {
@@ -13,7 +13,12 @@ public class ToolCommandSupport implements ToolCommand {
     }
 
     @Override
-    public void postProcess(Path workDir, Context context) throws Exception {}
+    public void preProcess(Path workDir, Context context) throws Exception {
+    }
+
+    @Override
+    public void postProcess(Path workDir, Context context) throws Exception {
+    }
 
     protected Path workDir(Context context) {
         Path workDir = Paths.get((String) context.getVariable(com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY));

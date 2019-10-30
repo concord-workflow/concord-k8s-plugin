@@ -1,5 +1,6 @@
 package com.walmartlabs.concord.plugins.k8s.helm;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.walmartlabs.TestSupport;
@@ -121,6 +122,7 @@ public class HelmCtlTest extends TestSupport {
                                 .put("name", "sealed-secrets")
                                 .put("namespace", "kube-system")
                                 .put("version", "1.4.2")
+                                .put("set", ImmutableList.of("expose.ingress.host.core=bob.fetesting.com"))
                                 .put("value", "stable/sealed-secrets")
                                 .put("values", "values.yml")
                                 .build())
@@ -138,7 +140,7 @@ public class HelmCtlTest extends TestSupport {
 
         System.out.println(commandLine);
 
-        String expectedCommandLine = "helm install --name sealed-secrets --namespace kube-system --version 1.4.2 --values values.yml stable/sealed-secrets";
+        String expectedCommandLine = "helm install --name sealed-secrets --namespace kube-system --version 1.4.2 --values values.yml --set expose.ingress.host.core=bob.fetesting.com stable/sealed-secrets";
         assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
 
         System.out.println(context.getVariable("envars"));

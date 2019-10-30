@@ -1,8 +1,10 @@
 package com.walmartlabs.concord.plugins.k8s.helm.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.walmartlabs.concord.plugins.tool.KeyValue;
 import io.airlift.airline.Option;
 
+import java.util.List;
 import java.util.Map;
 
 public class Chart {
@@ -22,6 +24,10 @@ public class Chart {
     @JsonProperty
     @Option(name = {"--values"})
     private String values;
+
+    @JsonProperty
+    @KeyValue(name = "--set")
+    private List<String> set;
 
     @JsonProperty
     private String value;

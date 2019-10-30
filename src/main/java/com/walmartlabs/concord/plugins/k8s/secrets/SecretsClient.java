@@ -24,6 +24,10 @@ public class SecretsClient {
         this.client = new DefaultKubernetesClient(Config.fromKubeconfig(kubeconfigContent));
     }
 
+    public String modifyKubeconfigContent(String kubeconfigContent) {
+        return kubeconfigContent.replace("command: aws-iam-authenticator", "command: /home/concord/bin/aws-iam-authenticator");
+    }
+
     public void addSecret(String namespace, String name, Map<String, String> data) {
 
         Secret secret = new SecretBuilder()
@@ -42,14 +46,5 @@ public class SecretsClient {
         //
 
         client.secrets().inNamespace(namespace).create(secret);
-    }
-
-    public static String modifyKubeconfigContent(String kubeconfigContent) {
-        return kubeconfigContent.replace("command: aws-iam-authenticator", "command: /home/concord/bin/aws-iam-authenticator");
-    }
-
-    public static void main(String[] args) throws Exception {
-        String kubeconfig = "command: aws-iam-authenticator";
-        System.out.println(SecretsClient.modifyKubeconfigContent(kubeconfig));
     }
 }

@@ -8,5 +8,7 @@ public interface ToolCommand {
 
     String idempotencyCheckCommand(Context context);
 
+    void preProcess(Path workDir, Context context) throws Exception;
+
     void postProcess(Path workDir, Context context) throws Exception;
 }
