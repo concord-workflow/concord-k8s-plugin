@@ -36,6 +36,7 @@ public class Install extends ToolCommandSupport {
         // - change the command line arguments as necessary. in the case of Helm we need to install from the directory
         //   just created.
         //
+        /*
         if(chart.externals() != null) {
             //
             // helm fetch --version 1.7.4 --untar --untardir jenkins stable/jenkins
@@ -48,5 +49,6 @@ public class Install extends ToolCommandSupport {
             //
             String.format("{{executable}} fetch --version %s --untar --untardir %s %s", chart.version(), chart.name(), chart.value());
         }
+         */
     }
 }
