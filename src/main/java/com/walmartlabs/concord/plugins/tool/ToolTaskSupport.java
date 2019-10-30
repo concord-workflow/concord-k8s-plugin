@@ -206,9 +206,14 @@ public abstract class ToolTaskSupport implements Task {
                                 arguments.add((String) value);
                             }
                         } else {
-                            configuration.setAccessible(true);
-                            Object value = configuration.get(operand);
-                            arguments.add((String) value);
+                            Flag flag = configuration.getAnnotation(Flag.class);
+                            if (flag != null) {
+                                arguments.add(flag.name()[0]);
+                            } else {
+                                configuration.setAccessible(true);
+                                Object value = configuration.get(operand);
+                                arguments.add((String) value);
+                            }
                         }
                     }
                 }
