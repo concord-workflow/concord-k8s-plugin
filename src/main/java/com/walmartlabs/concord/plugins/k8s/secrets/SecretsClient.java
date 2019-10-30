@@ -14,11 +14,14 @@ public class SecretsClient {
     private final DefaultKubernetesClient client;
 
     public SecretsClient(String clusterName) throws Exception {
+        // TODO: this is just our convention in the way we're storing kubeconfig files
         this(new File(System.getProperty("user.home"), ".kube/kubeconfig-" + clusterName));
     }
 
     public SecretsClient(File kubeconfig) throws Exception {
-        this.client = new DefaultKubernetesClient(Config.fromKubeconfig(new String(Files.readAllBytes(kubeconfig.toPath()))));
+        String kubeconfigContent = new String(Files.readAllBytes(kubeconfig.toPath()));
+        kubeconfigContent = modifyKubeconfigContent(kubeconfigContent);
+        this.client = new DefaultKubernetesClient(Config.fromKubeconfig(kubeconfigContent));
     }
 
     public void addSecret(String namespace, String name, Map<String, String> data) {
@@ -39,5 +42,14 @@ public class SecretsClient {
         //
 
         client.secrets().inNamespace(namespace).create(secret);
+    }
+
+    public static String modifyKubeconfigContent(String kubeconfigContent) {
+        return kubeconfigContent.replace("command: aws-iam-authenticator", "command: /home/concord/bin/aws-iam-authenticator");
+    }
+
+    public static void main(String[] args) throws Exception {
+        String kubeconfig = "command: aws-iam-authenticator";
+        System.out.println(SecretsClient.modifyKubeconfigContent(kubeconfig));
     }
 }

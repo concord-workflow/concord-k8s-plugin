@@ -92,9 +92,4 @@ public class SecretsTask implements Task {
                         .context(context)
                         .build());
     }
-
-    public static void main(String[] args) throws Exception {
-        String s = "    command: aws-iam-authenticator";
-
-    }
 }
