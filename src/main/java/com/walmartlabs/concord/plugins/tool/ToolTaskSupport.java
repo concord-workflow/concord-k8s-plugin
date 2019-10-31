@@ -150,7 +150,6 @@ public abstract class ToolTaskSupport implements Task {
             //
             toolCommand.preProcess(workDir, context);
             logger.info("Executing: " + commandLineArguments);
-            logger.info("Envars: " + command.getEnvironment());
             CliCommand.Result commandResult = command.execute(Executors.newCachedThreadPool());
             logger.info("exit code: " + commandResult.getCode());
             //
