@@ -36,13 +36,8 @@ public class CliCommand {
     public Result execute(ExecutorService executor) throws Exception {
 
         ProcessBuilder pb = new ProcessBuilder(args).directory(workDir.toFile());
-
         Map<String, String> combinedEnv = new HashMap<>(envars);
-
-        logger.info("execute -> using envars: {}", combinedEnv);
-
         pb.environment().putAll(combinedEnv);
-
         Process p = pb.start();
 
         Future<String> stderr = executor.submit(new StreamReader(p.getErrorStream()));

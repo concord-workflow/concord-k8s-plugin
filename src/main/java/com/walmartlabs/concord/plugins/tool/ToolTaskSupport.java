@@ -215,8 +215,9 @@ public abstract class ToolTaskSupport implements Task {
                                 String parameter = annotion.name();
                                 List<String> kvs = (List<String>) fieldValue;
                                 for(String e : kvs) {
-                                    // --set ingress.hostname=bob.fetesting.com
-                                    arguments.add(String.format("%s %s", parameter, e));
+                                    // --set "ingress.hostname=bob.fetesting.com"
+                                    arguments.add(parameter);
+                                    arguments.add(e);
                                 }
                             }
                         } else {
