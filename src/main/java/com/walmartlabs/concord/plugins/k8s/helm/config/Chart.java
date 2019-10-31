@@ -22,12 +22,12 @@ public class Chart {
     private String version;
 
     @JsonProperty
-    @Option(name = {"--values"})
-    private String values;
-
-    @JsonProperty
     @KeyValue(name = "--set")
     private List<String> set;
+
+    @JsonProperty
+    @Option(name = {"--values"})
+    private String values;
 
     @JsonProperty
     private String value;
