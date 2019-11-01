@@ -99,35 +99,6 @@ public abstract class ToolTaskSupport implements Task {
                 Duration.succinctDuration(20, TimeUnit.MINUTES)
         );
 
-        if (toolCommand.idempotencyCheckCommand(context) != null) {
-
-            String idempotencyCheckCommand = toolCommand.idempotencyCheckCommand(context);
-            idempotencyCheckCommand = mustache(idempotencyCheckCommand, "executable", toolInitializationResult.executable().toFile().getAbsolutePath());
-            logger.info("idempotencyCheckCommand: " + idempotencyCheckCommand);
-
-            //
-            // "{{executable}} get cluster --name {{name}} --region {{region}} -o json"
-            //
-            CliCommand idempotencyCheck = new CliCommand(
-                    Lists.newArrayList(idempotencyCheckCommand.split(" ")),
-                    ImmutableSet.of(0),
-                    workDir,
-                    toolConfiguration.envars(),
-                    Duration.succinctDuration(20, TimeUnit.MINUTES));
-
-            CliCommand.Result result = idempotencyCheck.execute(Executors.newCachedThreadPool());
-
-            if (result.getCode() == 0) {
-
-                logger.info("This command has already run successfully: " + command.getCommand());
-                //
-                // The task we are intending to run has already executed successfully. It is the job of the idempotency
-                // command to ask if what we intend to do has already been done.
-                //
-                return;
-            }
-        }
-
         // Here is where we want to alter what Helm install is doing. If there is an externals configuration we want
         // fetch the Helm chart, insert the externals into the Helm chart and then install from the directory we
         // created with the fetched Helm chart
@@ -145,6 +116,36 @@ public abstract class ToolTaskSupport implements Task {
             context.setVariable("commandLineArguments", String.join(" ", command.getCommand()));
             logger.info(commandLineArguments);
         } else {
+
+            if (toolCommand.idempotencyCheckCommand(context) != null) {
+
+                String idempotencyCheckCommand = toolCommand.idempotencyCheckCommand(context);
+                idempotencyCheckCommand = mustache(idempotencyCheckCommand, "executable", toolInitializationResult.executable().toFile().getAbsolutePath());
+                logger.info("idempotencyCheckCommand: " + idempotencyCheckCommand);
+
+                //
+                // "{{executable}} get cluster --name {{name}} --region {{region}} -o json"
+                //
+                CliCommand idempotencyCheck = new CliCommand(
+                        Lists.newArrayList(idempotencyCheckCommand.split(" ")),
+                        ImmutableSet.of(0),
+                        workDir,
+                        toolConfiguration.envars(),
+                        Duration.succinctDuration(20, TimeUnit.MINUTES));
+
+                CliCommand.Result result = idempotencyCheck.execute(Executors.newCachedThreadPool());
+
+                if (result.getCode() == 0) {
+
+                    logger.info("This command has already run successfully: " + command.getCommand());
+                    //
+                    // The task we are intending to run has already executed successfully. It is the job of the idempotency
+                    // command to ask if what we intend to do has already been done.
+                    //
+                    return;
+                }
+            }
+
             //
             // Command pre-processing
             //
@@ -166,7 +167,18 @@ public abstract class ToolTaskSupport implements Task {
         //
         // kubectl apply -f 00-helm/tiller-rbac.yml
         //
-        List<String> arguments = Lists.newArrayList(commandName);
+        List<String> arguments = Lists.newArrayList();
+
+        Value v = command.getClass().getSuperclass().getAnnotation(Value.class);
+        if (v == null) {
+            v = command.getClass().getAnnotation(Value.class);
+        }
+        if (v != null) {
+            arguments.add(v.value());
+        } else {
+            arguments.add(commandName);
+        }
+
         for (Field field : command.getClass().getDeclaredFields()) {
             field.setAccessible(true);
             Object operand = field.get(command);
@@ -179,6 +191,11 @@ public abstract class ToolTaskSupport implements Task {
                             arguments.add(option.name()[0]);
                             arguments.add((String) value);
                         }
+                    } else if (field.getAnnotation(Value.class) != null) {
+                        System.out.println("field.getName() = " + field.getName());
+                        Object value = field.get(command);
+                        System.out.println("value = " + value);
+                        arguments.add((String) value);
                     } else {
                         Flag flag = field.getAnnotation(Flag.class);
                         if (flag != null) {
@@ -214,7 +231,7 @@ public abstract class ToolTaskSupport implements Task {
                                 // --set
                                 String parameter = annotion.name();
                                 List<String> kvs = (List<String>) fieldValue;
-                                for(String e : kvs) {
+                                for (String e : kvs) {
                                     // --set "ingress.hostname=bob.fetesting.com"
                                     arguments.add(parameter);
                                     arguments.add(e);
@@ -280,4 +297,13 @@ public abstract class ToolTaskSupport implements Task {
     protected String processId(Context context) {
         return (String) context.getVariable(com.walmartlabs.concord.sdk.Constants.Context.TX_ID_KEY);
     }
+
+    protected Path workDir(Context context) {
+        Path workDir = Paths.get((String) context.getVariable(com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY));
+        if (workDir == null) {
+            throw new IllegalArgumentException("Can't determine the current '" + com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY + "'");
+        }
+        return workDir;
+    }
+
 }

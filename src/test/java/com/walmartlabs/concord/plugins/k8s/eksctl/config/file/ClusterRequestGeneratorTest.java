@@ -68,7 +68,7 @@ public class ClusterRequestGeneratorTest extends TestSupport {
         Map<String, Object> tfVarsMap = new ObjectMapper().readValue(tfVarsFile, Map.class);
         assertEquals("us-west-2", tfVarsMap.get("aws-region"));
         assertEquals("10.189.0.0/18", tfVarsMap.get("vpc-cidr"));
-        assertEquals("cpie-dev-02", tfVarsMap.get("vpc-name"));
+        assertEquals("vpc-cluster-003-dev-us-west-2", tfVarsMap.get("vpc-name"));
         assertEquals("product", tfVarsMap.get("product"));
         assertEquals("dev", tfVarsMap.get("environment"));
         assertEquals("costCenter", tfVarsMap.get("costcenter"));

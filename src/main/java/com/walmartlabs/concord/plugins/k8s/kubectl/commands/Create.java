@@ -15,9 +15,6 @@ public class Create extends ToolCommandSupport {
 
     public Namespace namespace() { return namespace; }
 
-    // TODO: so this clearly demonstrates a problem with this model. I need an idempotency check for each
-    // type the create command supports.
-
     @Override
     public String idempotencyCheckCommand(Context context) {
         return String.format("{{executable}} get namespace %s", namespace.name());
