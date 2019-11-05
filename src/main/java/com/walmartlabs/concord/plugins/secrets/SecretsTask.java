@@ -44,6 +44,7 @@ public class SecretsTask implements Task {
         String name = (String) context.getVariable("name");
         String file = (String) context.getVariable("file");
 
+        // TODO: we should always write out the secret in case it has changed to correct an issue
         File fileContainingSecret = new File(file);
         if (!fileContainingSecret.exists()) {
             //

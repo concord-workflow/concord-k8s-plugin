@@ -83,11 +83,21 @@ public class ClusterTask extends ClusterTaskSupport {
         // /home/concord/.kube/kubeconfig-${clusterId}
         context.setVariable("kubeconfigFile", kubeconfigFile);
 
+        String account = (String) context.getVariable("account");
+        String key = String.format("%s-aws-access-key-id", account);
+        String secret = String.format("%s-aws-secret-access-key", account);
+        System.out.println("key = " + key);
+        System.out.println("secret = " + secret);
+        String awsAccessKey = secretService.exportAsString(context, instanceId, orgName, key, null);
+        String awsSecretKey = secretService.exportAsString(context, instanceId, orgName, secret, null);
+        context.setVariable("aws_access_key", awsAccessKey);
+        context.setVariable("aws_secret_key", awsSecretKey);
+
         // Create envars for the execution of all the k8s-related tools
         Map<String, String> envars = Maps.newHashMap();
         envars.put("KUBECONFIG", kubeconfigFile);
-        envars.put("AWS_ACCESS_KEY_ID", secretService.exportAsString(context, instanceId, orgName, "aws-access-key-id", null));
-        envars.put("AWS_SECRET_ACCESS_KEY", secretService.exportAsString(context, instanceId, orgName, "aws-secret-access-key", null));
+        envars.put("AWS_ACCESS_KEY_ID", awsAccessKey);
+        envars.put("AWS_SECRET_ACCESS_KEY", awsSecretKey);
         String path = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/concord/bin";
         envars.put("PATH", path);
         // Place the envars in the context for use by the k8s-related tools
