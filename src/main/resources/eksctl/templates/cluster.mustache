@@ -41,3 +41,5 @@ nodeGroups:
       {{#cluster.tags}}
       '{{key}}': '{{value}}'
       {{/cluster.tags}}
+      k8s.io/cluster-autoscaler/{{cluster.name}}: "owned"
+      k8s.io/cluster-autoscaler/enabled: "true"
