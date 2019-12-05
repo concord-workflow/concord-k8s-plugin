@@ -3,7 +3,8 @@ package com.walmartlabs.concord.plugins.k8s.helm;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.walmartlabs.TestSupport;
+import com.walmartlabs.concord.plugins.InterpolatingMockContext;
+import com.walmartlabs.concord.plugins.TestSupport;
 import com.walmartlabs.concord.plugins.k8s.helm.commands.Destroy;
 import com.walmartlabs.concord.plugins.k8s.helm.commands.Init;
 import com.walmartlabs.concord.plugins.k8s.helm.commands.Install;
@@ -27,7 +28,7 @@ import static com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class HelmCtlTest extends TestSupport {
+public class HelmTest extends TestSupport {
 
     private ToolConfigurator toolConfigurator;
 
@@ -114,6 +115,14 @@ public class HelmCtlTest extends TestSupport {
         Map<String, ToolCommand> commands = ImmutableMap.of("helm/install", new Install());
         HelmTask task = new HelmTask(commands, lockService, toolInitializer);
 
+        // Create a values.yml file and make sure it's interpolated correctly
+        Path valuesYaml = Files.createTempFile("helm", "values.yaml");
+        System.out.println("Creating Helm values.yml: " + valuesYaml.toString());
+        StringBuffer sb = new StringBuffer();
+        sb.append("ingress:").append("\n");
+        sb.append("  hostname: ${hostname}");
+        Files.write(valuesYaml, sb.toString().getBytes());
+
         Map<String, Object> args = Maps.newHashMap(mapBuilder()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
                 .put("dryRun", true)
@@ -125,7 +134,7 @@ public class HelmCtlTest extends TestSupport {
                                 .put("version", "1.4.2")
                                 .put("set", ImmutableList.of("expose.ingress.host.core=bob.fetesting.com"))
                                 .put("value", "stable/sealed-secrets")
-                                .put("values", "values.yml")
+                                .put("values", valuesYaml.toString())
                                 .build())
                 .put("envars",
                         mapBuilder()
@@ -133,15 +142,20 @@ public class HelmCtlTest extends TestSupport {
                                 .put("AWS_SECRET_ACCESS_KEY", "aws-secret-key")
                                 .put("KUBECONFIG", "/workspace/_attachments/k8s-cluster0-kubeconfig")
                                 .build())
+                .put("hostname", "awesome.concord.io")
                 .build());
 
-        Context context = new MockContext(args);
+        Context context = new InterpolatingMockContext(args);
         task.execute(context);
         String commandLine = varAsString(context, "commandLineArguments");
 
         System.out.println(commandLine);
 
-        String expectedCommandLine = "helm install --name sealed-secrets --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com --values values.yml stable/sealed-secrets";
+        // Make sure our values.yaml file was interpolated correctly by the Helm install command
+        String valuesYamlContent = new String(Files.readAllBytes(valuesYaml));
+        assertTrue(valuesYamlContent.contains("hostname: awesome.concord.io"));
+
+        String expectedCommandLine = String.format("helm install --name sealed-secrets --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com --values %s stable/sealed-secrets", valuesYaml.toString());
         assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
 
         System.out.println(context.getVariable("envars"));

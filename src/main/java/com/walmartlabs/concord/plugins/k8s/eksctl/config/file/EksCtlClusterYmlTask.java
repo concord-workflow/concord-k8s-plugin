@@ -49,7 +49,7 @@ public class EksCtlClusterYmlTask extends ClusterTaskSupport {
         String clusterYmlContent = new String(Files.readAllBytes(clusterYml));
         logger.info("cluster.yml:\n" + clusterYmlContent);
 
-        // Display the cluster.yml
+        // Display the autoscaler.yml
         Path autoscalerYml = workDir.resolve("autoscaler.yml");
         String autoscalerYmlContent = new String(Files.readAllBytes(autoscalerYml));
         logger.info("autoscaler.yml:\n" + autoscalerYmlContent);

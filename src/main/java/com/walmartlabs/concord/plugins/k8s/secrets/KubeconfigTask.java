@@ -1,9 +1,10 @@
-package com.walmartlabs.concord.plugins.secrets;
+package com.walmartlabs.concord.plugins.k8s.secrets;
 
 import com.walmartlabs.concord.ApiClient;
 import com.walmartlabs.concord.ApiException;
 import com.walmartlabs.concord.client.ApiClientConfiguration;
 import com.walmartlabs.concord.client.ApiClientFactory;
+import com.walmartlabs.concord.plugins.secrets.ConcordSecretsClient;
 import com.walmartlabs.concord.sdk.Constants;
 import com.walmartlabs.concord.sdk.Context;
 import com.walmartlabs.concord.sdk.SecretService;
@@ -19,16 +20,16 @@ import java.nio.file.Paths;
 
 //TODO:  Let's make this kubeconfig specific
 
-@Named("secret")
-public class SecretsTask implements Task {
+@Named("kubeconfig")
+public class KubeconfigTask implements Task {
 
-    private static final Logger logger = LoggerFactory.getLogger(SecretsTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(KubeconfigTask.class);
 
     private final ApiClientFactory apiClientFactory;
     private final SecretService secretService;
 
     @Inject
-    public SecretsTask(ApiClientFactory apiClientFactory, SecretService secretService) {
+    public KubeconfigTask(ApiClientFactory apiClientFactory, SecretService secretService) {
         this.apiClientFactory = apiClientFactory;
         this.secretService = secretService;
     }
@@ -74,7 +75,7 @@ public class SecretsTask implements Task {
             // The file containing our secret does exist so we'll attempt to store it for subsequent use
             //
             try {
-                SecretsClient secretsClient = new SecretsClient(apiClient(context));
+                ConcordSecretsClient secretsClient = new ConcordSecretsClient(apiClient(context));
                 String fileContents = new String(Files.readAllBytes(Paths.get(file)));
                 Files.write(fileContainingSecret.toPath(), fileContents.getBytes());
                 secretsClient.addPlainSecret(organization, name, false, null, fileContents.getBytes());

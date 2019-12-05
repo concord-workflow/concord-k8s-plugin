@@ -2,7 +2,8 @@ package com.walmartlabs.concord.plugins.k8s.eksctl;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.walmartlabs.TestSupport;
+import com.walmartlabs.concord.plugins.RequiresAwsCredentials;
+import com.walmartlabs.concord.plugins.TestSupport;
 import com.walmartlabs.concord.plugins.k8s.eksctl.commands.Create;
 import com.walmartlabs.concord.plugins.tool.ToolCommand;
 import com.walmartlabs.concord.plugins.tool.ToolConfigurator;

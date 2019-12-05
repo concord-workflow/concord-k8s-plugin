@@ -13,25 +13,24 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-// This is in a K8s tree but this is strictly for interacting with Concord's secrets store.
+// For syncing secrets from Concord's secret store to K8s
 
 @Named("k8sSecretSync")
-public class SecretsTask implements Task {
+public class K8sSecretsTask implements Task {
 
-    private static final Logger logger = LoggerFactory.getLogger(SecretsTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(K8sSecretsTask.class);
 
     private final ApiClientFactory apiClientFactory;
     private final SecretService secretService;
 
     @Inject
-    public SecretsTask(ApiClientFactory apiClientFactory, SecretService secretService) {
+    public K8sSecretsTask(ApiClientFactory apiClientFactory, SecretService secretService) {
         this.apiClientFactory = apiClientFactory;
         this.secretService = secretService;
     }
@@ -54,7 +53,7 @@ public class SecretsTask implements Task {
         //
 
         Path kubeconfigFile = Paths.get((String)context.getVariable("kubeconfigFile"));
-        SecretsClient secretsClient = new SecretsClient(kubeconfigFile.toFile());
+        K8sSecretsClient secretsClient = new K8sSecretsClient(kubeconfigFile.toFile());
 
         // Concord
         String instanceId = (String) context.getVariable(Constants.Context.TX_ID_KEY);

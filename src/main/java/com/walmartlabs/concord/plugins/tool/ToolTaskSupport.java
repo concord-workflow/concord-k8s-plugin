@@ -114,7 +114,16 @@ public abstract class ToolTaskSupport implements Task {
         String commandLineArguments = String.join(" ", command.getCommand());
         if (toolConfiguration.dryRun()) {
             context.setVariable("commandLineArguments", String.join(" ", command.getCommand()));
+            context.setVariable("dryRun", "true");
+            //
+            // Command pre-processing
+            //
+            toolCommand.preProcess(workDir, context);
             logger.info(commandLineArguments);
+            //
+            // Command post-processing
+            //
+            toolCommand.postProcess(workDir, context);
         } else {
 
             if (toolCommand.idempotencyCheckCommand(context) != null) {
@@ -161,6 +170,8 @@ public abstract class ToolTaskSupport implements Task {
     }
 
     // TODO: clean up repeated code and come up with a model for generating this
+    // TODO: separate this code into its own class
+    // TODO: ignore private static final fields
     public static List<String> generateCommandLineArguments(String commandName, Object command) throws Exception {
         //
         // eksctl create cluster --config-file cluster.yaml --kubeconfig /home/concord/.kube/config
@@ -246,6 +257,7 @@ public abstract class ToolTaskSupport implements Task {
                                     arguments.add(flag.name()[0]);
                                 }
                             } else {
+                                System.out.println("configuration = " + configuration);
                                 configuration.setAccessible(true);
                                 Object value = configuration.get(operand);
                                 arguments.add((String) value);

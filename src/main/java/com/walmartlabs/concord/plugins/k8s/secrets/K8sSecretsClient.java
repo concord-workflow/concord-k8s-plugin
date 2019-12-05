@@ -9,16 +9,19 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.Map;
 
-public class SecretsClient {
+/**
+ * Client for creating secrets in a K8s cluster
+ */
+public class K8sSecretsClient {
 
     private final DefaultKubernetesClient client;
 
-    public SecretsClient(String clusterName) throws Exception {
+    public K8sSecretsClient(String clusterName) throws Exception {
         // TODO: this is just our convention in the way we're storing kubeconfig files
         this(new File(System.getProperty("user.home"), ".kube/kubeconfig-" + clusterName));
     }
 
-    public SecretsClient(File kubeconfig) throws Exception {
+    public K8sSecretsClient(File kubeconfig) throws Exception {
         String kubeconfigContent = new String(Files.readAllBytes(kubeconfig.toPath()));
         kubeconfigContent = modifyKubeconfigContent(kubeconfigContent);
         this.client = new DefaultKubernetesClient(Config.fromKubeconfig(kubeconfigContent));

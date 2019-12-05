@@ -1,4 +1,4 @@
-package com.walmartlabs;
+package com.walmartlabs.concord.plugins;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.google.common.collect.ImmutableMap;
@@ -60,17 +60,20 @@ public abstract class TestSupport {
     public void setUp() throws Exception {
         basedir = new File("").getAbsolutePath();
 
-        awsCredentials = awsCredentials();
         workDir = workDir();
 
-        System.out.println("Using the following:");
-        System.out.println();
-        if (awsCredentials != null) {
-            System.out.println("AWS Access Key ID: " + awsCredentials.accessKey);
-            System.out.println("AWS Secret Key   : " + awsCredentials.secretKey);
+        RequiresAwsCredentials requiresAws = getClass().getAnnotation(RequiresAwsCredentials.class);
+        if (requiresAws != null) {
+            awsCredentials = awsCredentials();
+            System.out.println("Using the following AWS credentials:");
+            System.out.println();
+            if (awsCredentials != null) {
+                System.out.println("AWS Access Key ID: " + awsCredentials.accessKey);
+                System.out.println("AWS Secret Key   : " + awsCredentials.secretKey);
+            }
+            System.out.println("workDir: " + workDir);
+            System.out.println();
         }
-        System.out.println("workDir: " + workDir);
-        System.out.println();
 
         Files.createDirectories(workDir);
 
@@ -99,8 +102,8 @@ public abstract class TestSupport {
         return ((String) context.getVariable(name));
     }
 
-    protected Map<String,String> varAsMap(Context context, String name) {
-        return ((Map<String,String>) context.getVariable(name));
+    protected Map<String, String> varAsMap(Context context, String name) {
+        return ((Map<String, String>) context.getVariable(name));
     }
 
     //

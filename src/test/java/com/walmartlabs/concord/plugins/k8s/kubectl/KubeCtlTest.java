@@ -2,7 +2,7 @@ package com.walmartlabs.concord.plugins.k8s.kubectl;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.walmartlabs.TestSupport;
+import com.walmartlabs.concord.plugins.TestSupport;
 import com.walmartlabs.concord.plugins.k8s.kubectl.commands.Apply;
 import com.walmartlabs.concord.plugins.k8s.kubectl.commands.Create;
 import com.walmartlabs.concord.plugins.tool.ToolCommand;
