@@ -116,10 +116,5 @@ public class EksCtlClusterYamlGeneratorTest extends TestSupport {
             assertEquals("arn:aws:iam::502860607067:role/cpie-dev-02-eks-worker-node-role", ((Map) ((Map) ((List) yaml.get("nodeGroups")).get(0)).get("iam")).get("instanceRoleARN"));
         }
 
-        File clusterAutoScalerYml = new File(basedir, "target/autoscaler.yml");
-        try (InputStream inputStream = new FileInputStream(clusterAutoScalerYml)) {
-            Map<String, Object> yaml = mapper.readValue(inputStream, Map.class);
-            assertEquals("--node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/magic-cluster", ((List) ((Map) ((List) ((Map) ((Map) ((Map) ((Map) ((Map) yaml.get("spec"))).get("template"))).get("spec")).get("containers")).get(0)).get("command")).get(6));
-        }
     }
 }
