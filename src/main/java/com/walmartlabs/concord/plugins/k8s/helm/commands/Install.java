@@ -17,6 +17,8 @@ import java.nio.file.StandardCopyOption;
 @Named("helm/install")
 public class Install extends ToolCommandSupport {
 
+    private static final Logger logger = LoggerFactory.getLogger(Install.class);
+
     @JsonProperty("chart")
     @Omit
     private Chart chart;
@@ -33,29 +35,33 @@ public class Install extends ToolCommandSupport {
     @Override
     public void preProcess(Path workDir, Context context) {
 
-        try {
-            //
-            // We need to take the values.yml that is provided and interpolate the content with the
-            // Concord context. This allows passing in just-in-time configuration values derived from
-            // any Concord operations and also allows passing in secret material from the Concord
-            // secrets store or other secrets mechanisms the user may be using.
-            //
-            File valuesYamlFile = new File(chart.values());
-            if (valuesYamlFile.exists()) {
-                String valuesYamlContent = new String(Files.readAllBytes(valuesYamlFile.toPath()));
-                if (valuesYamlContent.contains("${")) {
-                    //
-                    // We have interpolation work to do so we will backup the original file to another location
-                    // and then created a new interpolated version of the values.yaml in the original location.
-                    //
-                    File valuesYamlFileOriginal = new File(chart.values() + ".original");
-                    Files.copy(valuesYamlFile.toPath(), valuesYamlFileOriginal.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    String interpolatedValuesYamlContent = (String) context.interpolate(valuesYamlContent);
-                    Files.write(valuesYamlFile.toPath(), interpolatedValuesYamlContent.getBytes());
+        if(chart.values() != null) {
+            try {
+                //
+                // We need to take the values.yml that is provided and interpolate the content with the
+                // Concord context. This allows passing in just-in-time configuration values derived from
+                // any Concord operations and also allows passing in secret material from the Concord
+                // secrets store or other secrets mechanisms the user may be using.
+                //
+                File valuesYamlFile = new File(chart.values());
+                if (valuesYamlFile.exists()) {
+                    String valuesYamlContent = new String(Files.readAllBytes(valuesYamlFile.toPath()));
+                    if (valuesYamlContent.contains("${")) {
+                        //
+                        // We have interpolation work to do so we will backup the original file to another location
+                        // and then created a new interpolated version of the values.yaml in the original location.
+                        //
+                        File valuesYamlFileOriginal = new File(chart.values() + ".original");
+                        Files.copy(valuesYamlFile.toPath(), valuesYamlFileOriginal.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        String interpolatedValuesYamlContent = (String) context.interpolate(valuesYamlContent);
+                        Files.write(valuesYamlFile.toPath(), interpolatedValuesYamlContent.getBytes());
+
+                        logger.info("The {} file was interpolated to the following: \n\n{}", chart.values(), interpolatedValuesYamlContent);
+                    }
                 }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
 
         //

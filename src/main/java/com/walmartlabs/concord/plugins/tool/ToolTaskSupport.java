@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Named;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -193,6 +194,9 @@ public abstract class ToolTaskSupport implements Task {
 
         for (Field field : command.getClass().getDeclaredFields()) {
             field.setAccessible(true);
+            if(Modifier.isFinal(field.getModifiers())) {
+                continue;
+            }
             Object operand = field.get(command);
             if (operand != null) {
                 if (operand.getClass().isPrimitive() || Boolean.class.isAssignableFrom(operand.getClass()) || String.class.isAssignableFrom(operand.getClass())) {
