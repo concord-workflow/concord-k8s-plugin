@@ -36,7 +36,7 @@ nodeGroups:
       instanceRoleARN: "{{cluster.instanceRoleArn}}"
     privateNetworking: true
     ssh:
-      publicKeyName: '{{cluster.vpcName}}'
+      publicKeyName: '{{cluster.keypair}}'
     tags:
       {{#cluster.tags}}
       '{{key}}': '{{value}}'

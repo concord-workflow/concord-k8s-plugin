@@ -19,12 +19,8 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Client for creating secrets in a Concord. It's general purpose but easier to have here for now.
- */
 public class ConcordSecretsClient {
 
-    public static final String DEFAULT_API_KEY = "auBy4eDWrKWsyhiDp3AQiw";
     public static final String SECRET_TYPE = "X-Concord-SecretType";
     private static final int RETRY_COUNT = 3;
     private static final long RETRY_INTERVAL = 5000;
@@ -107,7 +103,19 @@ public class ConcordSecretsClient {
         return postSecret(orgName, m);
     }
 
-    public <T extends Secret> T getData(String orgName, String secretName, String password, SecretEntry.TypeEnum type) throws Exception {
+    public BinaryDataSecret secret(String orgName, String secretName) throws Exception {
+        return secret(orgName, secretName, null, SecretEntry.TypeEnum.DATA);
+    }
+
+    public BinaryDataSecret keypair(String orgName, String secretName) throws Exception {
+        return secret(orgName, secretName, null, SecretEntry.TypeEnum.KEY_PAIR);
+    }
+
+    public BinaryDataSecret usernamePassword(String orgName, String secretName) throws Exception {
+        return secret(orgName, secretName, null, SecretEntry.TypeEnum.USERNAME_PASSWORD);
+    }
+
+    private <T extends Secret> T secret(String orgName, String secretName, String password, SecretEntry.TypeEnum type) throws Exception {
         String path = "/api/v1/org/" + orgName + "/secret/" + secretName + "/data";
 
         ApiResponse<File> r = null;
@@ -172,12 +180,5 @@ public class ConcordSecretsClient {
             c.setApiKey(apiKey);
         }
         return c;
-    }
-
-    public static void main(String[] args) throws Exception {
-
-        ConcordSecretsClient client = new ConcordSecretsClient("http://localhost:8080", DEFAULT_API_KEY);
-        BinaryDataSecret secret = client.getData("jvanzyl", "charlie14-aws-access-key-id", null, SecretEntry.TypeEnum.DATA);
-        System.out.println(new String(secret.getData()));
     }
 }

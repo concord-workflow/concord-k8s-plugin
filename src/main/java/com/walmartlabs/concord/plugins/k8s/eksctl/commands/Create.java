@@ -25,15 +25,8 @@ public class Create extends ToolCommandSupport {
     @Override
     public String idempotencyCheckCommand(Context context) {
 
-        String clusterName;
-        String clusterRegion;
-        if(cluster.name() != null && cluster.region() != null)  {
-            clusterName = cluster.name();
-            clusterRegion = cluster.region();
-        } else {
-            clusterName = variableAsString(context, "clusterName");
-            clusterRegion = variableAsString(context, "region");
-        }
+        String clusterName = cluster.name();
+        String clusterRegion = cluster.region();
 
         return String.format("{{executable}} get cluster --name %s --region %s -o json", clusterName, clusterRegion);
     }

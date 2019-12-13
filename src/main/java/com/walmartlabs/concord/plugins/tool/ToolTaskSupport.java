@@ -6,6 +6,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.walmartlabs.concord.plugins.Configurator;
 import com.walmartlabs.concord.sdk.Context;
 import com.walmartlabs.concord.sdk.LockService;
 import com.walmartlabs.concord.sdk.Task;
@@ -30,14 +31,14 @@ public abstract class ToolTaskSupport implements Task {
 
     protected final LockService lockService;
     protected final ToolInitializer toolInitializer;
-    protected final ToolConfigurator toolConfigurator;
+    protected final Configurator toolConfigurator;
     protected final Map<String, ToolCommand> commands;
 
     public ToolTaskSupport(Map<String, ToolCommand> commands, LockService lockService, ToolInitializer toolInitializer) {
         this.commands = commands;
         this.lockService = lockService;
         this.toolInitializer = toolInitializer;
-        this.toolConfigurator = new ToolConfigurator();
+        this.toolConfigurator = new Configurator();
     }
 
     public void execute(Context context) throws Exception {
@@ -78,7 +79,7 @@ public abstract class ToolTaskSupport implements Task {
         }
 
         // Apply the configuration to the command
-        toolConfigurator.configureCommand(variables(context), toolCommand);
+        toolConfigurator.configure(toolCommand, variables(context));
 
         ToolDescriptor toolDescriptor = toolDescriptor(taskName, toolConfiguration);
 

@@ -1,5 +1,6 @@
 package com.walmartlabs.concord.plugins.k8s.secrets;
 
+import ca.vanzyl.concord.plugins.TaskSupport;
 import com.walmartlabs.concord.ApiClient;
 import com.walmartlabs.concord.ApiException;
 import com.walmartlabs.concord.client.ApiClientConfiguration;
@@ -18,10 +19,9 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-//TODO:  Let's make this kubeconfig specific
-
+// TODO: just the secrets client instead of the secrets service, more control over the errors
 @Named("kubeconfig")
-public class KubeconfigTask implements Task {
+public class KubeconfigTask extends TaskSupport {
 
     private static final Logger logger = LoggerFactory.getLogger(KubeconfigTask.class);
 
@@ -41,9 +41,12 @@ public class KubeconfigTask implements Task {
         // Persist it to disk if not present on the agent
 
         String instanceId = (String) context.getVariable(Constants.Context.TX_ID_KEY);
-        String organization = (String) context.getVariable("organization");
-        String name = (String) context.getVariable("name");
-        String file = (String) context.getVariable("file");
+        // The organization we store the kubeconfig in
+        String organization = varAsString(context, "organization");
+        // The name of the kubeconfig file name
+        String name = varAsString(context, "name");
+        // The path of the kubeconfig file where we store it on the agent
+        String file = varAsString(context, "file");
 
         // TODO: we should always write out the secret in case it has changed to correct an issue
         File fileContainingSecret = new File(file);

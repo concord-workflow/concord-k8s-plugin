@@ -6,7 +6,7 @@ import com.walmartlabs.concord.plugins.TestSupport;
 import com.walmartlabs.concord.plugins.k8s.kubectl.commands.Apply;
 import com.walmartlabs.concord.plugins.k8s.kubectl.commands.Create;
 import com.walmartlabs.concord.plugins.tool.ToolCommand;
-import com.walmartlabs.concord.plugins.tool.ToolConfigurator;
+import com.walmartlabs.concord.plugins.Configurator;
 import com.walmartlabs.concord.plugins.tool.ToolDescriptor;
 import com.walmartlabs.concord.plugins.tool.ToolInitializationResult;
 import com.walmartlabs.concord.plugins.tool.ToolInitializer;
@@ -26,11 +26,11 @@ import static org.junit.Assert.assertTrue;
 
 public class KubeCtlTest extends TestSupport {
 
-    private ToolConfigurator toolConfigurator;
+    private Configurator toolConfigurator;
 
     @Before
     public void setUp() throws Exception {
-        toolConfigurator = new ToolConfigurator();
+        toolConfigurator = new Configurator();
         super.setUp();
     }
 
@@ -59,7 +59,7 @@ public class KubeCtlTest extends TestSupport {
                 .build();
 
         Apply apply = new Apply();
-        toolConfigurator.configureCommand(input, apply);
+        toolConfigurator.configure(apply, input);
 
         assertEquals("00-helm/tiller-rbac.yml", apply.file());
     }

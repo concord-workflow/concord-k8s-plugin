@@ -5,5 +5,5 @@ executable: eksctl
 architecture: amd64
 namingStyle: CAPITALIZE
 packaging: TARGZ
-defaultVersion: 0.7.0
+defaultVersion: 0.11.1
 urlTemplate: https://github.com/weaveworks/eksctl/releases/download/{version}/eksctl_{os}_{arch}.tar.gz

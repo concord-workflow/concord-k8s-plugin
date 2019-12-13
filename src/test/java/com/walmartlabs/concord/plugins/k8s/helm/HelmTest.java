@@ -10,7 +10,7 @@ import com.walmartlabs.concord.plugins.k8s.helm.commands.Init;
 import com.walmartlabs.concord.plugins.k8s.helm.commands.Install;
 import com.walmartlabs.concord.plugins.k8s.helm.commands.Repo;
 import com.walmartlabs.concord.plugins.tool.ToolCommand;
-import com.walmartlabs.concord.plugins.tool.ToolConfigurator;
+import com.walmartlabs.concord.plugins.Configurator;
 import com.walmartlabs.concord.plugins.tool.ToolDescriptor;
 import com.walmartlabs.concord.plugins.tool.ToolInitializationResult;
 import com.walmartlabs.concord.plugins.tool.ToolInitializer;
@@ -30,11 +30,11 @@ import static org.junit.Assert.assertTrue;
 
 public class HelmTest extends TestSupport {
 
-    private ToolConfigurator toolConfigurator;
+    private Configurator toolConfigurator;
 
     @Before
     public void setUp() throws Exception {
-        toolConfigurator = new ToolConfigurator();
+        toolConfigurator = new Configurator();
         super.setUp();
     }
 
@@ -64,7 +64,7 @@ public class HelmTest extends TestSupport {
                 .build();
 
         Init init = new Init();
-        toolConfigurator.configureCommand(input, init);
+        toolConfigurator.configure(init, input);
 
         assertEquals("tiller", init.serviceAccount());
         assertTrue("tiller", init.waitForCompletion());

@@ -21,7 +21,7 @@
             <dependency>
                 <groupId>com.walmartlabs.concord</groupId>
                 <artifactId>concord-targetplatform</artifactId>
-                <version>1.35.1</version>
+                <version>1.36.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -88,6 +88,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-guava</artifactId>
+            <version>2.9.9</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
         </dependency>
@@ -151,6 +156,17 @@
             <artifactId>plexus-utils</artifactId>
             <version>3.0.5</version>
         </dependency>
+        <!-- Terraform -->
+        <dependency>
+            <groupId>com.bertramlabs.plugins</groupId>
+            <artifactId>hcl4j</artifactId>
+            <version>0.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ini4j</groupId>
+            <artifactId>ini4j</artifactId>
+            <version>0.5.4</version>
+        </dependency>
         <!-- Test -->
         <dependency>
             <groupId>junit</groupId>
@@ -205,21 +221,6 @@
                             </sourcePaths>
                             <targetPackage>com.walmartlabs.concord.plugins.k8s.eksctl.config.model</targetPackage>
                             <sourceType>yamlschema</sourceType>
-                            <generateBuilders>true</generateBuilders>
-                        </configuration>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>k8s-model</id>
-                        <configuration>
-                            <sourcePaths>
-                                <sourcePath>${basedir}/src/test/resources/eksctl/cluster-generation-request.yml
-                                </sourcePath>
-                            </sourcePaths>
-                            <targetPackage>com.fireeye.k8s</targetPackage>
-                            <sourceType>yaml</sourceType>
                             <generateBuilders>true</generateBuilders>
                         </configuration>
                         <goals>

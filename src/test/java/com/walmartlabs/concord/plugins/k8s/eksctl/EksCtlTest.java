@@ -2,11 +2,10 @@ package com.walmartlabs.concord.plugins.k8s.eksctl;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.walmartlabs.concord.plugins.RequiresAwsCredentials;
 import com.walmartlabs.concord.plugins.TestSupport;
 import com.walmartlabs.concord.plugins.k8s.eksctl.commands.Create;
 import com.walmartlabs.concord.plugins.tool.ToolCommand;
-import com.walmartlabs.concord.plugins.tool.ToolConfigurator;
+import com.walmartlabs.concord.plugins.Configurator;
 import com.walmartlabs.concord.plugins.tool.ToolDescriptor;
 import com.walmartlabs.concord.plugins.tool.ToolInitializationResult;
 import com.walmartlabs.concord.plugins.tool.ToolInitializer;
@@ -28,11 +27,11 @@ import static org.junit.Assert.assertTrue;
 
 public class EksCtlTest extends TestSupport {
 
-    private ToolConfigurator toolConfigurator;
+    private Configurator toolConfigurator;
 
     @Before
     public void setUp() throws Exception {
-        toolConfigurator = new ToolConfigurator();
+        toolConfigurator = new Configurator();
         super.setUp();
     }
 
@@ -65,7 +64,7 @@ public class EksCtlTest extends TestSupport {
                 .build();
 
         Create create = new Create();
-        toolConfigurator.configureCommand(input, create);
+        toolConfigurator.configure(create, input);
 
         assertEquals("cluster.yaml", create.cluster().configFile());
         assertEquals("/home/concord/.kube/config", create.cluster().kubeconfig());
@@ -85,7 +84,7 @@ public class EksCtlTest extends TestSupport {
                 .build();
 
         Create create = new Create();
-        toolConfigurator.configureCommand(input, create);
+        toolConfigurator.configure(create, input);
 
         assertEquals("cluster-001", create.cluster().name());
         assertEquals("1.14", create.cluster().version());
@@ -95,7 +94,7 @@ public class EksCtlTest extends TestSupport {
     @Test
     public void validateEksCtlCommandLineGenerationUsingConfig() throws Exception {
 
-        ToolConfigurator toolConfigurator = new ToolConfigurator();
+        Configurator toolConfigurator = new Configurator();
 
         Map<String, Object> configuration = Maps.newHashMap(mapBuilder()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
@@ -108,7 +107,7 @@ public class EksCtlTest extends TestSupport {
                 .build());
 
         Create create = new Create();
-        toolConfigurator.configureCommand(configuration, create);
+        toolConfigurator.configure(create, configuration);
         List<String> args = ToolTaskSupport.generateCommandLineArguments("create", create);
 
         System.out.println(args);
@@ -124,7 +123,7 @@ public class EksCtlTest extends TestSupport {
     @Test
     public void validateEksCtlCommandLineGenerationUsingNameAndVersion() throws Exception {
 
-        ToolConfigurator toolConfigurator = new ToolConfigurator();
+        Configurator toolConfigurator = new Configurator();
 
         Map<String, Object> configuration = Maps.newHashMap(mapBuilder()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
@@ -138,7 +137,7 @@ public class EksCtlTest extends TestSupport {
                 .build());
 
         Create create = new Create();
-        toolConfigurator.configureCommand(configuration, create);
+        toolConfigurator.configure(create, configuration);
         List<String> args = ToolTaskSupport.generateCommandLineArguments("create", create);
 
         System.out.println(args);

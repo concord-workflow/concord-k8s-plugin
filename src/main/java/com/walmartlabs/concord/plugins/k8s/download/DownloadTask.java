@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
-@Named("k8sDownload")
+@Named("downloadTools")
 public class DownloadTask extends ToolTaskSupport {
 
     @Inject

@@ -26,7 +26,7 @@ public class EksCtlClusterYamlGeneratorTest extends TestSupport {
     @Test
     public void validateTerraformOutputParser() throws Exception {
 
-        ClusterInfo cluster = new ClusterInfo("magic-cluster", "us-west-2", "1.14",new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
+        EksCtlYamlData cluster = new EksCtlYamlData("magic-cluster", "us-west-2", "", "1.14",new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
 
         assertEquals("magic-cluster", cluster.name());
         assertEquals("us-west-2", cluster.region());
@@ -77,10 +77,9 @@ public class EksCtlClusterYamlGeneratorTest extends TestSupport {
         assertEquals("fe_common.product", cluster.tags().get(2).key());
         assertEquals("voltron", cluster.tags().get(2).value());
 
-        EksCtlYmlGenerator generator = new EksCtlYmlGenerator();
-        File outputDirectory = new File (basedir, "target");
-        generator.generate(cluster, outputDirectory);
+        EksCtlYamlGenerator generator = new EksCtlYamlGenerator();
         File clusterYml = new File(basedir, "target/cluster.yml");
+        generator.generate(cluster, clusterYml);
 
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try (InputStream inputStream = new FileInputStream(clusterYml)) {
@@ -115,6 +114,5 @@ public class EksCtlClusterYamlGeneratorTest extends TestSupport {
             assertEquals("arn:aws:iam::502860607067:instance-profile/cpie-dev-02-eks-worker-node-profile", ((Map) ((Map) ((List) yaml.get("nodeGroups")).get(0)).get("iam")).get("instanceProfileARN"));
             assertEquals("arn:aws:iam::502860607067:role/cpie-dev-02-eks-worker-node-role", ((Map) ((Map) ((List) yaml.get("nodeGroups")).get(0)).get("iam")).get("instanceRoleARN"));
         }
-
     }
 }

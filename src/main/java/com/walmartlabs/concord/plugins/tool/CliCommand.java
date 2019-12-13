@@ -23,7 +23,6 @@ public class CliCommand {
     private Path workDir;
     private List<String> args;
     private Map<String, String> envars;
-    private final boolean debug = true;
     private final Duration timeout;
 
     public CliCommand(List<String> args, Set<Integer> successfulExitCodes, Path workDir, Map<String, String> envars, Duration timeout) throws Exception {
@@ -53,10 +52,6 @@ public class CliCommand {
 
     public List<String> getCommand() {
         return args;
-    }
-
-    public Map<String, String> getEnvironment() {
-        return envars;
     }
 
     private static class StreamReader implements Callable<String> {

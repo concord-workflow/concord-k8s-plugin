@@ -1,53 +1,44 @@
 package com.walmartlabs.concord.plugins.k8s.eksctl.config.file;
 
-import com.fireeye.k8s.ClusterGenerationRequest;
+import ca.vanzyl.concord.plugins.TaskSupport;
 import com.walmartlabs.concord.sdk.Context;
-import com.walmartlabs.concord.sdk.SecretService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
+//
+// - task: eksctlYml
+//   in:
+//     clusterRequest: "${clusterRequestYml}"
+//     vpcTerraformOutput: "${result.data}"
+//
 @Named("eksctlYml")
-public class EksCtlClusterYmlTask extends ClusterTaskSupport {
+public class EksCtlClusterYmlTask extends TaskSupport {
 
     private static final Logger logger = LoggerFactory.getLogger(EksCtlClusterYmlTask.class);
-
-    @Inject
-    public EksCtlClusterYmlTask(SecretService secretService) {
-        super(secretService);
-    }
 
     @Override
     public void execute(Context context) throws Exception {
 
-        // - task: eksctlYml
-        //   in:
-        //     clusterRequest: "${clusterRequestYml}"
-        //     vpcTerraformOutput: "${result.data}"
+        Map<String, Object> clusterRequest = (Map<String, Object>) context.getVariable("clusterRequest");
+        Map<String, Object> terraformOutputAsMap = (Map<String, Object>) context.getVariable("vpcTerraformOutput");
 
-        String clusterRequest = (String) context.getVariable("clusterRequest");
+        String clusterName = varAsString(clusterRequest, "clusterName");
+        String region = varAsString(clusterRequest, "region");
+        String k8sVersion = varAsString(clusterRequest, "k8sVersion");
+        String user = varAsString(clusterRequest, "user");
+        EksCtlYamlData clusterInfo = new EksCtlYamlData(clusterName, region, user, k8sVersion, terraformOutputAsMap);
 
-        Map<String,Object> terraformOutputAsMap = (Map<String,Object>) context.getVariable("vpcTerraformOutput");
+        String eksctlYamlFile = varAsString(clusterRequest, "eksctlYamlFile");
+        Path clusterYml = workDir(context).resolve(eksctlYamlFile);
+        EksCtlYamlGenerator generator = new EksCtlYamlGenerator();
+        generator.generate(clusterInfo, clusterYml.toFile());
 
-        //String vpcTerraformOutput = (String) context.getVariable("vpcTerraformOutput");
-        ClusterGenerationRequest request = read(new File(clusterRequest));
-
-        Path workDir = workDir(context);
-
-        EksCtlYmlGenerator generator = new EksCtlYmlGenerator();
-        // Generate the cluster.yml for EksCtl and the autoscaler.yml in the workdirectory
-        generator.generate(request, terraformOutputAsMap, workDir.toFile());
-
-        // Display the cluster.yml
-        Path clusterYml = workDir.resolve("cluster.yml");
         String clusterYmlContent = new String(Files.readAllBytes(clusterYml));
-        logger.info("cluster.yml:\n" + clusterYmlContent);
-
+        logger.info("cluster.yml:\n\n{}", clusterYmlContent);
     }
 }

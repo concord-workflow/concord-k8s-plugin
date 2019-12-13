@@ -60,7 +60,7 @@ public class Install extends ToolCommandSupport {
 
         //
         // Patrick uses this to modify the version in the Chart.yml when deploying new versions
-        //
+        // e
         // Here is where we want to alter what Helm install is doing. If there is an externals configuration we want
         // fetch the Helm chart, insert the externals into the Helm chart and then install from the directory we
         // created with the fetched Helm chart
