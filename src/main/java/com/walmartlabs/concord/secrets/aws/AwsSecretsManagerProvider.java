@@ -81,14 +81,14 @@ public class AwsSecretsManagerProvider implements SecretsProvider {
             System.out.println(secret);
         } else {
             binarySecretData = getSecretValueResult.getSecretBinary();
-            System.out.println(binarySecretData.toString());
+            System.out.println(binarySecretData);
         }
     }
 
     public static void main(String[] args) {
-        String secretName = "kubeconfig-jvz-dev-001";
+        String secretName = "test";
         String secretText = "XXX";
-        AwsSecretsManagerProvider provider = new AwsSecretsManagerProvider("us-east-2");
+        AwsSecretsManagerProvider provider = new AwsSecretsManagerProvider("us-west-2");
         //provider.put(secretName, secretText);
         provider.get(secretName);
     }

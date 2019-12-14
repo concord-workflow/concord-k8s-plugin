@@ -13,6 +13,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 @Named("helm/install")
 public class Install extends ToolCommandSupport {
@@ -22,10 +23,24 @@ public class Install extends ToolCommandSupport {
     @JsonProperty("chart")
     @Omit
     private Chart chart;
-
     public Chart chart() {
         return chart;
     }
+
+    @JsonProperty("repo")
+    @Omit
+    private String repo;
+    public String repo() { return repo; }
+
+    @JsonProperty("pre")
+    @Omit
+    private List<String> pre;
+    public List<String> pre() { return pre; }
+
+    @JsonProperty("post")
+    @Omit
+    private List<String> post;
+    public List<String> post() { return post; }
 
     @Override
     public String idempotencyCheckCommand(Context context) {
