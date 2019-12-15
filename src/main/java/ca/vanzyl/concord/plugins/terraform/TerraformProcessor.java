@@ -19,6 +19,7 @@ import static ca.vanzyl.concord.plugins.Utils.emptyDirectoryIfContentPresent;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 // TODO: need a better way to share common variables across resources types. For example the "vpn" and "vpc" resources both require "vpc_name"
+// TODO: parameterize the name of the variables file that's produced
 public class TerraformProcessor {
 
     private final static Logger logger = LoggerFactory.getLogger(TerraformProcessor.class);
