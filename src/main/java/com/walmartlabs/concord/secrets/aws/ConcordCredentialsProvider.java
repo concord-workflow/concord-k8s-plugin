@@ -8,8 +8,8 @@ import com.amazonaws.auth.AWSCredentialsProvider;
  */
 public class ConcordCredentialsProvider implements AWSCredentialsProvider {
 
-    private String accessKeyId;
-    private String secretAccessKey;
+    private String awsAccessKey;
+    private String awsSecretKey;
 
     @Override
     public AWSCredentials getCredentials() {
@@ -17,12 +17,12 @@ public class ConcordCredentialsProvider implements AWSCredentialsProvider {
         return new AWSCredentials() {
             @Override
             public String getAWSAccessKeyId() {
-                return accessKeyId;
+                return awsAccessKey;
             }
 
             @Override
             public String getAWSSecretKey() {
-                return secretAccessKey;
+                return awsSecretKey;
             }
         };
     }

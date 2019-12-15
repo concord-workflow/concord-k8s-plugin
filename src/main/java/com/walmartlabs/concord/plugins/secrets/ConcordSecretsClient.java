@@ -4,6 +4,8 @@ import com.squareup.okhttp.OkHttpClient;
 import com.walmartlabs.concord.ApiClient;
 import com.walmartlabs.concord.ApiException;
 import com.walmartlabs.concord.ApiResponse;
+import com.walmartlabs.concord.client.ApiClientConfiguration;
+import com.walmartlabs.concord.client.ApiClientFactory;
 import com.walmartlabs.concord.client.ClientUtils;
 import com.walmartlabs.concord.client.ConcordApiClient;
 import com.walmartlabs.concord.client.SecretEntry;
@@ -12,13 +14,16 @@ import com.walmartlabs.concord.client.StartProcessResponse;
 import com.walmartlabs.concord.common.secret.BinaryDataSecret;
 import com.walmartlabs.concord.common.secret.KeyPair;
 import com.walmartlabs.concord.common.secret.UsernamePassword;
+import com.walmartlabs.concord.sdk.Context;
 import com.walmartlabs.concord.sdk.Secret;
 
+import javax.inject.Named;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
+@Named
 public class ConcordSecretsClient {
 
     public static final String SECRET_TYPE = "X-Concord-SecretType";
@@ -103,15 +108,20 @@ public class ConcordSecretsClient {
         return postSecret(orgName, m);
     }
 
-    public BinaryDataSecret secret(String orgName, String secretName) throws Exception {
+    public String secretAsString(String orgName, String secretName) throws Exception {
+        BinaryDataSecret secret = secret(orgName, secretName, null, SecretEntry.TypeEnum.DATA);
+        return new String(secret.getData());
+    }
+
+    public String secret(String orgName, String secretName) throws Exception {
         return secret(orgName, secretName, null, SecretEntry.TypeEnum.DATA);
     }
 
-    public BinaryDataSecret keypair(String orgName, String secretName) throws Exception {
+    public KeyPair keypair(String orgName, String secretName) throws Exception {
         return secret(orgName, secretName, null, SecretEntry.TypeEnum.KEY_PAIR);
     }
 
-    public BinaryDataSecret usernamePassword(String orgName, String secretName) throws Exception {
+    public UsernamePassword usernamePassword(String orgName, String secretName) throws Exception {
         return secret(orgName, secretName, null, SecretEntry.TypeEnum.USERNAME_PASSWORD);
     }
 
@@ -180,5 +190,12 @@ public class ConcordSecretsClient {
             c.setApiKey(apiKey);
         }
         return c;
+    }
+
+    public static ApiClient apiClient(ApiClientFactory apiClientFactory, Context context) {
+        return apiClientFactory
+                .create(ApiClientConfiguration.builder()
+                        .context(context)
+                        .build());
     }
 }

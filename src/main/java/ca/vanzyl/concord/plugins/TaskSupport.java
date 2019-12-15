@@ -10,6 +10,14 @@ import java.util.Map;
 
 public abstract class TaskSupport implements Task {
 
+    protected Map<String,Object> projectInfo(Context context) {
+        return (Map<String,Object>) context.getVariable("projectInfo");
+    }
+
+    protected String orgName(Context context) {
+        return (String) projectInfo(context).get("orgName");
+    }
+
     protected Path workDir(Context context, String path) {
         return workDir(context).resolve(path);
     }

@@ -19,6 +19,8 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static com.walmartlabs.concord.plugins.secrets.ConcordSecretsClient.apiClient;
+
 // TODO: just the secrets client instead of the secrets service, more control over the errors
 @Named("kubeconfig")
 public class KubeconfigTask extends TaskSupport {
@@ -78,7 +80,7 @@ public class KubeconfigTask extends TaskSupport {
             // The file containing our secret does exist so we'll attempt to store it for subsequent use
             //
             try {
-                ConcordSecretsClient secretsClient = new ConcordSecretsClient(apiClient(context));
+                ConcordSecretsClient secretsClient = new ConcordSecretsClient(apiClient(apiClientFactory, context));
                 String fileContents = new String(Files.readAllBytes(Paths.get(file)));
                 Files.write(fileContainingSecret.toPath(), fileContents.getBytes());
                 secretsClient.addPlainSecret(organization, name, false, null, fileContents.getBytes());
@@ -89,12 +91,5 @@ public class KubeconfigTask extends TaskSupport {
                 }
             }
         }
-    }
-
-    private ApiClient apiClient(Context context) {
-        return apiClientFactory
-                .create(ApiClientConfiguration.builder()
-                        .context(context)
-                        .build());
     }
 }
