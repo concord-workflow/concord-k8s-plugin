@@ -16,14 +16,14 @@ import static com.walmartlabs.concord.plugins.secrets.ConcordSecretsClient.apiCl
 
 // Write a specified kubeconfig to ASM
 @Named("asmKubeconfig")
-public class KubeconfigAsmTask extends TaskSupport {
+public class AsmKubeconfigTask extends TaskSupport {
 
-    private final static Logger logger = LoggerFactory.getLogger(KubeconfigAsmTask.class);
+    private final static Logger logger = LoggerFactory.getLogger(AsmKubeconfigTask.class);
 
     private final ApiClientFactory apiClientFactory;
 
     @Inject
-    public KubeconfigAsmTask(ApiClientFactory apiClientFactory) {
+    public AsmKubeconfigTask(ApiClientFactory apiClientFactory) {
         this.apiClientFactory = apiClientFactory;
     }
 

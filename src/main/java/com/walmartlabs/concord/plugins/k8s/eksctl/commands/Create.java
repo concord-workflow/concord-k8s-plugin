@@ -7,6 +7,7 @@ import com.walmartlabs.concord.sdk.Context;
 
 import javax.inject.Named;
 import java.nio.file.Path;
+import java.util.Map;
 
 @Named("eksctl/create")
 public class Create extends ToolCommandSupport {
@@ -25,9 +26,17 @@ public class Create extends ToolCommandSupport {
     @Override
     public String idempotencyCheckCommand(Context context) {
 
-        String clusterName = cluster.name();
-        String clusterRegion = cluster.region();
+        String clusterName = clusterRequestVarAsString(context, "clusterName");
+        String clusterRegion = clusterRequestVarAsString(context, "region");
 
         return String.format("{{executable}} get cluster --name %s --region %s -o json", clusterName, clusterRegion);
+    }
+
+    protected String clusterRequestVarAsString(Context context, String variable) {
+        return (String) clusterRequest(context).get(variable);
+    }
+
+    protected Map<String,Object> clusterRequest(Context context) {
+        return (Map<String,Object>) context.getVariable("clusterRequest");
     }
 }
