@@ -17,9 +17,11 @@ public class K8sContextTask extends TaskSupport {
     private final static Logger logger = LoggerFactory.getLogger(K8sContextTask.class);
 
     private final List<String> ingressAnnotations;
+    private final List<String> postManifests;
 
     public K8sContextTask() {
         ingressAnnotations = Lists.newArrayList();
+        postManifests = Lists.newArrayList();
     }
 
     public void ingressAnnotation(String ingressAnnotation) {
@@ -44,5 +46,13 @@ public class K8sContextTask extends TaskSupport {
 
     public List<String> ingressAnnotationsList() {
         return ingressAnnotations;
+    }
+
+    public void postManifest(String manifest) {
+        postManifests.add(manifest);
+    }
+
+    public List<String> postManifests() {
+        return postManifests;
     }
 }
