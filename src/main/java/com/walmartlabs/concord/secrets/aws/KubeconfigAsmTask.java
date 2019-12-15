@@ -43,6 +43,8 @@ public class KubeconfigAsmTask extends TaskSupport {
             // Don't attempt to write the secret if it already exists
             if(!asmClient.secretsList().contains(kubeconfigName)) {
                 asmClient.put(kubeconfigName, kubeconfigContent);
+                logger.warn("The secret {} successfully written to {}.", kubeconfigName, region);
+
             } else {
                 logger.warn("The secret {} already exists in {} and won't be overridden.", kubeconfigName, region);
             }
