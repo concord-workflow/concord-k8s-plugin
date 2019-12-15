@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.walmartlabs.concord.plugins.TestSupport;
 import com.walmartlabs.concord.plugins.k8s.kubectl.commands.Apply;
 import com.walmartlabs.concord.plugins.k8s.kubectl.commands.Create;
+import com.walmartlabs.concord.plugins.k8s.kubectl.commands.Delete;
 import com.walmartlabs.concord.plugins.tool.ToolCommand;
 import com.walmartlabs.concord.plugins.Configurator;
 import com.walmartlabs.concord.plugins.tool.ToolDescriptor;
@@ -165,6 +166,30 @@ public class KubeCtlTest extends TestSupport {
         System.out.println(commandLine);
 
         String expectedCommandLine = "kubectl create namespace cert-manager";
+        assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
+    }
+
+    @Test
+    public void validateKubeCtlDelete() throws Exception {
+
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("kubectl"));
+        Map<String, ToolCommand> commands = ImmutableMap.of("kubectl/delete", new Delete());
+        KubeCtlTask task = new KubeCtlTask(commands, lockService, toolInitializer);
+
+        Map<String, Object> args = Maps.newHashMap(mapBuilder()
+                .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
+                .put("dryRun", true)
+                .put("command", "delete")
+                .put("crd", "alertmanagers.monitoring.coreos.com")
+                .build());
+
+        Context context = new MockContext(args);
+        task.execute(context);
+        String commandLine = varAsString(context, "commandLineArguments");
+
+        System.out.println(commandLine);
+
+        String expectedCommandLine = "kubectl delete crd alertmanagers.monitoring.coreos.com";
         assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
     }
 }
