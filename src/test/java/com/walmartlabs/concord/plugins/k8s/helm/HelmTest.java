@@ -152,8 +152,8 @@ public class HelmTest extends ConcordTestSupport {
         System.out.println(commandLine);
 
         // Make sure our values.yaml file was interpolated correctly by the Helm install command
-        String valuesYamlContent = new String(Files.readAllBytes(valuesYaml));
-        assertTrue(valuesYamlContent.contains("hostname: awesome.concord.io"));
+        String interpolatedContent = new String(Files.readAllBytes(valuesYaml));
+        assertTrue(interpolatedContent.contains("hostname: awesome.concord.io"));
 
         String expectedCommandLine = String.format("helm install --name sealed-secrets --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com --values %s stable/sealed-secrets", valuesYaml.toString());
         assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));

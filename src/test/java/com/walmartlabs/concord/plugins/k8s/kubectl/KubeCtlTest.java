@@ -3,6 +3,7 @@ package com.walmartlabs.concord.plugins.k8s.kubectl;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.walmartlabs.concord.plugins.ConcordTestSupport;
+import com.walmartlabs.concord.plugins.InterpolatingMockContext;
 import com.walmartlabs.concord.plugins.k8s.kubectl.commands.Apply;
 import com.walmartlabs.concord.plugins.k8s.kubectl.commands.Create;
 import com.walmartlabs.concord.plugins.k8s.kubectl.commands.Delete;
@@ -72,34 +73,47 @@ public class KubeCtlTest extends ConcordTestSupport {
         Map<String, ToolCommand> commands = ImmutableMap.of("kubectl/apply", new Apply());
         KubeCtlTask task = new KubeCtlTask(commands, lockService, toolInitializer);
 
-        //
-        // - task: eksctl
-        //   in:
-        //     command: create
-        //     cluster:
-        //       name: cluster-001
-        //       version: 1.14
-        //       kubeconfig: /home/concord/.kube/config
-        //
+        // Create a manifest.yml file and make sure it's interpolated correctly
+        Path manifestYamlFile = Files.createTempFile("kubectl", "values.yaml");
+        System.out.println("Creating K8s manifest.yml: " + manifestYamlFile.toString());
+
+        String manifestContent = "apiVersion: v1\n" +
+                "kind: Service\n" +
+                "metadata:\n" +
+                "  name: my-service\n" +
+                "spec:\n" +
+                "  selector:\n" +
+                "    app: MyApp\n" +
+                "  ports:\n" +
+                "    - protocol: TCP\n" +
+                "      port: 80\n" +
+                "      targetPort: ${targetPort}";
+
+        Files.write(manifestYamlFile, manifestContent.getBytes());
 
         Map<String, Object> args = Maps.newHashMap(mapBuilder()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
                 .put("dryRun", true)
                 .put("command", "apply")
-                .put("file", "00-helm/tiller-rbac.yml")
+                .put("file", manifestYamlFile.toString())
                 .put("envars",
                         mapBuilder()
                                 .put("KUBECONFIG", "/workspace/_attachments/k8s-cluster0-kubeconfig")
                                 .build())
+                .put("targetPort", "123456789")
                 .build());
 
-        Context context = new MockContext(args);
+        Context context = new InterpolatingMockContext(args);
         task.execute(context);
         String commandLine = varAsString(context, "commandLineArguments");
 
         System.out.println(commandLine);
 
-        String expectedCommandLine = "kubectl apply -f 00-helm/tiller-rbac.yml";
+        // Make sure our values.yaml file was interpolated correctly by the Helm install command
+        String interpolatedContent = new String(Files.readAllBytes(manifestYamlFile));
+        assertTrue(interpolatedContent.contains("targetPort: 123456789"));
+
+        String expectedCommandLine = String.format("kubectl apply -f %s", manifestYamlFile.toString());
         assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
 
         System.out.println(context.getVariable("envars"));

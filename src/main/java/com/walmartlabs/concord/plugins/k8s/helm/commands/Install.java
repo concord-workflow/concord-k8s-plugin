@@ -51,37 +51,12 @@ public class Install extends ToolCommandSupport {
     public void preProcess(Path workDir, Context context) {
 
         if(chart.values() != null) {
-            try {
-                //
-                // We need to take the values.yml that is provided and interpolate the content with the
-                // Concord context. This allows passing in just-in-time configuration values derived from
-                // any Concord operations and also allows passing in secret material from the Concord
-                // secrets store or other secrets mechanisms the user may be using.
-                //
-                File valuesYamlFile = new File(chart.values());
-                if (valuesYamlFile.exists()) {
-                    String valuesYamlContent = new String(Files.readAllBytes(valuesYamlFile.toPath()));
-                    if (valuesYamlContent.contains("${")) {
-                        //
-                        // We have interpolation work to do so we will backup the original file to another location
-                        // and then created a new interpolated version of the values.yaml in the original location.
-                        //
-                        File valuesYamlFileOriginal = new File(chart.values() + ".original");
-                        Files.copy(valuesYamlFile.toPath(), valuesYamlFileOriginal.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                        String interpolatedValuesYamlContent = (String) context.interpolate(valuesYamlContent);
-                        Files.write(valuesYamlFile.toPath(), interpolatedValuesYamlContent.getBytes());
-
-                        logger.info("The {} file was interpolated to the following: \n\n{}", chart.values(), interpolatedValuesYamlContent);
-                    }
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            interpolateWorkspaceFileAgainstContext(new File(chart.values()), context);
         }
 
         //
         // Patrick uses this to modify the version in the Chart.yml when deploying new versions
-        // e
+        //
         // Here is where we want to alter what Helm install is doing. If there is an externals configuration we want
         // fetch the Helm chart, insert the externals into the Helm chart and then install from the directory we
         // created with the fetched Helm chart
