@@ -2,7 +2,7 @@ package com.walmartlabs.concord.plugins.k8s.eksctl.config.file;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.walmartlabs.concord.plugins.TestSupport;
+import com.walmartlabs.concord.plugins.ConcordTestSupport;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,7 +14,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class EksCtlClusterYamlGeneratorTest extends TestSupport {
+public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
 
     private String basedir;
 

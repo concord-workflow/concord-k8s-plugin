@@ -15,10 +15,7 @@ import com.amazonaws.services.secretsmanager.model.DescribeSecretRequest;
 import com.amazonaws.services.secretsmanager.model.DescribeSecretResult;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueResult;
-import com.amazonaws.services.secretsmanager.model.InvalidParameterException;
-import com.amazonaws.services.secretsmanager.model.InvalidRequestException;
 import com.amazonaws.services.secretsmanager.model.ListSecretsRequest;
-import com.amazonaws.services.secretsmanager.model.ResourceNotFoundException;
 import com.amazonaws.services.secretsmanager.model.SecretListEntry;
 import com.google.common.collect.ImmutableList;
 import com.walmartlabs.concord.secrets.SecretsProvider;
@@ -29,7 +26,7 @@ import java.util.stream.Collectors;
 
 
 //
-// Retrieve secrets from the AWS Secrets Manager
+// Retrieve secrets from the AWS Secret Manager
 //
 // We need to account for the following:
 //
@@ -89,42 +86,10 @@ public class AsmClient implements SecretsProvider {
         DeleteSecretResult result = client.deleteSecret(request);
     }
 
-    public void get(String secretName) {
+    public String get(String secretName) {
 
-        String secret;
-        ByteBuffer binarySecretData;
-        GetSecretValueRequest getSecretValueRequest = new GetSecretValueRequest().withSecretId(secretName);
-
-        GetSecretValueResult getSecretValueResult = null;
-        try {
-            getSecretValueResult = client.getSecretValue(getSecretValueRequest);
-        } catch (ResourceNotFoundException e) {
-            System.out.println("The requested secret " + secretName + " was not found");
-        } catch (InvalidRequestException e) {
-            System.out.println("The request was invalid due to: " + e.getMessage());
-        } catch (InvalidParameterException e) {
-            System.out.println("The request had invalid params: " + e.getMessage());
-        }
-
-        if (getSecretValueResult == null) {
-            return;
-        }
-
-        // Depending on whether the secret was a string or binary, one of these fields will be populated
-        if (getSecretValueResult.getSecretString() != null) {
-            secret = getSecretValueResult.getSecretString();
-            System.out.println(secret);
-        } else {
-            binarySecretData = getSecretValueResult.getSecretBinary();
-            System.out.println(binarySecretData);
-        }
-    }
-
-    public static void main(String[] args) {
-        String secretName = "kubeconfig-jvz-021-us-east-2-dev";
-        AsmClient client = new AsmClient("us-west-2");
-        List<String> secrets = client.secretsList();
-        System.out.println("secrets = " + secrets);
-        System.out.println(secrets.contains(secretName));
+        GetSecretValueRequest request = new GetSecretValueRequest().withSecretId(secretName);
+        GetSecretValueResult result = client.getSecretValue(request);
+        return result.getSecretString();
     }
 }

@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.walmartlabs.concord.plugins.InterpolatingMockContext;
-import com.walmartlabs.concord.plugins.TestSupport;
+import com.walmartlabs.concord.plugins.ConcordTestSupport;
 import com.walmartlabs.concord.plugins.k8s.helm.commands.Destroy;
 import com.walmartlabs.concord.plugins.k8s.helm.commands.Init;
 import com.walmartlabs.concord.plugins.k8s.helm.commands.Install;
@@ -28,7 +28,7 @@ import static com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class HelmTest extends TestSupport {
+public class HelmTest extends ConcordTestSupport {
 
     private Configurator toolConfigurator;
 

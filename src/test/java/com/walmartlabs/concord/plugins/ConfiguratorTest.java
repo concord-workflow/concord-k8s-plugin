@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class ConfiguratorTest extends TestSupport {
+public class ConfiguratorTest extends ConcordTestSupport {
 
     @Test
     public void validateConfiguration() throws Exception {

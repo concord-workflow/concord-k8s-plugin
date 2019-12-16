@@ -146,7 +146,7 @@ public abstract class ToolTaskSupport implements Task {
 
                 CliCommand.Result result = idempotencyCheck.execute(Executors.newCachedThreadPool());
 
-                if (result.getCode() == 0) {
+                if (result.getCode() == toolCommand.expectedIdempotencyCheckReturnValue()) {
 
                     logger.info("This command has already run successfully: " + command.getCommand());
                     //
@@ -163,7 +163,9 @@ public abstract class ToolTaskSupport implements Task {
             toolCommand.preProcess(workDir, context);
             logger.info("Executing: " + commandLineArguments);
             CliCommand.Result commandResult = command.execute(Executors.newCachedThreadPool());
-            logger.info("exit code: " + commandResult.getCode());
+            if(commandResult.getCode() != 0) {
+                throw new RuntimeException(String.format("The command %s failed. Look in the logs above.", commandLineArguments));
+            }
             //
             // Command post-processing
             //

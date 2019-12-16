@@ -2,7 +2,7 @@ package com.walmartlabs.concord.plugins.k8s.kubectl;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.walmartlabs.concord.plugins.TestSupport;
+import com.walmartlabs.concord.plugins.ConcordTestSupport;
 import com.walmartlabs.concord.plugins.k8s.kubectl.commands.Apply;
 import com.walmartlabs.concord.plugins.k8s.kubectl.commands.Create;
 import com.walmartlabs.concord.plugins.k8s.kubectl.commands.Delete;
@@ -25,7 +25,7 @@ import static com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class KubeCtlTest extends TestSupport {
+public class KubeCtlTest extends ConcordTestSupport {
 
     private Configurator toolConfigurator;
 

@@ -141,7 +141,7 @@
             <artifactId>compiler</artifactId>
             <version>0.9.6</version>
         </dependency>
-        <!-- Secrets -->
+        <!-- Secret -->
         <dependency>
             <groupId>com.walmartlabs.concord</groupId>
             <artifactId>concord-client</artifactId>

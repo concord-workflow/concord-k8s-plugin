@@ -1,6 +1,6 @@
 package com.walmartlabs.concord.plugins.tool;
 
-import com.walmartlabs.concord.plugins.TestSupport;
+import com.walmartlabs.concord.plugins.ConcordTestSupport;
 import org.junit.Test;
 
 import java.nio.file.Files;
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 
-public class ToolInitializerTest extends TestSupport {
+public class ToolInitializerTest extends ConcordTestSupport {
 
     @Test
     public void validateToolInitializerWithHelm() throws Exception {

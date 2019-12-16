@@ -4,12 +4,18 @@ import com.walmartlabs.concord.sdk.Context;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 
 public abstract class ToolCommandSupport implements ToolCommand {
 
     @Override
     public String idempotencyCheckCommand(Context context) {
         return null;
+    }
+
+    @Override
+    public int expectedIdempotencyCheckReturnValue() {
+        return 0;
     }
 
     @Override
@@ -28,7 +34,15 @@ public abstract class ToolCommandSupport implements ToolCommand {
         return workDir;
     }
 
-    protected String variableAsString(Context context, String name) {
+    protected String clusterRequestVarAsString(Context context, String variable) {
+        return (String) clusterRequest(context).get(variable);
+    }
+
+    protected Map<String,Object> clusterRequest(Context context) {
+        return (Map<String,Object>) context.getVariable("clusterRequest");
+    }
+
+    protected String varAsString(Context context, String name) {
         return (String) context.getVariable(name);
     }
 }

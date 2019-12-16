@@ -2,7 +2,7 @@ package com.walmartlabs.concord.plugins.k8s.eksctl;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.walmartlabs.concord.plugins.TestSupport;
+import com.walmartlabs.concord.plugins.ConcordTestSupport;
 import com.walmartlabs.concord.plugins.k8s.eksctl.commands.Create;
 import com.walmartlabs.concord.plugins.tool.ToolCommand;
 import com.walmartlabs.concord.plugins.Configurator;
@@ -25,7 +25,7 @@ import static com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class EksCtlTest extends TestSupport {
+public class EksCtlTest extends ConcordTestSupport {
 
     private Configurator toolConfigurator;
 

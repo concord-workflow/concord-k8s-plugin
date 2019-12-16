@@ -31,12 +31,4 @@ public class Create extends ToolCommandSupport {
 
         return String.format("{{executable}} get cluster --name %s --region %s -o json", clusterName, clusterRegion);
     }
-
-    protected String clusterRequestVarAsString(Context context, String variable) {
-        return (String) clusterRequest(context).get(variable);
-    }
-
-    protected Map<String,Object> clusterRequest(Context context) {
-        return (Map<String,Object>) context.getVariable("clusterRequest");
-    }
 }
