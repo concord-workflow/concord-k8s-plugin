@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static io.airlift.security.pem.PemReader.isPem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -29,7 +30,10 @@ public class SecretsTest extends TestSupport {
         Secret secret2 = secrets.get(2);
         assertEquals("fluentbitCertificate", secret2.name());
         assertTrue(secret2.value().contains("-----BEGIN CERTIFICATE-----"));
-        assertTrue(secret2.value().contains("-----END CERTIFICATE-----"));
+        assertTrue(secret2.value().contains("-----END ENCRYPTED PRIVATE KEY-----"));
         assertEquals("Fluentbit Certificate.", secret2.description());
+
+        String pemData = secret2.value();
+        assertTrue(isPem(pemData));
     }
 }

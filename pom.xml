@@ -204,6 +204,12 @@
             <artifactId>guice</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>io.airlift</groupId>
+            <artifactId>security</artifactId>
+            <version>0.187</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
