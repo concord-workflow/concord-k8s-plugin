@@ -14,6 +14,7 @@ public class InterpolatingMockContext extends MockContext {
         this.delegate = delegate;
     }
 
+    // TODO: show Ivan the implementation to try and get the real interpolation mechanism in here for testing
     public Object interpolate(Object v) {
         return StringUtils.interpolate(v.toString(), delegate);
     }
