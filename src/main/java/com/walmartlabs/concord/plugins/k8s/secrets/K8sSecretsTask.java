@@ -53,7 +53,7 @@ public class K8sSecretsTask implements Task {
         //
 
         Path kubeconfigFile = Paths.get((String)context.getVariable("kubeconfigFile"));
-        K8sSecretsClient secretsClient = new K8sSecretsClient(kubeconfigFile.toFile());
+        K8sSecretsClient k8sSecretsClient = new K8sSecretsClient(kubeconfigFile.toFile());
 
         // Concord
         String instanceId = (String) context.getVariable(Constants.Context.TX_ID_KEY);
@@ -76,7 +76,7 @@ public class K8sSecretsTask implements Task {
                     // base64 encode the value as the k8s client doesn't do this by default (which is misleading from their tests)
                     secretData.put(key, base64(value));
                     // Send the secret to the cluster with the given namespace
-                    secretsClient.addSecret(k8sNamespace, secretName, secretData);
+                    k8sSecretsClient.addSecret(k8sNamespace, secretName, secretData);
                 } else {
                     logger.error("We cannot find the secret '%s' in the organization '%s' to sync to the k8s cluster.", e.getValue(), organization);
                 }
