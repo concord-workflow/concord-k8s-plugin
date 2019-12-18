@@ -2,9 +2,11 @@ package com.walmartlabs.concord.plugins.k8s.helm.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.walmartlabs.concord.plugins.k8s.helm.config.Chart;
+import com.walmartlabs.concord.plugins.tool.Flag;
 import com.walmartlabs.concord.plugins.tool.Omit;
 import com.walmartlabs.concord.plugins.tool.ToolCommandSupport;
 import com.walmartlabs.concord.sdk.Context;
+import io.airlift.airline.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +33,10 @@ public class Install extends ToolCommandSupport {
     @Omit
     private String repo;
     public String repo() { return repo; }
+
+    @JsonProperty("atomic")
+    @Flag(name = {"--atomic"})
+    private boolean atomic = true;
 
     @JsonProperty("pre")
     @Omit

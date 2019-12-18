@@ -10,7 +10,7 @@ import javax.inject.Singleton;
 import java.util.Collections;
 import java.util.List;
 
-// TODO: for anything that needs to be collected just use the context instead of fields here
+// TODO: Use the inventory system to keep track of the cluster info
 @Singleton
 @Named("k8sContext")
 public class K8sContextTask extends TaskSupport {
