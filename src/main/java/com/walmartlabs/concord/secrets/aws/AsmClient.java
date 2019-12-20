@@ -62,7 +62,9 @@ public class AsmClient implements SecretsProvider {
 
     public List<String> secretsList() {
 
-        ListSecretsRequest request = new ListSecretsRequest();
+        // By default this will only return 20 secrets names. Would be nice if they let you provide
+        // a filter to grab "kubeconfig-*" for example.
+        ListSecretsRequest request = new ListSecretsRequest().withMaxResults(100);
 
         return client.listSecrets(request).getSecretList().stream()
                 .map(SecretListEntry::getName)

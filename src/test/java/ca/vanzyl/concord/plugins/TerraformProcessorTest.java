@@ -77,7 +77,7 @@ public class TerraformProcessorTest {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         Map<String, Object> map = mapper.readValue(yaml, Map.class);
 
-        Path source = Paths.get("/Users/jvanzyl/js/concord/concord-k8s-builder/00-aws/terraform");
+        Path source = new File(new File("").getAbsolutePath(), "src/test/terraform/00-aws/terraform").toPath();
         Path target = outputDirectory.toPath();
         TerraformProcessor processor = new TerraformProcessor(source, target);
         TerraformProcessingResult result = processor.process(map);

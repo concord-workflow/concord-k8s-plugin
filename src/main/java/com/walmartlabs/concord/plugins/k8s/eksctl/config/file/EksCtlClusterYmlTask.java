@@ -33,7 +33,7 @@ public class EksCtlClusterYmlTask extends TaskSupport {
         String user = varAsString(clusterRequest, "user");
         EksCtlYamlData clusterInfo = new EksCtlYamlData(clusterName, region, user, k8sVersion, terraformOutputAsMap);
 
-        String eksctlYamlFile = varAsString(clusterRequest, "eksctlYamlFile");
+        String eksctlYamlFile = varAsString(context, "configFile");
         Path clusterYml = workDir(context).resolve(eksctlYamlFile);
         EksCtlYamlGenerator generator = new EksCtlYamlGenerator();
         generator.generate(clusterInfo, clusterYml.toFile());
