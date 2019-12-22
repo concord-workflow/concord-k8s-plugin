@@ -9,6 +9,7 @@ import com.walmartlabs.concord.plugins.k8s.helm.commands.Destroy;
 import com.walmartlabs.concord.plugins.k8s.helm.commands.Init;
 import com.walmartlabs.concord.plugins.k8s.helm.commands.Install;
 import com.walmartlabs.concord.plugins.k8s.helm.commands.Repo;
+import com.walmartlabs.concord.plugins.k8s.helm.commands.Upgrade;
 import com.walmartlabs.concord.plugins.tool.ToolCommand;
 import com.walmartlabs.concord.plugins.Configurator;
 import com.walmartlabs.concord.plugins.tool.ToolDescriptor;
@@ -155,7 +156,65 @@ public class HelmTest extends ConcordTestSupport {
         String interpolatedContent = new String(Files.readAllBytes(valuesYaml));
         assertTrue(interpolatedContent.contains("hostname: awesome.concord.io"));
 
-        String expectedCommandLine = String.format("helm install --name sealed-secrets --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com --values %s stable/sealed-secrets --atomic", valuesYaml.toString());
+        String expectedCommandLine = String.format("helm install --atomic --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com --values %s --name sealed-secrets stable/sealed-secrets", valuesYaml.toString());
+        assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
+
+        System.out.println(context.getVariable("envars"));
+
+        // If these were placed in the context, then they were added to the environment of the executed command
+        assertEquals("/workspace/_attachments/k8s-cluster0-kubeconfig", varAsMap(context, "envars").get("KUBECONFIG"));
+        assertEquals("aws-access-key", varAsMap(context, "envars").get("AWS_ACCESS_KEY_ID"));
+        assertEquals("aws-secret-key", varAsMap(context, "envars").get("AWS_SECRET_ACCESS_KEY"));
+    }
+
+    @Test
+    public void validateHelmUpgrade() throws Exception {
+
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("helm"));
+        Map<String, ToolCommand> commands = ImmutableMap.of("helm/upgrade", new Upgrade());
+        HelmTask task = new HelmTask(commands, lockService, toolInitializer);
+
+        // Create a values.yml file and make sure it's interpolated correctly
+        Path valuesYaml = Files.createTempFile("helm", "values.yaml");
+        System.out.println("Creating Helm values.yml: " + valuesYaml.toString());
+        StringBuffer sb = new StringBuffer();
+        sb.append("ingress:").append("\n");
+        sb.append("  hostname: ${hostname}");
+        Files.write(valuesYaml, sb.toString().getBytes());
+
+        Map<String, Object> args = Maps.newHashMap(mapBuilder()
+                .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
+                .put("dryRun", true)
+                .put("command", "upgrade")
+                .put("chart",
+                        mapBuilder()
+                                .put("name", "sealed-secrets")
+                                .put("namespace", "kube-system")
+                                .put("version", "1.4.2")
+                                .put("set", ImmutableList.of("expose.ingress.host.core=bob.fetesting.com"))
+                                .put("value", "stable/sealed-secrets")
+                                .put("values", valuesYaml.toString())
+                                .build())
+                .put("envars",
+                        mapBuilder()
+                                .put("AWS_ACCESS_KEY_ID", "aws-access-key")
+                                .put("AWS_SECRET_ACCESS_KEY", "aws-secret-key")
+                                .put("KUBECONFIG", "/workspace/_attachments/k8s-cluster0-kubeconfig")
+                                .build())
+                .put("hostname", "awesome.concord.io")
+                .build());
+
+        Context context = new InterpolatingMockContext(args);
+        task.execute(context);
+        String commandLine = varAsString(context, "commandLineArguments");
+
+        System.out.println(commandLine);
+
+        // Make sure our values.yaml file was interpolated correctly by the Helm install command
+        String interpolatedContent = new String(Files.readAllBytes(valuesYaml));
+        assertTrue(interpolatedContent.contains("hostname: awesome.concord.io"));
+
+        String expectedCommandLine = String.format("helm upgrade --install --atomic --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com --values %s sealed-secrets stable/sealed-secrets", valuesYaml.toString());
         assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
 
         System.out.println(context.getVariable("envars"));

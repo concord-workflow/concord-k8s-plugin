@@ -123,14 +123,4 @@ public class TerraformProcessorTest {
         assertEquals("10.206.0.0/18", json.get("vpc_cidr"));
         assertEquals("jvz-vpc", json.get("vpc_name"));
     }
-
-    @Test
-    @Ignore
-    public void validateGenerationOfEksCtlConfiguration() throws Exception {
-
-        File terraformJsonOutput = new File("/tmp/terraform/tfoutput.json");
-        EksCtlYamlData eksCtlYamlData = new EksCtlYamlData("bobs-cluster", "us-east-2", "concord-agent", "1.14", terraformJsonOutput);
-        EksCtlYamlGenerator generator = new EksCtlYamlGenerator();
-        generator.generate(eksCtlYamlData, outputDirectory);
-    }
 }

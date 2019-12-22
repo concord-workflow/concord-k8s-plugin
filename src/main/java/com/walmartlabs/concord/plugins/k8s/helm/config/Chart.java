@@ -1,17 +1,13 @@
 package com.walmartlabs.concord.plugins.k8s.helm.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.walmartlabs.concord.plugins.k8s.helm.commands.Upgrade;
 import com.walmartlabs.concord.plugins.tool.KeyValue;
-import io.airlift.airline.Option;
+import com.walmartlabs.concord.plugins.tool.Option;
 
 import java.util.List;
-import java.util.Map;
 
 public class Chart {
-
-    @JsonProperty
-    @Option(name = {"--name"})
-    private String name;
 
     @JsonProperty
     @Option(name = {"--namespace"})
@@ -30,15 +26,32 @@ public class Chart {
     private String values;
 
     @JsonProperty
+    @Option(name = {"--name"}, omitFor=Upgrade.class)
+    private String name;
+
+    @JsonProperty
     private String value;
 
-    public String name() { return name; }
+    public Chart() {
+    }
 
-    public String namespace() { return namespace; }
+    public String name() {
+        return name;
+    }
 
-    public String version() { return version; }
+    public String namespace() {
+        return namespace;
+    }
 
-    public String value() { return value; }
+    public String version() {
+        return version;
+    }
 
-    public String values() { return values; }
+    public String value() {
+        return value;
+    }
+
+    public String values() {
+        return values;
+    }
 }

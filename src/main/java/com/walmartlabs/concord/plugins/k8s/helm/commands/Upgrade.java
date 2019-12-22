@@ -6,13 +6,20 @@ import com.walmartlabs.concord.plugins.tool.Flag;
 import com.walmartlabs.concord.plugins.tool.Omit;
 import com.walmartlabs.concord.plugins.tool.ToolCommandSupport;
 import com.walmartlabs.concord.sdk.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Named;
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 
-@Named("helm/install")
-public class Install extends ToolCommandSupport {
+@Named("helm/upgrade")
+public class Upgrade extends ToolCommandSupport {
+
+    @JsonProperty("install")
+    @Flag(name = {"--install"})
+    private boolean install = true;
 
     @JsonProperty("atomic")
     @Flag(name = {"--atomic"})
@@ -21,20 +28,14 @@ public class Install extends ToolCommandSupport {
     @JsonProperty("chart")
     @Omit
     private Chart chart;
-
     public Chart chart() {
         return chart;
     }
 
     @Override
-    public String idempotencyCheckCommand(Context context) {
-        return String.format("{{executable}} status %s", chart.name());
-    }
-
-    @Override
     public void preProcess(Path workDir, Context context) {
 
-        if (chart.values() != null) {
+        if(chart.values() != null) {
             interpolateWorkspaceFileAgainstContext(new File(chart.values()), context);
         }
 

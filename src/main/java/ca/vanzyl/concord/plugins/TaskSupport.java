@@ -1,5 +1,8 @@
 package ca.vanzyl.concord.plugins;
 
+import com.walmartlabs.concord.ApiClient;
+import com.walmartlabs.concord.client.ApiClientConfiguration;
+import com.walmartlabs.concord.client.ApiClientFactory;
 import com.walmartlabs.concord.sdk.Context;
 import com.walmartlabs.concord.sdk.SecretService;
 import com.walmartlabs.concord.sdk.Task;
@@ -38,4 +41,10 @@ public abstract class TaskSupport implements Task {
         return (String) context.get(variableName);
     }
 
+    protected static ApiClient apiClient(ApiClientFactory apiClientFactory, Context context) {
+        return apiClientFactory
+                .create(ApiClientConfiguration.builder()
+                        .context(context)
+                        .build());
+    }
 }

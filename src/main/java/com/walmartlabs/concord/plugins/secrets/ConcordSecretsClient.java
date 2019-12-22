@@ -39,11 +39,7 @@ public class ConcordSecretsClient {
         this.client = apiClient;
     }
 
-    public StartProcessResponse start(Map<String, Object> input) throws ApiException {
-        return request("/api/v1/process", input, StartProcessResponse.class);
-    }
-
-    public <T> T request(String uri, Map<String, Object> input, Class<T> entityType) throws ApiException {
+    private <T> T request(String uri, Map<String, Object> input, Class<T> entityType) throws ApiException {
         ApiResponse<T> resp = ClientUtils.postData(client, uri, input, entityType);
 
         int code = resp.getStatusCode();
@@ -58,7 +54,7 @@ public class ConcordSecretsClient {
         return resp.getData();
     }
 
-    public SecretOperationResponse postSecret(String orgName, Map<String, Object> input) throws ApiException {
+    private SecretOperationResponse postSecret(String orgName, Map<String, Object> input) throws ApiException {
         return request("/api/v1/org/" + orgName + "/secret", input, SecretOperationResponse.class);
     }
 

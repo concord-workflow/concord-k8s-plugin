@@ -7,11 +7,13 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
-public @interface OptionWithEquals {
+public @interface Option {
 
     String title() default "";
 
     String[] name();
+
+    Class omitFor() default void.class;
 
     String description() default "";
 

@@ -10,7 +10,6 @@ import com.walmartlabs.concord.plugins.Configurator;
 import com.walmartlabs.concord.sdk.Context;
 import com.walmartlabs.concord.sdk.LockService;
 import com.walmartlabs.concord.sdk.Task;
-import io.airlift.airline.Option;
 import io.airlift.units.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -228,6 +227,7 @@ public abstract class ToolTaskSupport implements Task {
                         }
                     }
                 } else {
+                    // helm install <omit chart> --name xxx --values yyy
                     Omit omit = field.getAnnotation(Omit.class);
                     if (omit == null) {
                         arguments.add(field.getName());
@@ -238,7 +238,9 @@ public abstract class ToolTaskSupport implements Task {
                             configuration.setAccessible(true);
                             Object value = configuration.get(operand);
                             if (value != null) {
-                                arguments.add(option.name()[0]);
+                                if(!option.omitFor().equals(command.getClass())) {
+                                    arguments.add(option.name()[0]);
+                                }
                                 arguments.add((String) value);
                             }
                         } else if (configuration.getAnnotation(KeyValue.class) != null) {

@@ -2,7 +2,7 @@ package com.walmartlabs.concord.plugins.k8s.eksctl.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.walmartlabs.concord.plugins.tool.Flag;
-import io.airlift.airline.Option;
+import com.walmartlabs.concord.plugins.tool.Option;
 
 public class Cluster {
 
@@ -30,7 +30,9 @@ public class Cluster {
     @Flag(name = {"--wait"})
     private boolean wait;
 
-    public String name() { return name; }
+    public String name() {
+        return name;
+    }
 
     public String region() {
         return region;
