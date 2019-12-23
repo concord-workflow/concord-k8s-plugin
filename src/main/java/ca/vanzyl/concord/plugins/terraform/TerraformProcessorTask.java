@@ -5,6 +5,7 @@ import com.walmartlabs.concord.plugins.Configurator;
 import com.walmartlabs.concord.sdk.Context;
 
 import javax.inject.Named;
+import java.nio.file.Path;
 import java.util.Map;
 
 //
@@ -58,9 +59,10 @@ public class TerraformProcessorTask extends TaskSupport {
 
         String resources = (String) context.getVariable(RESOURCE_DIRECTORY);
         String outputDirectory = (String) context.getVariable(OUTPUT_DIRECTORY);
+        Path workDir = workDir(context);
 
         TerraformProcessor processor = new TerraformProcessor(
-                workDir(context).resolve(resources), workDir(context).resolve(outputDirectory));
+                workDir.resolve(resources), workDir(context).resolve(outputDirectory), workDir);
 
         Map<String,Object> configuration = (Map<String,Object>)context.getVariable(CONFIGURATION);
 

@@ -6,7 +6,7 @@ import java.io.File;
 
 public class TestSupport {
 
-    private String basedir;
+    protected String basedir;
 
     @Before
     public void setUp() {

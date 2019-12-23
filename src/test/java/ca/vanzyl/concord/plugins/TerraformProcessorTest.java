@@ -4,17 +4,20 @@ import ca.vanzyl.concord.plugins.terraform.TerraformProcessingResult;
 import ca.vanzyl.concord.plugins.terraform.TerraformProcessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.walmartlabs.concord.plugins.TestSupport;
 import com.walmartlabs.concord.plugins.k8s.eksctl.config.file.EksCtlYamlData;
 import com.walmartlabs.concord.plugins.k8s.eksctl.config.file.EksCtlYamlGenerator;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 //
 //  - task: terraformProcessor
@@ -31,17 +34,10 @@ import static org.junit.Assert.assertEquals;
 //          variables:
 //            cluster_name: jvz-cluster
 //
-public class TerraformProcessorTest {
-
-    File outputDirectory = new File("/tmp/terraform");
+public class TerraformProcessorTest extends TestSupport {
 
     @Test
     public void validateTerraformProcessorWithYaml() throws Exception {
-
-        // Grab the credentials from the standard ~/.aws/credentials from teh [default] stanza
-        //AwsCredentials awsCredentials = new AwsCredentials();
-        //String awsAccessKeyId = awsCredentials.awsAccessKeyId();
-        //String awsSecretAccessKey = awsCredentials.awsSecretAccessKey();
 
         String awsAccessKeyId = "xxx";
         String awsSecretAccessKey = "yyy";
@@ -77,9 +73,11 @@ public class TerraformProcessorTest {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         Map<String, Object> map = mapper.readValue(yaml, Map.class);
 
-        Path source = new File(new File("").getAbsolutePath(), "src/test/terraform/00-aws/terraform").toPath();
-        Path target = outputDirectory.toPath();
-        TerraformProcessor processor = new TerraformProcessor(source, target);
+        Path source = new File(basedir, "src/test/terraform/00-aws/terraform").toPath();
+        Path target = new File(basedir,"target/workdir/terraform").toPath();
+        Path workDir = new File(basedir,"target/workdir").toPath();
+
+        TerraformProcessor processor = new TerraformProcessor(source, target, workDir);
         TerraformProcessingResult result = processor.process(map);
 
         ObjectMapper jsonMapper = new ObjectMapper();
@@ -122,5 +120,9 @@ public class TerraformProcessorTest {
         assertEquals("jvz-cluster", json.get("cluster_name"));
         assertEquals("10.206.0.0/18", json.get("vpc_cidr"));
         assertEquals("jvz-vpc", json.get("vpc_name"));
+
+        // Make sure all policy files are copied into the workdir
+        Path policyFile = workDir.resolve("eks-policy-aws-s3.json");
+        assertTrue(Files.exists(policyFile));
     }
 }

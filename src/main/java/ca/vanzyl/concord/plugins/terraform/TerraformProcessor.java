@@ -34,11 +34,13 @@ public class TerraformProcessor {
 
     private final Path resources;
     private final Path outputDirectory;
+    private final Path workDir;
     private final Configurator configurator;
 
-    public TerraformProcessor(Path resources, Path outputDirectory) {
+    public TerraformProcessor(Path resources, Path outputDirectory, Path workDir) {
         this.resources = resources;
         this.outputDirectory = outputDirectory;
+        this.workDir = workDir;
         this.configurator = new Configurator(true);
     }
 
@@ -50,6 +52,10 @@ public class TerraformProcessor {
 
         if (!configuration.authentication().equals(AUTHENTICATION_CREDENTIALS) && !configuration.authentication().equals(AUTHENTICATION_ASSUME_ROLE)) {
             throw new RuntimeException(String.format("The authentication mode of '%s' is not supported. Supported authentication modes are 'credentials' and 'assumeRole'.", configuration.authentication()));
+        }
+
+        if(!Files.exists(outputDirectory)) {
+            Files.createDirectories(outputDirectory);
         }
 
         //
@@ -91,6 +97,7 @@ public class TerraformProcessor {
             resourceTypes.add(resource.type());
             Path source = terraformResources.resolve(resource.type());
             copy(source, outputDirectory);
+            copyPoliciesToWorkDir(source, workDir);
 
             Path resourceVariablesFile = source.resolve(String.format("%s-variables.tf", resource.type()));
             variables.addAll(processVariables(resource.type(), resourceVariablesFile, resource.configuration()));
@@ -141,6 +148,19 @@ public class TerraformProcessor {
             try {
                 if (Files.isRegularFile(s)) {
                     Files.copy(s, dest.resolve(src.relativize(s)), REPLACE_EXISTING);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage(), e);
+            }
+        });
+    }
+
+    // This flattens everything into one directory for Terraform to process
+    private void copyPoliciesToWorkDir(Path src, Path workDir) throws IOException {
+        Files.walk(src).forEach(s -> {
+            try {
+                if (s.getFileName().toString().contains("policy")) {
+                    Files.copy(s, workDir.resolve(src.relativize(s)), REPLACE_EXISTING);
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage(), e);
