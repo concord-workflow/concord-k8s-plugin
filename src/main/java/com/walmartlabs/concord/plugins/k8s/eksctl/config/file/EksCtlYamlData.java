@@ -16,38 +16,14 @@ public class EksCtlYamlData {
 
     private static ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-    private String name;
-    private String region;
-    private String keypair;
-    private String k8sVersion;
     private Map<String, Object> terraformOutput;
 
-    public EksCtlYamlData(String name, String region, String keypair, String k8sVersion, File terraformOutput) {
-        this(name, region, keypair, k8sVersion, map(terraformOutput));
+    public EksCtlYamlData(File terraformOutput) {
+        this(map(terraformOutput));
     }
 
-    public EksCtlYamlData(String name, String region, String keypair, String k8sVersion, Map<String, Object> terraformOutput) {
-        this.name = name;
-        this.region = region;
-        this.keypair = keypair;
-        this.k8sVersion = k8sVersion;
+    public EksCtlYamlData(Map<String, Object> terraformOutput) {
         this.terraformOutput = terraformOutput;
-    }
-
-    public String name() {
-        return name;
-    }
-
-    public String region() {
-        return region;
-    }
-
-    public String keypair() {
-        return keypair;
-    }
-
-    public String k8sVersion() {
-        return k8sVersion;
     }
 
     public String vpcId() {

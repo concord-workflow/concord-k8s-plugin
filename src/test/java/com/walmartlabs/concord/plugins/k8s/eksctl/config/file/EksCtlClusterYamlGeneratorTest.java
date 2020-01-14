@@ -2,6 +2,7 @@ package com.walmartlabs.concord.plugins.k8s.eksctl.config.file;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.google.common.collect.ImmutableList;
 import com.walmartlabs.concord.plugins.ConcordTestSupport;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,11 +27,31 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
     @Test
     public void validateTerraformOutputParser() throws Exception {
 
-        EksCtlYamlData cluster = new EksCtlYamlData("magic-cluster", "us-west-2", "", "1.14",new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
+        EksCtlYamlData cluster = new EksCtlYamlData(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
 
-        assertEquals("magic-cluster", cluster.name());
-        assertEquals("us-west-2", cluster.region());
-        assertEquals("1.14", cluster.k8sVersion());
+        List<Map<String, Object>> nodeGroup = ImmutableList.of(mapBuilder()
+                .put("id", "eksctl")
+                .put("version", "0.7.0")
+                .put("nodeGroupName", "standard-worker-group-1")
+                .put("instanceType", "m5.large")
+                .put("desiredCapacity", "3")
+                .put("minSize", "1")
+                .put("maxSize", "10")
+                .put("volumeSize", "200")
+                .put("publicKeyName", "automation").build());
+
+        Map<String, Object> clusterRequest =
+                mapBuilder()
+                        .put("profile", "jvz")
+                        .put("clusterName", "magic-cluster")
+                        .put("region", "us-west-2")
+                        .put("user", "automation")
+                        .put("k8sVersion", "1.14")
+                        .put("builder",
+                                mapBuilder()
+                                        .put("nodeGroups", nodeGroup)
+                                        .build())
+                        .build();
 
         assertEquals("vpc-0fcf234ea5579c35d", cluster.vpcId());
         assertEquals("10.189.0.0/18", cluster.vpcCidr());
@@ -64,7 +85,6 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
         assertEquals("subnet-0ecb4ed179e11c4d3", cluster.publicSubnets().get(2).subnet());
         assertEquals("10.189.24.0/21", cluster.publicSubnets().get(2).cidr());
 
-
         assertEquals("cpie-dev-02", cluster.vpcName());
         assertEquals(3, cluster.tags().size());
 
@@ -79,7 +99,8 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
 
         EksCtlYamlGenerator generator = new EksCtlYamlGenerator();
         File clusterYml = new File(basedir, "target/cluster.yml");
-        generator.generate(cluster, clusterYml);
+
+        generator.generate(clusterRequest, cluster, clusterYml);
 
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try (InputStream inputStream = new FileInputStream(clusterYml)) {
@@ -113,6 +134,14 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
             assertEquals("arn:aws:iam::502860607067:role/cpie-dev-02-eks-service-node-role", ((Map) yaml.get("iam")).get("serviceRoleARN"));
             assertEquals("arn:aws:iam::502860607067:instance-profile/cpie-dev-02-eks-worker-node-profile", ((Map) ((Map) ((List) yaml.get("nodeGroups")).get(0)).get("iam")).get("instanceProfileARN"));
             assertEquals("arn:aws:iam::502860607067:role/cpie-dev-02-eks-worker-node-role", ((Map) ((Map) ((List) yaml.get("nodeGroups")).get(0)).get("iam")).get("instanceRoleARN"));
+
+            assertEquals("standard-worker-group-1", ((Map) ((List) yaml.get("nodeGroups")).get(0)).get("name"));
+            assertEquals("m5.large", ((Map) ((List) yaml.get("nodeGroups")).get(0)).get("instanceType"));
+            assertEquals(3, ((Map) ((List) yaml.get("nodeGroups")).get(0)).get("desiredCapacity"));
+            assertEquals(1, ((Map) ((List) yaml.get("nodeGroups")).get(0)).get("minSize"));
+            assertEquals(10, ((Map) ((List) yaml.get("nodeGroups")).get(0)).get("maxSize"));
+
+            assertEquals("automation", ((Map) ((Map) ((List) yaml.get("nodeGroups")).get(0)).get("ssh")).get("publicKeyName"));
         }
     }
 }

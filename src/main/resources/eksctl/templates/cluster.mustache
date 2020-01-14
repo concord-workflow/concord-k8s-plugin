@@ -1,9 +1,9 @@
 apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 metadata:
-  name: {{cluster.name}}
-  region: {{cluster.region}}
-  version: "{{cluster.k8sVersion}}"
+  name: {{clusterRequest.clusterName}}
+  region: {{clusterRequest.region}}
+  version: "{{clusterRequest.k8sVersion}}"
 vpc:
   id: "{{cluster.vpcId}}"
   cidr: "{{cluster.vpcCidr}}"
@@ -22,24 +22,27 @@ vpc:
       {{/cluster.publicSubnets}}
 iam:
   serviceRoleARN: "{{cluster.serviceRoleArn}}"
+
 nodeGroups:
-  - name: standard-worker-group-1
-    labels: {pool: standard-worker-group-1}
-    instanceType: m5.large
-    desiredCapacity: 3
-    minSize: 1
-    maxSize: 15
-    volumeSize: 200
+  {{#clusterRequest.builder.nodeGroups}}
+  - name: {{nodeGroupName}}
+    labels: { pool: {{nodeGroupName}} }
+    instanceType: {{instanceType}}
+    desiredCapacity: {{desiredCapacity}}
+    minSize: {{minSize}}
+    maxSize: {{maxSize}}
+    volumeSize: {{volumeSize}}
     volumeType: gp2
     iam:
       instanceProfileARN: "{{cluster.instanceProfileArn}}"
       instanceRoleARN: "{{cluster.instanceRoleArn}}"
     privateNetworking: true
     ssh:
-      publicKeyName: '{{cluster.keypair}}'
+      publicKeyName: '{{clusterRequest.user}}'
     tags:
       {{#cluster.tags}}
       '{{key}}': '{{value}}'
       {{/cluster.tags}}
-      k8s.io/cluster-autoscaler/{{cluster.name}}: "owned"
+      k8s.io/cluster-autoscaler/{{clusterRequest.clusterName}}: "owned"
       k8s.io/cluster-autoscaler/enabled: "true"
+  {{/clusterRequest.builder.nodeGroups}}

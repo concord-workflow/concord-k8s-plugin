@@ -10,12 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
-//
-// - task: eksctlYml
-//   in:
-//     clusterRequest: "${clusterRequestYml}"
-//     vpcTerraformOutput: "${result.data}"
-//
 @Named("eksctlYml")
 public class EksCtlClusterYmlTask extends TaskSupport {
 
@@ -27,16 +21,12 @@ public class EksCtlClusterYmlTask extends TaskSupport {
         Map<String, Object> clusterRequest = (Map<String, Object>) context.getVariable("clusterRequest");
         Map<String, Object> terraformOutputAsMap = (Map<String, Object>) context.getVariable("vpcTerraformOutput");
 
-        String clusterName = varAsString(clusterRequest, "clusterName");
-        String region = varAsString(clusterRequest, "region");
-        String k8sVersion = varAsString(clusterRequest, "k8sVersion");
-        String user = varAsString(clusterRequest, "user");
-        EksCtlYamlData clusterInfo = new EksCtlYamlData(clusterName, region, user, k8sVersion, terraformOutputAsMap);
+        EksCtlYamlData clusterInfo = new EksCtlYamlData(terraformOutputAsMap);
 
         String eksctlYamlFile = varAsString(context, "configFile");
         Path clusterYml = workDir(context).resolve(eksctlYamlFile);
         EksCtlYamlGenerator generator = new EksCtlYamlGenerator();
-        generator.generate(clusterInfo, clusterYml.toFile());
+        generator.generate(clusterRequest, clusterInfo, clusterYml.toFile());
 
         String clusterYmlContent = new String(Files.readAllBytes(clusterYml));
         logger.info("cluster.yml:\n\n{}", clusterYmlContent);
