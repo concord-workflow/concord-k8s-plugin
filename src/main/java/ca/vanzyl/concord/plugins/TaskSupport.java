@@ -4,7 +4,6 @@ import com.walmartlabs.concord.ApiClient;
 import com.walmartlabs.concord.client.ApiClientConfiguration;
 import com.walmartlabs.concord.client.ApiClientFactory;
 import com.walmartlabs.concord.sdk.Context;
-import com.walmartlabs.concord.sdk.SecretService;
 import com.walmartlabs.concord.sdk.Task;
 
 import java.nio.file.Path;

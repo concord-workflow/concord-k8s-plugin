@@ -1,7 +1,5 @@
 package com.walmartlabs.concord.plugins.k8s.context;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.walmartlabs.concord.ApiClient;
@@ -10,7 +8,6 @@ import com.walmartlabs.concord.plugins.inventory.ConcordClientSupport;
 import com.walmartlabs.concord.plugins.inventory.ConcordInventoryClient;
 
 import javax.inject.Named;
-import java.util.List;
 import java.util.Map;
 
 @Named

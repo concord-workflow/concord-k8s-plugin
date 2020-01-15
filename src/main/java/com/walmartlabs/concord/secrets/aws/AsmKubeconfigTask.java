@@ -12,8 +12,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
 
-import static com.walmartlabs.concord.plugins.secrets.ConcordSecretsClient.apiClient;
-
 // TODO: policy to allow replacing or fail on trying to replace
 
 @Named("asmKubeconfig")

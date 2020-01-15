@@ -16,8 +16,6 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static com.walmartlabs.concord.plugins.secrets.ConcordSecretsClient.apiClient;
-
 // TODO: just the secrets client instead of the secrets service, more control over the errors
 @Named("concordKubeconfig")
 public class ConcordKubeconfigTask extends TaskSupport {

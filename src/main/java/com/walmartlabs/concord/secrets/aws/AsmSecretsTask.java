@@ -2,25 +2,17 @@ package com.walmartlabs.concord.secrets.aws;
 
 import ca.vanzyl.concord.plugins.TaskSupport;
 import com.google.common.collect.Maps;
-import com.walmartlabs.concord.client.ApiClientFactory;
-import com.walmartlabs.concord.plugins.k8s.secrets.K8sSecretsClient;
 import com.walmartlabs.concord.plugins.k8s.secrets.Secret;
 import com.walmartlabs.concord.plugins.k8s.secrets.SecretsManager;
-import com.walmartlabs.concord.plugins.secrets.ConcordSecretsClient;
 import com.walmartlabs.concord.sdk.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import javax.inject.Named;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import static com.walmartlabs.concord.plugins.secrets.ConcordSecretsClient.apiClient;
 import static com.walmartlabs.concord.secrets.aws.Indent.indentBlock;
 
 // TODO: probably best to transfer the secrets into Concord and use them from there

@@ -5,15 +5,11 @@ import ca.vanzyl.concord.plugins.terraform.TerraformProcessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.walmartlabs.concord.plugins.TestSupport;
-import com.walmartlabs.concord.plugins.k8s.eksctl.config.file.EksCtlYamlData;
-import com.walmartlabs.concord.plugins.k8s.eksctl.config.file.EksCtlYamlGenerator;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;

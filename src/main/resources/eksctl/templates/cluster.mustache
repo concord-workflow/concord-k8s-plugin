@@ -46,3 +46,15 @@ nodeGroups:
       k8s.io/cluster-autoscaler/{{clusterRequest.clusterName}}: "owned"
       k8s.io/cluster-autoscaler/enabled: "true"
   {{/clusterRequest.builder.nodeGroups}}
+
+
+{{#clusterRequest.clusterLogging}}
+cloudWatch:
+  clusterLogging:
+    # enable specific types of cluster control plane logs
+    enableTypes:  ["all"]
+    # all supported types: "api", "audit", "authenticator", "controllerManager", "scheduler"
+    # supported special values: "*" and "all"
+{{/clusterRequest.clusterLogging}}
+
+

@@ -6,8 +6,6 @@ import com.walmartlabs.concord.plugins.tool.ToolCommandSupport;
 import com.walmartlabs.concord.sdk.Context;
 
 import javax.inject.Named;
-import java.nio.file.Path;
-import java.util.Map;
 
 @Named("eksctl/create")
 public class Create extends ToolCommandSupport {

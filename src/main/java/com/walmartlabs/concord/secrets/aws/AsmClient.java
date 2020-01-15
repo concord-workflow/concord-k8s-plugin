@@ -7,20 +7,10 @@ import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
-import com.amazonaws.services.secretsmanager.model.CreateSecretRequest;
-import com.amazonaws.services.secretsmanager.model.CreateSecretResult;
-import com.amazonaws.services.secretsmanager.model.DeleteSecretRequest;
-import com.amazonaws.services.secretsmanager.model.DeleteSecretResult;
-import com.amazonaws.services.secretsmanager.model.DescribeSecretRequest;
-import com.amazonaws.services.secretsmanager.model.DescribeSecretResult;
-import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
-import com.amazonaws.services.secretsmanager.model.GetSecretValueResult;
-import com.amazonaws.services.secretsmanager.model.ListSecretsRequest;
-import com.amazonaws.services.secretsmanager.model.SecretListEntry;
+import com.amazonaws.services.secretsmanager.model.*;
 import com.google.common.collect.ImmutableList;
 import com.walmartlabs.concord.secrets.SecretsProvider;
 
-import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -1,8 +1,6 @@
 package com.walmartlabs.concord.plugins.shell;
 
 import com.walmartlabs.concord.plugins.tool.ToolCommand;
-import com.walmartlabs.concord.plugins.tool.ToolDescriptor;
-import com.walmartlabs.concord.plugins.tool.ToolInitializationResult;
 import com.walmartlabs.concord.plugins.tool.ToolInitializer;
 import com.walmartlabs.concord.plugins.tool.ToolTaskSupport;
 import com.walmartlabs.concord.sdk.Context;
