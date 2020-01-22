@@ -37,6 +37,8 @@ nodeGroups:
       instanceProfileARN: "{{cluster.instanceProfileArn}}"
       instanceRoleARN: "{{cluster.instanceRoleArn}}"
     privateNetworking: true
+    ami: {{#ami}}{{ami}}{{/ami}}{{^ami}}static{{/ami}}
+    amiFamily: {{#amiFamily}}{{amiFamily}}{{/amiFamily}}{{^amiFamily}}AmazonLinux2{{/amiFamily}}
     ssh:
       publicKeyName: '{{#publicKeyName}}{{publicKeyName}}{{/publicKeyName}}{{^publicKeyName}}{{clusterRequest.user}}{{/publicKeyName}}'
     tags:
