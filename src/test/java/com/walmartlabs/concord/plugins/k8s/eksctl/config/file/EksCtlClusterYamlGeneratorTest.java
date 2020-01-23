@@ -185,7 +185,6 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
     }
 
 
-
     @Test
     public void validateAMIfamilySetAsUbuntu1804() throws Exception {
         EksCtlYamlData cluster = new EksCtlYamlData(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
@@ -268,9 +267,6 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
     }
 
 
-
-
-
     @Test
     public void validateAbsentNodeGroupKey() throws Exception {
 
@@ -311,8 +307,6 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
     }
 
 
-
-
     @Test
     public void validateClusterLoggingEnabled() throws Exception {
 
@@ -336,7 +330,7 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
                         .put("region", "us-west-2")
                         .put("user", "automation")
                         .put("k8sVersion", "1.14")
-                        .put("clusterLogging",true)
+                        .put("clusterLogging", true)
                         .put("builder",
                                 mapBuilder()
                                         .put("nodeGroups", nodeGroup)
@@ -351,8 +345,89 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try (InputStream inputStream = new FileInputStream(clusterYml)) {
             Map<String, Object> yaml = mapper.readValue(inputStream, Map.class);
-            assertEquals("all", ((List)((Map)((Map)yaml.get("cloudWatch")).get("clusterLogging")).get("enableTypes")).get(0));
+            assertEquals("all", ((List) ((Map) ((Map) yaml.get("cloudWatch")).get("clusterLogging")).get("enableTypes")).get(0));
 
         }
     }
+
+    @Test
+    public void validateAbsentNodeGroupLabelShouldUseTheNodeGroupName() throws Exception {
+
+        EksCtlYamlData cluster = new EksCtlYamlData(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
+
+        List<Map<String, Object>> nodeGroup = ImmutableList.of(mapBuilder()
+                .put("id", "eksctl")
+                .put("version", "0.7.0")
+                .put("nodeGroupName", "standard-worker-group-1")
+                .put("instanceType", "m5.large")
+                .put("desiredCapacity", "3")
+                .put("minSize", "1")
+                .put("maxSize", "10")
+                .put("volumeSize", "200").build());
+
+        Map<String, Object> clusterRequest =
+                mapBuilder()
+                        .put("profile", "jvz")
+                        .put("clusterName", "magic-cluster")
+                        .put("region", "us-west-2")
+                        .put("user", "automation")
+                        .put("k8sVersion", "1.14")
+                        .put("builder",
+                                mapBuilder()
+                                        .put("nodeGroups", nodeGroup)
+                                        .build())
+                        .build();
+
+        EksCtlYamlGenerator generator = new EksCtlYamlGenerator();
+        File clusterYml = new File(basedir, "target/cluster.yml");
+        generator.generate(clusterRequest, cluster, clusterYml);
+
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        try (InputStream inputStream = new FileInputStream(clusterYml)) {
+            Map<String, Object> yaml = mapper.readValue(inputStream, Map.class);
+            assertEquals("standard-worker-group-1", ((Map) ((Map) ((List) yaml.get("nodeGroups")).get(0)).get("labels")).get("pool"));
+        }
+    }
+
+
+    @Test
+    public void validateNodeGroupLabelShouldUseTheNodeGroupLabel() throws Exception {
+
+        EksCtlYamlData cluster = new EksCtlYamlData(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
+
+        List<Map<String, Object>> nodeGroup = ImmutableList.of(mapBuilder()
+                .put("id", "eksctl")
+                .put("version", "0.7.0")
+                .put("nodeGroupName", "standard-worker-group-1")
+                .put("instanceType", "m5.large")
+                .put("desiredCapacity", "3")
+                .put("minSize", "1")
+                .put("maxSize", "10")
+                .put("nodeGroupLabel", "ubuntu")
+                .put("volumeSize", "200").build());
+
+        Map<String, Object> clusterRequest =
+                mapBuilder()
+                        .put("profile", "jvz")
+                        .put("clusterName", "magic-cluster")
+                        .put("region", "us-west-2")
+                        .put("user", "automation")
+                        .put("k8sVersion", "1.14")
+                        .put("builder",
+                                mapBuilder()
+                                        .put("nodeGroups", nodeGroup)
+                                        .build())
+                        .build();
+
+        EksCtlYamlGenerator generator = new EksCtlYamlGenerator();
+        File clusterYml = new File(basedir, "target/cluster.yml");
+        generator.generate(clusterRequest, cluster, clusterYml);
+
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        try (InputStream inputStream = new FileInputStream(clusterYml)) {
+            Map<String, Object> yaml = mapper.readValue(inputStream, Map.class);
+            assertEquals("ubuntu", ((Map) ((Map) ((List) yaml.get("nodeGroups")).get(0)).get("labels")).get("pool"));
+        }
+    }
+
 }

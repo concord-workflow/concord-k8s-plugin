@@ -26,7 +26,7 @@ iam:
 nodeGroups:
   {{#clusterRequest.builder.nodeGroups}}
   - name: {{nodeGroupName}}
-    labels: { pool: {{nodeGroupName}} }
+    labels: { pool: {{#nodeGroupLabel}}{{nodeGroupLabel}}{{/nodeGroupLabel}}{{^nodeGroupLabel}}{{nodeGroupName}}{{/nodeGroupLabel}} }
     instanceType: {{instanceType}}
     desiredCapacity: {{desiredCapacity}}
     minSize: {{minSize}}
