@@ -11,5 +11,6 @@ public abstract class Secret {
 
     public abstract String value();
 
+    @Nullable
     public abstract String description();
 }

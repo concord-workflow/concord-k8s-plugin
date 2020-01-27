@@ -99,26 +99,26 @@ public class ConcordSecretsClient {
     }
 
     public String secretAsString(String orgName, String secretName) throws Exception {
-        BinaryDataSecret secret = secret(orgName, secretName, null, SecretEntry.TypeEnum.DATA);
+        BinaryDataSecret secret = binaryDataSecret(orgName, secretName, null, SecretEntry.TypeEnum.DATA);
         return new String(secret.getData());
     }
 
-    public String secret(String orgName, String secretName) throws Exception {
-        return secret(orgName, secretName, null, SecretEntry.TypeEnum.DATA);
+    public BinaryDataSecret binaryDataSecret(String orgName, String secretName) throws Exception {
+        return binaryDataSecret(orgName, secretName, null, SecretEntry.TypeEnum.DATA);
     }
 
     public KeyPair keypair(String orgName, String secretName) throws Exception {
-        return secret(orgName, secretName, null, SecretEntry.TypeEnum.KEY_PAIR);
+        return binaryDataSecret(orgName, secretName, null, SecretEntry.TypeEnum.KEY_PAIR);
     }
 
     public UsernamePassword usernamePassword(String orgName, String secretName) throws Exception {
-        return secret(orgName, secretName, null, SecretEntry.TypeEnum.USERNAME_PASSWORD);
+        return binaryDataSecret(orgName, secretName, null, SecretEntry.TypeEnum.USERNAME_PASSWORD);
     }
 
-    private <T extends Secret> T secret(String orgName, String secretName, String password, SecretEntry.TypeEnum type) throws Exception {
+    private <T extends Secret> T binaryDataSecret(String orgName, String secretName, String password, SecretEntry.TypeEnum type) throws Exception {
         String path = "/api/v1/org/" + orgName + "/secret/" + secretName + "/data";
 
-        ApiResponse<File> r = null;
+        ApiResponse<File> response = null;
 
         Map<String, Object> params = new HashMap<>();
         String pwd = password;
@@ -128,28 +128,25 @@ public class ConcordSecretsClient {
         params.put("storePassword", pwd);
 
         try {
-            r = ClientUtils.withRetry(RETRY_COUNT, RETRY_INTERVAL,
+            response = ClientUtils.withRetry(RETRY_COUNT, RETRY_INTERVAL,
                     () -> ClientUtils.postData(client, path, params, File.class));
 
-            if (r.getData() == null) {
-                throw new IllegalArgumentException("Secret not found");
+            if (response.getData() == null) {
+                return null;
             }
 
-            SecretEntry.TypeEnum actualSecretType = SecretEntry.TypeEnum.valueOf(ClientUtils.getHeader(SECRET_TYPE, r));
+            SecretEntry.TypeEnum actualSecretType = SecretEntry.TypeEnum.valueOf(ClientUtils.getHeader(SECRET_TYPE, response));
 
             if (type != null && type != actualSecretType) {
                 throw new IllegalArgumentException("Expected " + type + " got " + actualSecretType);
             }
 
-            return readSecret(actualSecretType, Files.readAllBytes(r.getData().toPath()));
+            return readSecret(actualSecretType, Files.readAllBytes(response.getData().toPath()));
         } catch (ApiException e) {
-            if (e.getCode() == 404) {
-                throw new IllegalArgumentException("Secret not found");
-            }
-            throw e;
+            return null;
         } finally {
-            if (r != null && r.getData() != null) {
-                Files.delete(r.getData().toPath());
+            if (response != null && response.getData() != null) {
+                Files.delete(response.getData().toPath());
             }
         }
     }

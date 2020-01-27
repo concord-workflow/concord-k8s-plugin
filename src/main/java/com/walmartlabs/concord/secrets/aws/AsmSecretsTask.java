@@ -29,41 +29,26 @@ public class AsmSecretsTask extends TaskSupport {
         String awsSecretKey = varAsString(context, "awsSecretKey");
         String organization = orgName(context);
 
-        AsmClient asmClient = new AsmClient(region, awsAccessKey, awsSecretKey);
-        String organizationSecretsYaml = asmClient.get(organization);
-        logger.info("Successfully retrieved the organization secrets for '{}' from {}.", organization, region);
+        try {
+            AsmClient asmClient = new AsmClient(region, awsAccessKey, awsSecretKey);
+            String organizationSecretsYaml = asmClient.get(organization);
+            logger.info("Successfully retrieved the organization secrets for '{}' from {}.", organization, region);
 
-        SecretsManager secretsManager = new SecretsManager();
-        List<Secret> secrets = secretsManager.load(organizationSecretsYaml);
+            SecretsManager secretsManager = new SecretsManager();
+            List<Secret> secrets = secretsManager.load(organizationSecretsYaml);
 
-        Map<String, String> secretsMap = Maps.newHashMap();
-        for(Secret secret : secrets) {
-            secretsMap.put(secret.name(), adjust(secret.value()));
-        }
-
-        // We take the map that we created and store the secrets in the Concord context
-        context.setVariable("secrets", secretsMap);
-        logger.info("Successfully injected the organization secrets for '{}' into the context. A specific secret is available as '${secrets.XXX}'.", organization);
-
-        /*
-
-        // How to pick the right namespace...
-
-        Path kubeconfigFile = Paths.get((String)context.getVariable("kubeconfigFile"));
-        K8sSecretsClient k8sSecretsClient = new K8sSecretsClient(kubeconfigFile.toFile());
-
-        for (Map.Entry<String,String> secret: secretsMap.entrySet()) {
-            String name = secret.getKey();
-            String value = secret.getValue();
-            if(value != null) {
-                Map<String, String> secretData = Maps.newHashMap();
-                // base64 encode the value as the k8s client doesn't do this by default (which is misleading from their tests)
-                secretData.put(name, base64(value));
-                // Send the secret to the cluster with the given namespace
-                k8sSecretsClient.addSecret(k8sNamespace, name, secretData);
+            Map<String, String> secretsMap = Maps.newHashMap();
+            for (Secret secret : secrets) {
+                secretsMap.put(secret.name(), adjust(secret.value()));
             }
+
+            // We take the map that we created and store the secrets in the Concord context
+            context.setVariable("secrets", secretsMap);
+            logger.info("Successfully injected the organization secrets for '{}' into the context. A specific secret is available as '${secrets.XXX}'.", organization);
+        } catch(Exception e) {
+            logger.error("Failed to load '{}' secret from ASM in {}.", organization, region);
+            throw e;
         }
-         */
     }
 
     // Total hack to get formatting correct in Helm
