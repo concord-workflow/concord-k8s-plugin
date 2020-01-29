@@ -2,6 +2,10 @@ package com.walmartlabs.concord.secrets.aws;
 
 import ca.vanzyl.concord.plugins.TaskSupport;
 import com.walmartlabs.concord.client.ApiClientFactory;
+import com.walmartlabs.concord.plugins.inventory.ConcordInventoryClient;
+import com.walmartlabs.concord.plugins.k8s.K8sTaskSupport;
+import com.walmartlabs.concord.plugins.k8s.context.ClusterInventoryClient;
+import com.walmartlabs.concord.plugins.k8s.context.K8sCluster;
 import com.walmartlabs.concord.plugins.secrets.ConcordSecretsClient;
 import com.walmartlabs.concord.sdk.Context;
 import org.slf4j.Logger;
@@ -15,19 +19,21 @@ import java.util.List;
  * Retrieving the specified kubeconfig from ASM and storing it in Concord's secret store.
  */
 @Named("asmKubeconfigGet")
-public class AsmKubeconfigGetTask extends TaskSupport {
+public class AsmKubeconfigGetTask extends K8sTaskSupport {
 
     private final static Logger logger = LoggerFactory.getLogger(AsmKubeconfigGetTask.class);
 
-    private final ApiClientFactory apiClientFactory;
-
     @Inject
     public AsmKubeconfigGetTask(ApiClientFactory apiClientFactory) {
-        this.apiClientFactory = apiClientFactory;
+        super(apiClientFactory);
     }
 
     @Override
     public void execute(Context context) throws Exception {
+
+        if(!clusterExists(context)) {
+            return;
+        }
 
         String kubeconfigName = varAsString(context, "kubeconfigName");
         String awsAccessKey = varAsString(context, "awsAccessKey");

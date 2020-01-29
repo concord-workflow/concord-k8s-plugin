@@ -1,8 +1,8 @@
 package com.walmartlabs.concord.plugins.k8s.secrets;
 
-import ca.vanzyl.concord.plugins.TaskSupport;
 import com.walmartlabs.concord.ApiException;
 import com.walmartlabs.concord.client.ApiClientFactory;
+import com.walmartlabs.concord.plugins.k8s.K8sTaskSupport;
 import com.walmartlabs.concord.plugins.secrets.ConcordSecretsClient;
 import com.walmartlabs.concord.sdk.Constants;
 import com.walmartlabs.concord.sdk.Context;
@@ -17,22 +17,26 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 // TODO: just the secrets client instead of the secrets service, more control over the errors
+// TODO: break into a get and put task, the purpose here is conflated
 @Named("concordKubeconfig")
-public class ConcordKubeconfigTask extends TaskSupport {
+public class ConcordKubeconfigTask extends K8sTaskSupport {
 
     private static final Logger logger = LoggerFactory.getLogger(ConcordKubeconfigTask.class);
 
-    private final ApiClientFactory apiClientFactory;
     private final SecretService secretService;
 
     @Inject
     public ConcordKubeconfigTask(ApiClientFactory apiClientFactory, SecretService secretService) {
-        this.apiClientFactory = apiClientFactory;
+        super(apiClientFactory);
         this.secretService = secretService;
     }
 
     @Override
     public void execute(Context context) throws Exception {
+
+        //if (!clusterExists(context)) {
+        //    return;
+        //}
 
         String instanceId = (String) context.getVariable(Constants.Context.TX_ID_KEY);
         String organization = varAsString(context, "organization");

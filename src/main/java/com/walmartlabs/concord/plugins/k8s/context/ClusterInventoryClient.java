@@ -43,6 +43,11 @@ public class ClusterInventoryClient extends ConcordClientSupport {
         return configurator.createConfiguration(clusterAsMap, K8sCluster.class);
     }
 
+    public boolean clusterExists(String orgName, String clusterId) throws Exception {
+        Map<String,Object> clusterAsMap = inventory.getItem(orgName, INVENTORY_NAME, clusterId);
+        return clusterAsMap != null;
+    }
+
     public K8sClusters getClusters(String orgName) throws Exception {
         return mapper.readValue(mapper.writeValueAsString(inventory.getAllItems(orgName, INVENTORY_NAME)), K8sClusters.class);
     }

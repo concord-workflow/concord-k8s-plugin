@@ -32,6 +32,10 @@ public abstract class TaskSupport implements Task {
         return workDir;
     }
 
+    protected Map<String,Object> varAsMap(Context context, String variableName) {
+        return (Map<String,Object>) context.getVariable(variableName);
+    }
+
     protected String varAsString(Context context, String variableName) {
         return (String) context.getVariable(variableName);
     }
