@@ -1,6 +1,7 @@
 package com.walmartlabs.concord.secrets.aws;
 
 import ca.vanzyl.concord.plugins.TaskSupport;
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.walmartlabs.concord.plugins.k8s.secrets.Secret;
 import com.walmartlabs.concord.plugins.k8s.secrets.SecretsManager;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Named;
+import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -31,21 +33,31 @@ public class AsmSecretsTask extends TaskSupport {
 
         try {
             AsmClient asmClient = new AsmClient(region, awsAccessKey, awsSecretKey);
+
             String organizationSecretsYaml = asmClient.get(organization);
-            logger.info("Successfully retrieved the organization secrets for '{}' from {}.", organization, region);
-
-            SecretsManager secretsManager = new SecretsManager();
-            List<Secret> secrets = secretsManager.load(organizationSecretsYaml);
-
-            Map<String, String> secretsMap = Maps.newHashMap();
-            for (Secret secret : secrets) {
-                secretsMap.put(secret.name(), adjust(secret.value()));
+            if (!Strings.isNullOrEmpty(organizationSecretsYaml)) {
+                logger.info("Successfully retrieved the organization secrets for '{}' from {}.", organization, region);
+                SecretsManager secretsManager = new SecretsManager();
+                try {
+                    List<Secret> secrets = secretsManager.load(organizationSecretsYaml);
+                    if (secrets != null && !secrets.isEmpty()) {
+                        Map<String, String> secretsMap = Maps.newHashMap();
+                        for (Secret secret : secrets) {
+                            secretsMap.put(secret.name(), adjust(secret.value()));
+                        }
+                        // We take the map that we created and store the secrets in the Concord context
+                        context.setVariable("secrets", secretsMap);
+                        logger.info("Successfully injected the organization secrets for '{}' into the context. A specific secret is available as '${secrets.XXX}'.", organization);
+                    }
+                } catch (IOException ioException) {
+                    logger.error("Failed to load  file '{}' secret from ASM for {} in {}.", organizationSecretsYaml, organization, region);
+                    logger.error("YamlLoadError ", ioException);
+                }
+            } else {
+                logger.info("organization secrets for '{}' from {} was not found", organization, region);
             }
 
-            // We take the map that we created and store the secrets in the Concord context
-            context.setVariable("secrets", secretsMap);
-            logger.info("Successfully injected the organization secrets for '{}' into the context. A specific secret is available as '${secrets.XXX}'.", organization);
-        } catch(Exception e) {
+        } catch (Exception e) {
             logger.error("Failed to load '{}' secret from ASM in {}.", organization, region);
             throw e;
         }
@@ -53,7 +65,7 @@ public class AsmSecretsTask extends TaskSupport {
 
     // Total hack to get formatting correct in Helm
     private String adjust(String value) {
-        if(value.contains("--BEGIN")) {
+        if (value.contains("--BEGIN")) {
             return indentBlock(value, 6);
         }
         return value;
