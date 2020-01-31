@@ -54,14 +54,14 @@ public class TerraformProcessorTest extends TestSupport {
                         "    variables:\n" +
                         "      vpc_name: jvz-vpc\n" +
                         "      vpc_cidr: 10.206.0.0/18\n" +
-                        "      public_subnet_map:\n" +
-                        "        us-east-2a: 1\n" +
-                        "        us-east-2b: 2\n" +
-                        "        us-east-2c: 3\n" +
-                        "      private_subnet_map:\n" +
-                        "        us-east-2a: 4\n" +
-                        "        us-east-2b: 5\n" +
-                        "        us-east-2c: 6\n" +
+                        "      public_subnet_list:\n" +
+                        "        - us-east-2a\n" +
+                        "        - us-east-2b\n" +
+                        "        - us-east-2c\n" +
+                        "      private_subnet_list:\n" +
+                        "        - us-east-2a\n" +
+                        "        - us-east-2b\n" +
+                        "        - us-east-2c\n" +
                         "  - type: eks\n" +
                         "    variables:\n" +
                         "      cluster_name: jvz-cluster\n";
