@@ -46,6 +46,8 @@ public class AsmSecretsTask extends TaskSupport {
                             secretsMap.put(secret.name(), adjust(secret.value()));
                         }
                         // We take the map that we created and store the secrets in the Concord context
+                        Map<String,String> bootstrapSecrets = (Map<String,String>) context.getVariable("bootstrap");
+                        secretsMap.putAll(bootstrapSecrets);
                         context.setVariable("secrets", secretsMap);
                         logger.info("Successfully injected the organization secrets for '{}' into the context. A specific secret is available as '${secrets.XXX}'.", organization);
                     }
