@@ -11,6 +11,8 @@ public abstract class K8sCluster {
 
     public abstract String id();
 
+    public abstract Set<String> enabledFeatures();
+
     public abstract Set<String> ingressAnnotations();
 
     public abstract Set<String> postManifests();

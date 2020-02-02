@@ -4,7 +4,9 @@ import ca.vanzyl.concord.plugins.TaskSupport;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.walmartlabs.concord.client.ApiClientFactory;
+import com.walmartlabs.concord.sdk.Constants;
 import com.walmartlabs.concord.sdk.Context;
+import com.walmartlabs.concord.sdk.InjectVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +24,12 @@ public class K8sContextTask extends TaskSupport {
 
     private final static Logger logger = LoggerFactory.getLogger(K8sContextTask.class);
     private final ApiClientFactory clientFactory;
+
+    @InjectVariable(Constants.Context.CONTEXT_KEY)
+    private Context context;
+
+    @InjectVariable(Constants.Context.TX_ID_KEY)
+    private String instanceId;
 
     @Inject
     public K8sContextTask(ApiClientFactory clientFactory) {
@@ -51,6 +59,31 @@ public class K8sContextTask extends TaskSupport {
             client.updateCluster(orgName, cluster);
         }
         return cluster;
+    }
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Features
+    // --------------------------------------------------------------------------------------------------------------------
+
+    public void enableFeature(String feature) throws Exception {
+        logger.info("Enabling feature: {}", feature);
+        K8sCluster cluster = cluster(context);
+        Set<String> updatedEnabledFeatures = Sets.newHashSet(cluster.enabledFeatures());
+        K8sCluster updatedCluster = ImmutableK8sCluster
+                .copyOf(cluster)
+                .withEnabledFeatures(updatedEnabledFeatures);
+        ClusterInventoryClient client = client(context);
+        client.updateCluster(orgName(context), updatedCluster);
+    }
+
+    public String featureEnabled(String feature) throws Exception {
+        K8sCluster cluster = cluster(context);
+        Set<String> enabledFeatures = cluster.enabledFeatures();
+        if(enabledFeatures.contains(feature)) {
+            return "true";
+        } else {
+            return "false";
+        }
     }
 
     // --------------------------------------------------------------------------------------------------------------------

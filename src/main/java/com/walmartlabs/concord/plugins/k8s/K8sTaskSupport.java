@@ -15,9 +15,12 @@ public class K8sTaskSupport extends TaskSupport {
         this.apiClientFactory = apiClientFactory;
     }
 
+    public Map<String, Object> clusterRequest(Context context) {
+        return varAsMap(context, "clusterRequest");
+    }
+
     public String clusterRequest(Context context, String name) {
-        Map<String, Object> clusterRequest = varAsMap(context, "clusterRequest");
-        return varAsString(clusterRequest, name);
+        return varAsString(clusterRequest(context), name);
     }
 
     public String clusterId(Context context) {

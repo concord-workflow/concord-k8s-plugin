@@ -125,8 +125,8 @@ public class TerraformProcessor {
         // Write out the variables JSON. Default modes are CREATE | TRUNCATE_EXISTING | WRITE
         //
         Path tfVars = outputDirectory.resolve("00.auto.tfvars.json");
-        logger.info("Writing JSON variables to {}:", tfVars);
-        logger.info("\n{}", terraformVariablesJson);
+        //logger.info("Writing JSON variables to {}:", tfVars);
+        //logger.info("\n{}", terraformVariablesJson);
         Files.write(tfVars, terraformVariablesJson.getBytes());
 
         logger.info("Terraform resources written to {} based on resource requests:", outputDirectory);
