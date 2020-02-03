@@ -3,6 +3,7 @@ package com.walmartlabs.concord.plugins.k8s.context;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.walmartlabs.concord.ApiClient;
+import com.walmartlabs.concord.ApiException;
 import com.walmartlabs.concord.plugins.Configurator;
 import com.walmartlabs.concord.plugins.inventory.ConcordClientSupport;
 import com.walmartlabs.concord.plugins.inventory.ConcordInventoryClient;
@@ -44,7 +45,15 @@ public class ClusterInventoryClient extends ConcordClientSupport {
     }
 
     public boolean clusterExists(String orgName, String clusterId) throws Exception {
-        Map<String,Object> clusterAsMap = inventory.getItem(orgName, INVENTORY_NAME, clusterId);
+        Map<String, Object> clusterAsMap;
+        try {
+            clusterAsMap = inventory.getItem(orgName, INVENTORY_NAME, clusterId);
+        } catch(ApiException e) {
+            // The inventory doesn't exist yet, so let's create it and return false as we have
+            // no entry for this cluster.
+            createInventory(orgName);
+            return false;
+        }
         return clusterAsMap != null;
     }
 
