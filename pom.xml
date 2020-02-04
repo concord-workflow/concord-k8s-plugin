@@ -194,6 +194,12 @@
             <artifactId>okhttp</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Random names -->
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>1.0.1</version>
+        </dependency>
         <!-- Testing -->
         <dependency>
             <groupId>org.eclipse.sisu</groupId>

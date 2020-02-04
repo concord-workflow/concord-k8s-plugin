@@ -144,9 +144,7 @@ public abstract class ToolTaskSupport implements Task {
                         Duration.succinctDuration(20, TimeUnit.MINUTES));
 
                 CliCommand.Result result = idempotencyCheck.execute(Executors.newCachedThreadPool());
-
-                logger.info("RESULT: " + result.getCode());
-
+                
                 if (result.getCode() == toolCommand.expectedIdempotencyCheckReturnValue()) {
 
                     logger.info("This command has already run successfully: " + command.getCommand());
