@@ -145,6 +145,8 @@ public abstract class ToolTaskSupport implements Task {
 
                 CliCommand.Result result = idempotencyCheck.execute(Executors.newCachedThreadPool());
 
+                logger.info("RESULT: " + result.getCode());
+
                 if (result.getCode() == toolCommand.expectedIdempotencyCheckReturnValue()) {
 
                     logger.info("This command has already run successfully: " + command.getCommand());
@@ -162,7 +164,7 @@ public abstract class ToolTaskSupport implements Task {
             toolCommand.preProcess(workDir, context);
             logger.info("Executing: " + commandLineArguments);
             CliCommand.Result commandResult = command.execute(Executors.newCachedThreadPool());
-            if(commandResult.getCode() != 0) {
+            if (commandResult.getCode() != 0) {
                 throw new RuntimeException(String.format("The command %s failed. Look in the logs above.", commandLineArguments));
             }
             //
@@ -195,7 +197,7 @@ public abstract class ToolTaskSupport implements Task {
 
         for (Field field : command.getClass().getDeclaredFields()) {
             field.setAccessible(true);
-            if(Modifier.isFinal(field.getModifiers())) {
+            if (Modifier.isFinal(field.getModifiers())) {
                 continue;
             }
             Object operand = field.get(command);
@@ -238,7 +240,7 @@ public abstract class ToolTaskSupport implements Task {
                             configuration.setAccessible(true);
                             Object value = configuration.get(operand);
                             if (value != null) {
-                                if(!option.omitFor().equals(command.getClass())) {
+                                if (!option.omitFor().equals(command.getClass())) {
                                     arguments.add(option.name()[0]);
                                 }
                                 arguments.add((String) value);
