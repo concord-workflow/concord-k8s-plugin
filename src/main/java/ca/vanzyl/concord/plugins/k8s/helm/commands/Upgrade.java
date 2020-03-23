@@ -1,10 +1,10 @@
-package com.walmartlabs.concord.plugins.k8s.helm.commands;
+package ca.vanzyl.concord.plugins.k8s.helm.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.walmartlabs.concord.plugins.k8s.helm.config.Chart;
-import com.walmartlabs.concord.plugins.tool.Flag;
-import com.walmartlabs.concord.plugins.tool.Omit;
-import com.walmartlabs.concord.plugins.tool.ToolCommandSupport;
+import ca.vanzyl.concord.plugins.k8s.helm.config.Chart;
+import ca.vanzyl.concord.plugins.tool.annotations.Flag;
+import ca.vanzyl.concord.plugins.tool.annotations.Omit;
+import ca.vanzyl.concord.plugins.tool.ToolCommandSupport;
 import com.walmartlabs.concord.sdk.Context;
 
 import javax.inject.Named;

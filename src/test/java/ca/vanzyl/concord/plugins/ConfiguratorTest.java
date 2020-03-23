@@ -1,11 +1,13 @@
-package com.walmartlabs.concord.plugins;
+package ca.vanzyl.concord.plugins;
 
 import ca.vanzyl.concord.plugins.Configurator;
+import com.walmartlabs.concord.plugins.ConcordTestSupport;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class ConfiguratorTest extends ConcordTestSupport {
+public class ConfiguratorTest extends ConcordTestSupport
+{
 
     @Test
     public void validateConfiguration() throws Exception {

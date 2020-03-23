@@ -1,8 +1,8 @@
-package com.walmartlabs.concord.plugins.k8s.eksctl.commands;
+package ca.vanzyl.concord.plugins.k8s.eksctl.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.walmartlabs.concord.plugins.k8s.eksctl.config.Cluster;
-import com.walmartlabs.concord.plugins.tool.ToolCommandSupport;
+import ca.vanzyl.concord.plugins.k8s.eksctl.config.Cluster;
+import ca.vanzyl.concord.plugins.tool.ToolCommandSupport;
 import com.walmartlabs.concord.sdk.Context;
 
 import javax.inject.Named;

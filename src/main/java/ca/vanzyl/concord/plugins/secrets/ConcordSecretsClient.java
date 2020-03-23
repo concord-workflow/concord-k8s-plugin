@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.plugins.secrets;
+package ca.vanzyl.concord.plugins.secrets;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.walmartlabs.concord.ApiClient;

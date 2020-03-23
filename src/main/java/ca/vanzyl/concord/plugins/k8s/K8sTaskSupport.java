@@ -1,8 +1,8 @@
-package com.walmartlabs.concord.plugins.k8s;
+package ca.vanzyl.concord.plugins.k8s;
 
 import ca.vanzyl.concord.plugins.TaskSupport;
 import com.walmartlabs.concord.client.ApiClientFactory;
-import com.walmartlabs.concord.plugins.k8s.context.ClusterInventoryClient;
+import ca.vanzyl.concord.plugins.k8s.context.ClusterInventoryClient;
 import com.walmartlabs.concord.sdk.Context;
 
 import java.util.Map;

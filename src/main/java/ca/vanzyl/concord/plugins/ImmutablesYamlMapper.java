@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.plugins;
+package ca.vanzyl.concord.plugins;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

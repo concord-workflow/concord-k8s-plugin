@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.secrets;
+package ca.vanzyl.concord.secrets;
 
 public interface SecretsProvider {
 

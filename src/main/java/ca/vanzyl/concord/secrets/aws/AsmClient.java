@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.secrets.aws;
+package ca.vanzyl.concord.secrets.aws;
 
 import com.amazonaws.auth.AWSCredentialsProviderChain;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -9,7 +9,7 @@ import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
 import com.amazonaws.services.secretsmanager.model.*;
 import com.google.common.collect.ImmutableList;
-import com.walmartlabs.concord.secrets.SecretsProvider;
+import ca.vanzyl.concord.secrets.SecretsProvider;
 
 import java.util.List;
 import java.util.stream.Collectors;

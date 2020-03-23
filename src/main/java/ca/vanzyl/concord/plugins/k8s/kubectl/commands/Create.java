@@ -1,8 +1,8 @@
-package com.walmartlabs.concord.plugins.k8s.kubectl.commands;
+package ca.vanzyl.concord.plugins.k8s.kubectl.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.walmartlabs.concord.plugins.k8s.kubectl.config.Namespace;
-import com.walmartlabs.concord.plugins.tool.ToolCommandSupport;
+import ca.vanzyl.concord.plugins.k8s.kubectl.config.Namespace;
+import ca.vanzyl.concord.plugins.tool.ToolCommandSupport;
 import com.walmartlabs.concord.sdk.Context;
 
 import javax.inject.Named;

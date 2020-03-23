@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.plugins.k8s.eksctl.config.file;
+package ca.vanzyl.concord.plugins.k8s.eksctl.config.file;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;

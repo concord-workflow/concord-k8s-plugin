@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.plugins.tool;
+package ca.vanzyl.concord.plugins.tool;
 
 import com.walmartlabs.concord.sdk.Context;
 import org.slf4j.Logger;

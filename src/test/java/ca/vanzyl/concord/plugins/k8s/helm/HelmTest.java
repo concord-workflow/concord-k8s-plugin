@@ -1,13 +1,13 @@
-package com.walmartlabs.concord.plugins.k8s.helm;
+package ca.vanzyl.concord.plugins.k8s.helm;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.walmartlabs.concord.plugins.ConcordTestSupport;
-import com.walmartlabs.concord.plugins.Configurator;
+import ca.vanzyl.concord.plugins.Configurator;
 import com.walmartlabs.concord.plugins.InterpolatingMockContext;
-import com.walmartlabs.concord.plugins.k8s.helm.commands.*;
-import com.walmartlabs.concord.plugins.tool.*;
+import ca.vanzyl.concord.plugins.k8s.helm.commands.*;
+import ca.vanzyl.concord.plugins.tool.*;
 import com.walmartlabs.concord.sdk.Context;
 import com.walmartlabs.concord.sdk.MockContext;
 import org.junit.Before;

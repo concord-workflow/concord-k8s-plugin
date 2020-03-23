@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.plugins.k8s.context;
+package ca.vanzyl.concord.plugins.k8s.context;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.immutables.value.Value;

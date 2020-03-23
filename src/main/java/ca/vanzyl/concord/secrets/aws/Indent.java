@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.secrets.aws;
+package ca.vanzyl.concord.secrets.aws;
 
 import java.io.BufferedReader;
 import java.io.IOException;

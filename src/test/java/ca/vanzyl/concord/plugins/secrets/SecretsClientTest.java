@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.plugins.secrets;
+package ca.vanzyl.concord.plugins.secrets;
 
 public class SecretsClientTest {
 

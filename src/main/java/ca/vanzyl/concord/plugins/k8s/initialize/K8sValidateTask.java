@@ -1,7 +1,7 @@
-package com.walmartlabs.concord.plugins.k8s.initialize;
+package ca.vanzyl.concord.plugins.k8s.initialize;
 
 import com.walmartlabs.concord.client.ApiClientFactory;
-import com.walmartlabs.concord.plugins.k8s.K8sTaskSupport;
+import ca.vanzyl.concord.plugins.k8s.K8sTaskSupport;
 import com.walmartlabs.concord.sdk.Context;
 
 import javax.inject.Inject;

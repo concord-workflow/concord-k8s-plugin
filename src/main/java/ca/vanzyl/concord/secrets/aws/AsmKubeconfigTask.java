@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.secrets.aws;
+package ca.vanzyl.concord.secrets.aws;
 
 import ca.vanzyl.concord.plugins.TaskSupport;
 import com.amazonaws.services.secretsmanager.model.ResourceExistsException;

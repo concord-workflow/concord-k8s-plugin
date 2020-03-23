@@ -4,7 +4,7 @@ import com.bertramlabs.plugins.hcl4j.HCLParser;
 import com.bertramlabs.plugins.hcl4j.RuntimeSymbols.Variable;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
-import com.walmartlabs.concord.plugins.Configurator;
+import ca.vanzyl.concord.plugins.Configurator;
 import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

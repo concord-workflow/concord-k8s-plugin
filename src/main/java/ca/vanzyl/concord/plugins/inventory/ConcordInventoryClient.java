@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.plugins.inventory;
+package ca.vanzyl.concord.plugins.inventory;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.walmartlabs.concord.ApiClient;

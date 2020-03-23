@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.plugins.k8s.secrets;
+package ca.vanzyl.concord.plugins.k8s.secrets;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

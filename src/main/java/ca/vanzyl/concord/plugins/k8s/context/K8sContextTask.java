@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.plugins.k8s.context;
+package ca.vanzyl.concord.plugins.k8s.context;
 
 import ca.vanzyl.concord.plugins.TaskSupport;
 import com.google.common.collect.Lists;

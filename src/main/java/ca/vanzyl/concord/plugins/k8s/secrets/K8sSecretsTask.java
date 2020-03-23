@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.plugins.k8s.secrets;
+package ca.vanzyl.concord.plugins.k8s.secrets;
 
 import com.google.common.collect.Maps;
 import com.walmartlabs.concord.ApiClient;

@@ -1,6 +1,6 @@
-package com.walmartlabs.concord.plugins.k8s.download;
+package ca.vanzyl.concord.plugins.k8s.download;
 
-import com.walmartlabs.concord.plugins.tool.*;
+import ca.vanzyl.concord.plugins.tool.*;
 import com.walmartlabs.concord.sdk.Context;
 import com.walmartlabs.concord.sdk.LockService;
 

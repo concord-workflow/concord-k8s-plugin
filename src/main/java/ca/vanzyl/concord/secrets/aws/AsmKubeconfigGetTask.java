@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.secrets.aws;
+package ca.vanzyl.concord.secrets.aws;
 
 import com.walmartlabs.concord.client.ApiClientFactory;
 import ca.vanzyl.concord.plugins.k8s.K8sTaskSupport;

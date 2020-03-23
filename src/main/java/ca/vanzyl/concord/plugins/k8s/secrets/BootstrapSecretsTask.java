@@ -1,8 +1,7 @@
-package com.walmartlabs.concord.plugins.k8s.secrets;
+package ca.vanzyl.concord.plugins.k8s.secrets;
 
-import com.google.common.collect.Maps;
 import com.walmartlabs.concord.client.ApiClientFactory;
-import com.walmartlabs.concord.plugins.k8s.K8sTaskSupport;
+import ca.vanzyl.concord.plugins.k8s.K8sTaskSupport;
 import com.walmartlabs.concord.sdk.Constants;
 import com.walmartlabs.concord.sdk.Context;
 import com.walmartlabs.concord.sdk.InjectVariable;

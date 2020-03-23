@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.plugins.tool;
+package ca.vanzyl.concord.plugins.tool;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableMap;

@@ -1,12 +1,18 @@
-package com.walmartlabs.concord.plugins.tool;
+package ca.vanzyl.concord.plugins.tool;
 
 
+import ca.vanzyl.concord.plugins.tool.annotations.Flag;
+import ca.vanzyl.concord.plugins.tool.annotations.KeyValue;
+import ca.vanzyl.concord.plugins.tool.annotations.Omit;
+import ca.vanzyl.concord.plugins.tool.annotations.Option;
+import ca.vanzyl.concord.plugins.tool.annotations.OptionWithEquals;
+import ca.vanzyl.concord.plugins.tool.annotations.Value;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.walmartlabs.concord.plugins.Configurator;
+import ca.vanzyl.concord.plugins.Configurator;
 import com.walmartlabs.concord.sdk.Context;
 import com.walmartlabs.concord.sdk.LockService;
 import com.walmartlabs.concord.sdk.Task;

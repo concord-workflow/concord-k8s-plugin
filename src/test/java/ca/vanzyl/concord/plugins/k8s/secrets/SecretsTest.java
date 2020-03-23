@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.plugins.k8s.secrets;
+package ca.vanzyl.concord.plugins.k8s.secrets;
 
 import com.walmartlabs.concord.plugins.TestSupport;
 import org.junit.Test;

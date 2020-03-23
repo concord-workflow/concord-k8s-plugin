@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.plugins.tool;
+package ca.vanzyl.concord.plugins.tool.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

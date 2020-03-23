@@ -1,6 +1,6 @@
-package com.walmartlabs.concord.plugins.k8s.secrets;
+package ca.vanzyl.concord.plugins.k8s.secrets;
 
-import com.walmartlabs.concord.plugins.ImmutablesYamlMapper;
+import ca.vanzyl.concord.plugins.ImmutablesYamlMapper;
 
 import java.io.File;
 import java.io.IOException;

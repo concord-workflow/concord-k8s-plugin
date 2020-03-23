@@ -16,7 +16,7 @@ definitions:
 
   Create:
     type: object
-    existingJavaType: 'com.walmartlabs.concord.plugins.tool.ToolCommandSupport'
+    existingJavaType: 'ca.vanzyl.concord.plugins.tool.ToolCommandSupport'
     additionalProperties: false
     properties:
       Cluster:

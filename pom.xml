@@ -211,7 +211,7 @@
                             <sourcePaths>
                                 <sourcePath>${basedir}/src/main/resources/eksctl/schema/configuration.yml</sourcePath>
                             </sourcePaths>
-                            <targetPackage>com.walmartlabs.concord.plugins.k8s.eksctl.config.model</targetPackage>
+                            <targetPackage>ca.vanzyl.concord.plugins.k8s.eksctl.config.model</targetPackage>
                             <sourceType>yamlschema</sourceType>
                             <generateBuilders>true</generateBuilders>
                         </configuration>

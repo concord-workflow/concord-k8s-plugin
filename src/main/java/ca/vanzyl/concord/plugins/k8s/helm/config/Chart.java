@@ -1,9 +1,9 @@
-package com.walmartlabs.concord.plugins.k8s.helm.config;
+package ca.vanzyl.concord.plugins.k8s.helm.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.walmartlabs.concord.plugins.k8s.helm.commands.Upgrade;
-import com.walmartlabs.concord.plugins.tool.KeyValue;
-import com.walmartlabs.concord.plugins.tool.Option;
+import ca.vanzyl.concord.plugins.k8s.helm.commands.Upgrade;
+import ca.vanzyl.concord.plugins.tool.annotations.KeyValue;
+import ca.vanzyl.concord.plugins.tool.annotations.Option;
 
 import java.util.List;
 

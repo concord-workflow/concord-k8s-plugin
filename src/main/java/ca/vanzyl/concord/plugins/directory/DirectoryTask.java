@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.plugins.directory;
+package ca.vanzyl.concord.plugins.directory;
 
 import ca.vanzyl.concord.plugins.TaskSupport;
 
@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static com.walmartlabs.concord.plugins.directory.DirectoryUtils.scanDirectory;
+import static ca.vanzyl.concord.plugins.directory.DirectoryUtils.scanDirectory;
 
 @Named("directoryTool")
 public class DirectoryTask extends TaskSupport {

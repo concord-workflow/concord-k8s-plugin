@@ -1,8 +1,8 @@
-package com.walmartlabs.concord.plugins.k8s.eksctl.config;
+package ca.vanzyl.concord.plugins.k8s.eksctl.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.walmartlabs.concord.plugins.tool.Flag;
-import com.walmartlabs.concord.plugins.tool.Option;
+import ca.vanzyl.concord.plugins.tool.annotations.Flag;
+import ca.vanzyl.concord.plugins.tool.annotations.Option;
 
 public class Cluster {
 

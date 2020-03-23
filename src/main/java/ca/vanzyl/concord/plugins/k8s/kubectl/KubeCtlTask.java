@@ -1,8 +1,8 @@
-package com.walmartlabs.concord.plugins.k8s.kubectl;
+package ca.vanzyl.concord.plugins.k8s.kubectl;
 
-import com.walmartlabs.concord.plugins.tool.ToolCommand;
-import com.walmartlabs.concord.plugins.tool.ToolInitializer;
-import com.walmartlabs.concord.plugins.tool.ToolTaskSupport;
+import ca.vanzyl.concord.plugins.tool.ToolCommand;
+import ca.vanzyl.concord.plugins.tool.ToolInitializer;
+import ca.vanzyl.concord.plugins.tool.ToolTaskSupport;
 import com.walmartlabs.concord.sdk.InjectVariable;
 import com.walmartlabs.concord.sdk.LockService;
 

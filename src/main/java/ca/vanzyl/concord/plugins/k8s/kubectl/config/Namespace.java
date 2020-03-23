@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.plugins.k8s.kubectl.config;
+package ca.vanzyl.concord.plugins.k8s.kubectl.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

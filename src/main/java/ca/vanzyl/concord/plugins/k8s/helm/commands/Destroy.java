@@ -1,7 +1,7 @@
-package com.walmartlabs.concord.plugins.k8s.helm.commands;
+package ca.vanzyl.concord.plugins.k8s.helm.commands;
 
-import com.walmartlabs.concord.plugins.tool.ToolCommandSupport;
-import com.walmartlabs.concord.plugins.tool.Value;
+import ca.vanzyl.concord.plugins.tool.ToolCommandSupport;
+import ca.vanzyl.concord.plugins.tool.annotations.Value;
 
 import javax.inject.Named;
 

@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.plugins.directory;
+package ca.vanzyl.concord.plugins.directory;
 
 import org.apache.commons.compress.utils.Lists;
 

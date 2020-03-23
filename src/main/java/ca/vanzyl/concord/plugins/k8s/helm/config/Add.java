@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.plugins.k8s.helm.config;
+package ca.vanzyl.concord.plugins.k8s.helm.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.plugins.k8s.eksctl.config.file;
+package ca.vanzyl.concord.plugins.k8s.eksctl.config.file;
 
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;

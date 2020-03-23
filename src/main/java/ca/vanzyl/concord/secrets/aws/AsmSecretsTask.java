@@ -1,4 +1,4 @@
-package com.walmartlabs.concord.secrets.aws;
+package ca.vanzyl.concord.secrets.aws;
 
 import ca.vanzyl.concord.plugins.TaskSupport;
 import com.google.common.base.Strings;
@@ -15,7 +15,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-import static com.walmartlabs.concord.secrets.aws.Indent.indentBlock;
+import static ca.vanzyl.concord.secrets.aws.Indent.indentBlock;
 
 // TODO: probably best to transfer the secrets into Concord and use them from there
 @Named("asmSecrets")
