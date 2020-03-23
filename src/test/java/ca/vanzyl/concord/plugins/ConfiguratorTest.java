@@ -1,5 +1,6 @@
 package com.walmartlabs.concord.plugins;
 
+import ca.vanzyl.concord.plugins.Configurator;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

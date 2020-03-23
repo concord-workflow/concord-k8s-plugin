@@ -3,7 +3,7 @@ package com.walmartlabs.concord.secrets.aws;
 import ca.vanzyl.concord.plugins.TaskSupport;
 import com.amazonaws.services.secretsmanager.model.ResourceExistsException;
 import com.walmartlabs.concord.client.ApiClientFactory;
-import com.walmartlabs.concord.plugins.secrets.ConcordSecretsClient;
+import ca.vanzyl.concord.plugins.secrets.ConcordSecretsClient;
 import com.walmartlabs.concord.sdk.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
