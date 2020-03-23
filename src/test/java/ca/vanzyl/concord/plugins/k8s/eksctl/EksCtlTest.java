@@ -13,7 +13,6 @@ import org.junit.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Map;
 
 import static com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY;
@@ -50,10 +49,10 @@ public class EksCtlTest extends ConcordTestSupport
     @Test
     public void validateConfiguratorUsingConfigFile() throws Exception {
 
-        Map<String, Object> input = taskVariables()
+        Map<String, Object> input = mapBuilder()
                 .put("command", "create")
                 .put("cluster",
-                        taskVariables()
+                        mapBuilder()
                                 .put("configFile", "cluster.yaml")
                                 .put("kubeconfig", "/home/concord/.kube/config")
                                 .build())
@@ -69,10 +68,10 @@ public class EksCtlTest extends ConcordTestSupport
     @Test
     public void validateConfiguratorUsingNameAndVersion() throws Exception {
 
-        Map<String, Object> input = taskVariables()
+        Map<String, Object> input = mapBuilder()
                 .put("command", "create")
                 .put("cluster",
-                        taskVariables()
+                        mapBuilder()
                                 .put("name", "cluster-001")
                                 .put("version", "1.14")
                                 .put("kubeconfig", "/home/concord/.kube/config")
@@ -90,62 +89,58 @@ public class EksCtlTest extends ConcordTestSupport
     @Test
     public void validateEksCtlCommandLineGenerationUsingConfig() throws Exception {
 
-        Configurator toolConfigurator = new Configurator();
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("helm"));
+        Map<String, ToolCommand> commands = ImmutableMap.of("eksctl/create", new Create());
+        EksCtlTask task = new EksCtlTask(commands, lockService, toolInitializer);
 
-        Map<String, Object> configuration = Maps.newHashMap(taskVariables()
+        Map<String, Object> configuration = Maps.newHashMap(mapBuilder()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
+                .put("dryRun", true)
                 .put("command", "create")
                 .put("cluster",
-                        taskVariables()
+                        mapBuilder()
                                 .put("configFile", "cluster.yaml")
                                 .put("kubeconfig", "/home/concord/.kube/config")
                                 .build())
                 .build());
 
-        Create create = new Create();
-        toolConfigurator.configure(create, configuration);
-        List<String> args = ToolTaskSupport.generateCommandLineArguments("create", create);
+        Context context = new MockContext(configuration);
+        task.execute(context);
+        String commandLine = varAsString(context, "commandLineArguments");
 
-        System.out.println(args);
+        System.out.println(commandLine);
 
-        assertEquals("create", args.get(0));
-        assertEquals("cluster", args.get(1));
-        assertEquals("--config-file", args.get(2));
-        assertEquals("cluster.yaml", args.get(3));
-        assertEquals("--kubeconfig", args.get(4));
-        assertEquals("/home/concord/.kube/config", args.get(5));
+        String expectedCommandLine = "create cluster --config-file cluster.yaml --kubeconfig /home/concord/.kube/config";
+        assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
     }
 
     @Test
     public void validateEksCtlCommandLineGenerationUsingNameAndVersion() throws Exception {
 
-        Configurator toolConfigurator = new Configurator();
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("helm"));
+        Map<String, ToolCommand> commands = ImmutableMap.of("eksctl/create", new Create());
+        EksCtlTask task = new EksCtlTask(commands, lockService, toolInitializer);
 
-        Map<String, Object> configuration = Maps.newHashMap(taskVariables()
+        Map<String, Object> configuration = Maps.newHashMap(mapBuilder()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
+                .put("dryRun", true)
                 .put("command", "create")
                 .put("cluster",
-                        taskVariables()
+                        mapBuilder()
                                 .put("name", "cluster-001")
                                 .put("version", "1.14")
                                 .put("kubeconfig", "/home/concord/.kube/config")
                                 .build())
                 .build());
 
-        Create create = new Create();
-        toolConfigurator.configure(create, configuration);
-        List<String> args = ToolTaskSupport.generateCommandLineArguments("create", create);
+        Context context = new MockContext(configuration);
+        task.execute(context);
+        String commandLine = varAsString(context, "commandLineArguments");
 
-        System.out.println(args);
+        System.out.println(commandLine);
 
-        assertEquals("create", args.get(0));
-        assertEquals("cluster", args.get(1));
-        assertEquals("--name", args.get(2));
-        assertEquals("cluster-001", args.get(3));
-        assertEquals("--version", args.get(4));
-        assertEquals("1.14", args.get(5));
-        assertEquals("--kubeconfig", args.get(6));
-        assertEquals("/home/concord/.kube/config", args.get(7));
+        String expectedCommandLine = "create cluster --name cluster-001 --version 1.14 --kubeconfig /home/concord/.kube/config";
+        assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
     }
 
     @Test
@@ -164,12 +159,12 @@ public class EksCtlTest extends ConcordTestSupport
         //       kubeconfig: /home/concord/.kube/config
         //
 
-        Map<String, Object> args = Maps.newHashMap(taskVariables()
+        Map<String, Object> args = Maps.newHashMap(mapBuilder()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
                 .put("dryRun", true)
                 .put("command", "create")
                 .put("cluster",
-                        taskVariables()
+                        mapBuilder()
                                 .put("configFile", "cluster.yaml")
                                 .put("kubeconfig", "/home/concord/.kube/config")
                                 .build())
@@ -202,19 +197,19 @@ public class EksCtlTest extends ConcordTestSupport
         //       kubeconfig: /home/concord/.kube/config
         //
 
-        Map<String, Object> args = Maps.newHashMap(taskVariables()
+        Map<String, Object> args = Maps.newHashMap(mapBuilder()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
                 .put("dryRun", true)
                 .put("command", "create")
                 .put("cluster",
-                        taskVariables()
+                        mapBuilder()
                                 .put("name", "cluster-001")
                                 .put("region", "us-west-2")
                                 .put("version", "1.14")
                                 .put("kubeconfig", "/home/concord/.kube/config")
                                 .build())
                 .put("envars",
-                        taskVariables()
+                        mapBuilder()
                                 .put("AWS_ACCESS_KEY_ID", "aws-access-key")
                                 .put("AWS_SECRET_ACCESS_KEY", "aws-secret-key")
                                 .build())

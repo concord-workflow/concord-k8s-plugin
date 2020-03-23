@@ -31,7 +31,7 @@ public class EksCtlClusterYamlGeneratorTest
             throws Exception
     {
         EksCtlYamlData cluster = new EksCtlYamlData(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
-        List<Map<String, Object>> nodeGroup = ImmutableList.of(taskVariables()
+        List<Map<String, Object>> nodeGroup = ImmutableList.of(mapBuilder()
                 .put("id", "eksctl")
                 .put("version", "0.7.0")
                 .put("nodeGroupName", "standard-worker-group-1")
@@ -43,14 +43,14 @@ public class EksCtlClusterYamlGeneratorTest
                 .put("publicKeyName", "nodegroupkey").build());
 
         Map<String, Object> clusterRequest =
-                taskVariables()
+                mapBuilder()
                         .put("profile", "jvz")
                         .put("clusterName", "magic-cluster")
                         .put("region", "us-west-2")
                         .put("user", "automation")
                         .put("k8sVersion", "1.14")
                         .put("builder",
-                                taskVariables()
+                                mapBuilder()
                                         .put("nodeGroups", nodeGroup)
                                         .build())
                         .build();
@@ -152,7 +152,7 @@ public class EksCtlClusterYamlGeneratorTest
             throws Exception
     {
         EksCtlYamlData cluster = new EksCtlYamlData(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
-        List<Map<String, Object>> nodeGroup = ImmutableList.of(taskVariables()
+        List<Map<String, Object>> nodeGroup = ImmutableList.of(mapBuilder()
                 .put("id", "eksctl")
                 .put("version", "0.7.0")
                 .put("nodeGroupName", "standard-worker-group-1")
@@ -164,14 +164,14 @@ public class EksCtlClusterYamlGeneratorTest
                 .put("publicKeyName", "nodegroupkey").build());
 
         Map<String, Object> clusterRequest =
-                taskVariables()
+                mapBuilder()
                         .put("profile", "jvz")
                         .put("clusterName", "magic-cluster")
                         .put("region", "us-west-2")
                         .put("user", "automation")
                         .put("k8sVersion", "1.14")
                         .put("builder",
-                                taskVariables()
+                                mapBuilder()
                                         .put("nodeGroups", nodeGroup)
                                         .build())
                         .build();
@@ -194,7 +194,7 @@ public class EksCtlClusterYamlGeneratorTest
             throws Exception
     {
         EksCtlYamlData cluster = new EksCtlYamlData(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
-        List<Map<String, Object>> nodeGroup = ImmutableList.of(taskVariables()
+        List<Map<String, Object>> nodeGroup = ImmutableList.of(mapBuilder()
                 .put("id", "eksctl")
                 .put("version", "0.7.0")
                 .put("nodeGroupName", "standard-worker-group-1")
@@ -207,14 +207,14 @@ public class EksCtlClusterYamlGeneratorTest
                 .put("publicKeyName", "nodegroupkey").build());
 
         Map<String, Object> clusterRequest =
-                taskVariables()
+                mapBuilder()
                         .put("profile", "jvz")
                         .put("clusterName", "magic-cluster")
                         .put("region", "us-west-2")
                         .put("user", "automation")
                         .put("k8sVersion", "1.14")
                         .put("builder",
-                                taskVariables()
+                                mapBuilder()
                                         .put("nodeGroups", nodeGroup)
                                         .build())
                         .build();
@@ -237,7 +237,7 @@ public class EksCtlClusterYamlGeneratorTest
             throws Exception
     {
         EksCtlYamlData cluster = new EksCtlYamlData(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
-        List<Map<String, Object>> nodeGroup = ImmutableList.of(taskVariables()
+        List<Map<String, Object>> nodeGroup = ImmutableList.of(mapBuilder()
                 .put("id", "eksctl")
                 .put("version", "0.7.0")
                 .put("nodeGroupName", "standard-worker-group-1")
@@ -250,14 +250,14 @@ public class EksCtlClusterYamlGeneratorTest
                 .put("publicKeyName", "nodegroupkey").build());
 
         Map<String, Object> clusterRequest =
-                taskVariables()
+                mapBuilder()
                         .put("profile", "jvz")
                         .put("clusterName", "magic-cluster")
                         .put("region", "us-west-2")
                         .put("user", "automation")
                         .put("k8sVersion", "1.14")
                         .put("builder",
-                                taskVariables()
+                                mapBuilder()
                                         .put("nodeGroups", nodeGroup)
                                         .build())
                         .build();
@@ -280,7 +280,7 @@ public class EksCtlClusterYamlGeneratorTest
 
         EksCtlYamlData cluster = new EksCtlYamlData(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
 
-        List<Map<String, Object>> nodeGroup = ImmutableList.of(taskVariables()
+        List<Map<String, Object>> nodeGroup = ImmutableList.of(mapBuilder()
                 .put("id", "eksctl")
                 .put("version", "0.7.0")
                 .put("nodeGroupName", "standard-worker-group-1")
@@ -291,14 +291,14 @@ public class EksCtlClusterYamlGeneratorTest
                 .put("volumeSize", "200").build());
 
         Map<String, Object> clusterRequest =
-                taskVariables()
+                mapBuilder()
                         .put("profile", "jvz")
                         .put("clusterName", "magic-cluster")
                         .put("region", "us-west-2")
                         .put("user", "automation")
                         .put("k8sVersion", "1.14")
                         .put("builder",
-                                taskVariables()
+                                mapBuilder()
                                         .put("nodeGroups", nodeGroup)
                                         .build())
                         .build();
@@ -321,7 +321,7 @@ public class EksCtlClusterYamlGeneratorTest
 
         EksCtlYamlData cluster = new EksCtlYamlData(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
 
-        List<Map<String, Object>> nodeGroup = ImmutableList.of(taskVariables()
+        List<Map<String, Object>> nodeGroup = ImmutableList.of(mapBuilder()
                 .put("id", "eksctl")
                 .put("version", "0.7.0")
                 .put("nodeGroupName", "standard-worker-group-1")
@@ -333,7 +333,7 @@ public class EksCtlClusterYamlGeneratorTest
                 .put("publicKeyName", "automation").build());
 
         Map<String, Object> clusterRequest =
-                taskVariables()
+                mapBuilder()
                         .put("profile", "jvz")
                         .put("clusterName", "magic-cluster")
                         .put("region", "us-west-2")
@@ -341,7 +341,7 @@ public class EksCtlClusterYamlGeneratorTest
                         .put("k8sVersion", "1.14")
                         .put("clusterLogging", true)
                         .put("builder",
-                                taskVariables()
+                                mapBuilder()
                                         .put("nodeGroups", nodeGroup)
                                         .build())
                         .build();
@@ -365,7 +365,7 @@ public class EksCtlClusterYamlGeneratorTest
 
         EksCtlYamlData cluster = new EksCtlYamlData(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
 
-        List<Map<String, Object>> nodeGroup = ImmutableList.of(taskVariables()
+        List<Map<String, Object>> nodeGroup = ImmutableList.of(mapBuilder()
                 .put("id", "eksctl")
                 .put("version", "0.7.0")
                 .put("nodeGroupName", "standard-worker-group-1")
@@ -376,14 +376,14 @@ public class EksCtlClusterYamlGeneratorTest
                 .put("volumeSize", "200").build());
 
         Map<String, Object> clusterRequest =
-                taskVariables()
+                mapBuilder()
                         .put("profile", "jvz")
                         .put("clusterName", "magic-cluster")
                         .put("region", "us-west-2")
                         .put("user", "automation")
                         .put("k8sVersion", "1.14")
                         .put("builder",
-                                taskVariables()
+                                mapBuilder()
                                         .put("nodeGroups", nodeGroup)
                                         .build())
                         .build();
@@ -406,7 +406,7 @@ public class EksCtlClusterYamlGeneratorTest
 
         EksCtlYamlData cluster = new EksCtlYamlData(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
 
-        List<Map<String, Object>> nodeGroup = ImmutableList.of(taskVariables()
+        List<Map<String, Object>> nodeGroup = ImmutableList.of(mapBuilder()
                 .put("id", "eksctl")
                 .put("version", "0.7.0")
                 .put("nodeGroupName", "standard-worker-group-1")
@@ -418,14 +418,14 @@ public class EksCtlClusterYamlGeneratorTest
                 .put("volumeSize", "200").build());
 
         Map<String, Object> clusterRequest =
-                taskVariables()
+                mapBuilder()
                         .put("profile", "jvz")
                         .put("clusterName", "magic-cluster")
                         .put("region", "us-west-2")
                         .put("user", "automation")
                         .put("k8sVersion", "1.14")
                         .put("builder",
-                                taskVariables()
+                                mapBuilder()
                                         .put("nodeGroups", nodeGroup)
                                         .build())
                         .build();

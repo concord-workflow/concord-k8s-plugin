@@ -1,6 +1,5 @@
 package ca.vanzyl.concord.plugins;
 
-import ca.vanzyl.concord.plugins.Configurator;
 import com.walmartlabs.concord.plugins.ConcordTestSupport;
 import org.junit.Test;
 
@@ -13,7 +12,7 @@ public class ConfiguratorTest extends ConcordTestSupport
     public void validateConfiguration() throws Exception {
         Configurator configurator = new Configurator();
         ObjectToConfigure object = new ObjectToConfigure();
-        configurator.configure(object, taskVariables()
+        configurator.configure(object, mapBuilder()
                 .put("string0", "string0Value")
                 .put("boolean0", "true")
                 .put("char0", 'a')
