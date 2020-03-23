@@ -22,7 +22,8 @@ import static com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class KubeCtlTest extends ConcordTestSupport {
+public class KubeCtlTest extends ConcordTestSupport
+{
 
     private Configurator toolConfigurator;
 
@@ -51,7 +52,7 @@ public class KubeCtlTest extends ConcordTestSupport {
     @Test
     public void validateConfiguratorUsingNameAndVersion() throws Exception {
 
-        Map<String, Object> input = mapBuilder()
+        Map<String, Object> input = taskVariables()
                 .put("command", "apply")
                 .put("file", "00-helm/tiller-rbac.yml")
                 .build();
@@ -87,13 +88,13 @@ public class KubeCtlTest extends ConcordTestSupport {
 
         Files.write(manifestYamlFile, manifestContent.getBytes());
 
-        Map<String, Object> args = Maps.newHashMap(mapBuilder()
+        Map<String, Object> args = Maps.newHashMap(taskVariables()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
                 .put("dryRun", true)
                 .put("command", "apply")
                 .put("file", manifestYamlFile.toString())
                 .put("envars",
-                        mapBuilder()
+                        taskVariables()
                                 .put("KUBECONFIG", "/workspace/_attachments/k8s-cluster0-kubeconfig")
                                 .build())
                 .put("targetPort", "123456789")
@@ -125,14 +126,14 @@ public class KubeCtlTest extends ConcordTestSupport {
         Map<String, ToolCommand> commands = ImmutableMap.of("kubectl/apply", new Apply());
         KubeCtlTask task = new KubeCtlTask(commands, lockService, toolInitializer);
 
-        Map<String, Object> args = Maps.newHashMap(mapBuilder()
+        Map<String, Object> args = Maps.newHashMap(taskVariables()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
                 .put("dryRun", true)
                 .put("command", "apply")
                 .put("validate", "false")
                 .put("file", "00-helm/tiller-rbac.yml")
                 .put("envars",
-                        mapBuilder()
+                        taskVariables()
                                 .put("KUBECONFIG", "/workspace/_attachments/k8s-cluster0-kubeconfig")
                                 .build())
                 .build());
@@ -159,12 +160,12 @@ public class KubeCtlTest extends ConcordTestSupport {
         Map<String, ToolCommand> commands = ImmutableMap.of("kubectl/create", new Create());
         KubeCtlTask task = new KubeCtlTask(commands, lockService, toolInitializer);
 
-        Map<String, Object> args = Maps.newHashMap(mapBuilder()
+        Map<String, Object> args = Maps.newHashMap(taskVariables()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
                 .put("dryRun", true)
                 .put("command", "create")
                 .put("namespace",
-                        mapBuilder()
+                        taskVariables()
                                 .put("name", "cert-manager")
                                 .build())
                 .build());
@@ -186,7 +187,7 @@ public class KubeCtlTest extends ConcordTestSupport {
         Map<String, ToolCommand> commands = ImmutableMap.of("kubectl/delete", new Delete());
         KubeCtlTask task = new KubeCtlTask(commands, lockService, toolInitializer);
 
-        Map<String, Object> args = Maps.newHashMap(mapBuilder()
+        Map<String, Object> args = Maps.newHashMap(taskVariables()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
                 .put("dryRun", true)
                 .put("command", "delete")

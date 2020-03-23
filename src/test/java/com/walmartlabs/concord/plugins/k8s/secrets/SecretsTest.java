@@ -9,7 +9,8 @@ import static io.airlift.security.pem.PemReader.isPem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class SecretsTest extends TestSupport {
+public class SecretsTest extends TestSupport
+{
 
     @Test
     public void validateSecrets() throws Exception {

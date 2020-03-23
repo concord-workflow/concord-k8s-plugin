@@ -21,7 +21,8 @@ import static com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class HelmTest extends ConcordTestSupport {
+public class HelmTest extends ConcordTestSupport
+{
 
     private Configurator toolConfigurator;
 
@@ -50,7 +51,7 @@ public class HelmTest extends ConcordTestSupport {
     @Test
     public void validateConfiguratorUsingNameAndVersion() throws Exception {
 
-        Map<String, Object> input = mapBuilder()
+        Map<String, Object> input = taskVariables()
                 .put("command", "init")
                 .put("serviceAccount", "tiller")
                 .put("wait", "true")
@@ -70,14 +71,14 @@ public class HelmTest extends ConcordTestSupport {
         Map<String, ToolCommand> commands = ImmutableMap.of("helm/init", new Init());
         HelmTask task = new HelmTask(commands, lockService, toolInitializer);
 
-        Map<String, Object> args = Maps.newHashMap(mapBuilder()
+        Map<String, Object> args = Maps.newHashMap(taskVariables()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
                 .put("dryRun", true)
                 .put("command", "init")
                 .put("serviceAccount", "tiller")
                 .put("wait", "true")
                 .put("envars",
-                        mapBuilder()
+                        taskVariables()
                                 .put("AWS_ACCESS_KEY_ID", "aws-access-key")
                                 .put("AWS_SECRET_ACCESS_KEY", "aws-secret-key")
                                 .put("KUBECONFIG", "/workspace/_attachments/k8s-cluster0-kubeconfig")
@@ -116,12 +117,12 @@ public class HelmTest extends ConcordTestSupport {
         sb.append("  hostname: ${hostname}");
         Files.write(valuesYaml, sb.toString().getBytes());
 
-        Map<String, Object> args = Maps.newHashMap(mapBuilder()
+        Map<String, Object> args = Maps.newHashMap(taskVariables()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
                 .put("dryRun", true)
                 .put("command", "install")
                 .put("chart",
-                        mapBuilder()
+                        taskVariables()
                                 .put("name", "sealed-secrets")
                                 .put("namespace", "kube-system")
                                 .put("version", "1.4.2")
@@ -130,7 +131,7 @@ public class HelmTest extends ConcordTestSupport {
                                 .put("values", valuesYaml.toString())
                                 .build())
                 .put("envars",
-                        mapBuilder()
+                        taskVariables()
                                 .put("AWS_ACCESS_KEY_ID", "aws-access-key")
                                 .put("AWS_SECRET_ACCESS_KEY", "aws-secret-key")
                                 .put("KUBECONFIG", "/workspace/_attachments/k8s-cluster0-kubeconfig")
@@ -174,12 +175,12 @@ public class HelmTest extends ConcordTestSupport {
         sb.append("  hostname: ${hostname}");
         Files.write(valuesYaml, sb.toString().getBytes());
 
-        Map<String, Object> args = Maps.newHashMap(mapBuilder()
+        Map<String, Object> args = Maps.newHashMap(taskVariables()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
                 .put("dryRun", true)
                 .put("command", "upgrade")
                 .put("chart",
-                        mapBuilder()
+                        taskVariables()
                                 .put("name", "sealed-secrets")
                                 .put("namespace", "kube-system")
                                 .put("version", "1.4.2")
@@ -188,7 +189,7 @@ public class HelmTest extends ConcordTestSupport {
                                 .put("values", valuesYaml.toString())
                                 .build())
                 .put("envars",
-                        mapBuilder()
+                        taskVariables()
                                 .put("AWS_ACCESS_KEY_ID", "aws-access-key")
                                 .put("AWS_SECRET_ACCESS_KEY", "aws-secret-key")
                                 .put("KUBECONFIG", "/workspace/_attachments/k8s-cluster0-kubeconfig")
@@ -224,12 +225,12 @@ public class HelmTest extends ConcordTestSupport {
         Map<String, ToolCommand> commands = ImmutableMap.of("helm/repo", new Repo());
         HelmTask task = new HelmTask(commands, lockService, toolInitializer);
 
-        Map<String, Object> args = Maps.newHashMap(mapBuilder()
+        Map<String, Object> args = Maps.newHashMap(taskVariables()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
                 .put("dryRun", true)
                 .put("command", "repo")
                 .put("add",
-                        mapBuilder()
+                        taskVariables()
                                 .put("name", "jetstack")
                                 .put("url", "https://charts.jetstack.io")
                                 .build())
@@ -252,7 +253,7 @@ public class HelmTest extends ConcordTestSupport {
         Map<String, ToolCommand> commands = ImmutableMap.of("helm/destroy", new Destroy());
         HelmTask task = new HelmTask(commands, lockService, toolInitializer);
 
-        Map<String, Object> args = Maps.newHashMap(mapBuilder()
+        Map<String, Object> args = Maps.newHashMap(taskVariables()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
                 .put("dryRun", true)
                 .put("command", "destroy")

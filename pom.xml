@@ -37,6 +37,16 @@
 
     <dependencies>
         <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.walmartlabs.concord</groupId>
             <artifactId>concord-sdk</artifactId>
             <scope>provided</scope>
@@ -63,14 +73,13 @@
             <artifactId>aws-java-sdk-secretsmanager</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-            <scope>provided</scope>
+            <groupId>com.squareup.okhttp</groupId>
+            <artifactId>okhttp</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <scope>provided</scope>
+            <groupId>ca.vanzyl.concord.plugins</groupId>
+            <artifactId>concord-plugin-support</artifactId>
+            <version>0.0.4-SNAPSHOT</version>
         </dependency>
         <!-- Jackson -->
         <dependency>
@@ -147,16 +156,6 @@
             <groupId>com.walmartlabs.concord</groupId>
             <artifactId>concord-client</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.squareup.okhttp</groupId>
-            <artifactId>okhttp</artifactId>
-        </dependency>
-        <!-- Others-->
-        <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-utils</artifactId>
-            <version>3.0.5</version>
-        </dependency>
         <!-- Terraform -->
         <dependency>
             <groupId>com.bertramlabs.plugins</groupId>
@@ -168,37 +167,17 @@
             <artifactId>ini4j</artifactId>
             <version>0.5.4</version>
         </dependency>
-        <!-- Test -->
+        <!-- Testing -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
+            <groupId>ca.vanzyl.concord.plugins</groupId>
+            <artifactId>concord-plugin-testing</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.tomakehurst</groupId>
-            <artifactId>wiremock</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>okhttp</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- Random names -->
-        <dependency>
-            <groupId>com.github.javafaker</groupId>
-            <artifactId>javafaker</artifactId>
-            <version>1.0.1</version>
         </dependency>
         <!-- Testing -->
         <dependency>

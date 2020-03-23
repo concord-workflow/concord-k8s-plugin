@@ -10,7 +10,7 @@ public class ConfiguratorTest extends ConcordTestSupport {
     public void validateConfiguration() throws Exception {
         Configurator configurator = new Configurator();
         ObjectToConfigure object = new ObjectToConfigure();
-        configurator.configure(object, mapBuilder()
+        configurator.configure(object, taskVariables()
                 .put("string0", "string0Value")
                 .put("boolean0", "true")
                 .put("char0", 'a')

@@ -15,19 +15,23 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
-
+public class EksCtlClusterYamlGeneratorTest
+        extends ConcordTestSupport
+{
     private String basedir;
 
     @Before
-    public void setUp() {
+    public void setUp()
+    {
         basedir = new File("").getAbsolutePath();
     }
 
     @Test
-    public void validateTerraformOutputParser() throws Exception {
+    public void validateTerraformOutputParser()
+            throws Exception
+    {
         EksCtlYamlData cluster = new EksCtlYamlData(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
-        List<Map<String, Object>> nodeGroup = ImmutableList.of(mapBuilder()
+        List<Map<String, Object>> nodeGroup = ImmutableList.of(taskVariables()
                 .put("id", "eksctl")
                 .put("version", "0.7.0")
                 .put("nodeGroupName", "standard-worker-group-1")
@@ -39,14 +43,14 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
                 .put("publicKeyName", "nodegroupkey").build());
 
         Map<String, Object> clusterRequest =
-                mapBuilder()
+                taskVariables()
                         .put("profile", "jvz")
                         .put("clusterName", "magic-cluster")
                         .put("region", "us-west-2")
                         .put("user", "automation")
                         .put("k8sVersion", "1.14")
                         .put("builder",
-                                mapBuilder()
+                                taskVariables()
                                         .put("nodeGroups", nodeGroup)
                                         .build())
                         .build();
@@ -143,11 +147,12 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
         }
     }
 
-
     @Test
-    public void validateDefaultAMIfamilySetAsAmazonLinux2AndAMIAsStatic() throws Exception {
+    public void validateDefaultAMIfamilySetAsAmazonLinux2AndAMIAsStatic()
+            throws Exception
+    {
         EksCtlYamlData cluster = new EksCtlYamlData(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
-        List<Map<String, Object>> nodeGroup = ImmutableList.of(mapBuilder()
+        List<Map<String, Object>> nodeGroup = ImmutableList.of(taskVariables()
                 .put("id", "eksctl")
                 .put("version", "0.7.0")
                 .put("nodeGroupName", "standard-worker-group-1")
@@ -159,14 +164,14 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
                 .put("publicKeyName", "nodegroupkey").build());
 
         Map<String, Object> clusterRequest =
-                mapBuilder()
+                taskVariables()
                         .put("profile", "jvz")
                         .put("clusterName", "magic-cluster")
                         .put("region", "us-west-2")
                         .put("user", "automation")
                         .put("k8sVersion", "1.14")
                         .put("builder",
-                                mapBuilder()
+                                taskVariables()
                                         .put("nodeGroups", nodeGroup)
                                         .build())
                         .build();
@@ -184,11 +189,12 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
         }
     }
 
-
     @Test
-    public void validateAMIfamilySetAsUbuntu1804() throws Exception {
+    public void validateAMIfamilySetAsUbuntu1804()
+            throws Exception
+    {
         EksCtlYamlData cluster = new EksCtlYamlData(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
-        List<Map<String, Object>> nodeGroup = ImmutableList.of(mapBuilder()
+        List<Map<String, Object>> nodeGroup = ImmutableList.of(taskVariables()
                 .put("id", "eksctl")
                 .put("version", "0.7.0")
                 .put("nodeGroupName", "standard-worker-group-1")
@@ -201,14 +207,14 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
                 .put("publicKeyName", "nodegroupkey").build());
 
         Map<String, Object> clusterRequest =
-                mapBuilder()
+                taskVariables()
                         .put("profile", "jvz")
                         .put("clusterName", "magic-cluster")
                         .put("region", "us-west-2")
                         .put("user", "automation")
                         .put("k8sVersion", "1.14")
                         .put("builder",
-                                mapBuilder()
+                                taskVariables()
                                         .put("nodeGroups", nodeGroup)
                                         .build())
                         .build();
@@ -226,11 +232,12 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
         }
     }
 
-
     @Test
-    public void validateCustomAMI() throws Exception {
+    public void validateCustomAMI()
+            throws Exception
+    {
         EksCtlYamlData cluster = new EksCtlYamlData(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
-        List<Map<String, Object>> nodeGroup = ImmutableList.of(mapBuilder()
+        List<Map<String, Object>> nodeGroup = ImmutableList.of(taskVariables()
                 .put("id", "eksctl")
                 .put("version", "0.7.0")
                 .put("nodeGroupName", "standard-worker-group-1")
@@ -243,14 +250,14 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
                 .put("publicKeyName", "nodegroupkey").build());
 
         Map<String, Object> clusterRequest =
-                mapBuilder()
+                taskVariables()
                         .put("profile", "jvz")
                         .put("clusterName", "magic-cluster")
                         .put("region", "us-west-2")
                         .put("user", "automation")
                         .put("k8sVersion", "1.14")
                         .put("builder",
-                                mapBuilder()
+                                taskVariables()
                                         .put("nodeGroups", nodeGroup)
                                         .build())
                         .build();
@@ -266,13 +273,14 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
         }
     }
 
-
     @Test
-    public void validateAbsentNodeGroupKey() throws Exception {
+    public void validateAbsentNodeGroupKey()
+            throws Exception
+    {
 
         EksCtlYamlData cluster = new EksCtlYamlData(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
 
-        List<Map<String, Object>> nodeGroup = ImmutableList.of(mapBuilder()
+        List<Map<String, Object>> nodeGroup = ImmutableList.of(taskVariables()
                 .put("id", "eksctl")
                 .put("version", "0.7.0")
                 .put("nodeGroupName", "standard-worker-group-1")
@@ -283,14 +291,14 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
                 .put("volumeSize", "200").build());
 
         Map<String, Object> clusterRequest =
-                mapBuilder()
+                taskVariables()
                         .put("profile", "jvz")
                         .put("clusterName", "magic-cluster")
                         .put("region", "us-west-2")
                         .put("user", "automation")
                         .put("k8sVersion", "1.14")
                         .put("builder",
-                                mapBuilder()
+                                taskVariables()
                                         .put("nodeGroups", nodeGroup)
                                         .build())
                         .build();
@@ -306,13 +314,14 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
         }
     }
 
-
     @Test
-    public void validateClusterLoggingEnabled() throws Exception {
+    public void validateClusterLoggingEnabled()
+            throws Exception
+    {
 
         EksCtlYamlData cluster = new EksCtlYamlData(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
 
-        List<Map<String, Object>> nodeGroup = ImmutableList.of(mapBuilder()
+        List<Map<String, Object>> nodeGroup = ImmutableList.of(taskVariables()
                 .put("id", "eksctl")
                 .put("version", "0.7.0")
                 .put("nodeGroupName", "standard-worker-group-1")
@@ -324,7 +333,7 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
                 .put("publicKeyName", "automation").build());
 
         Map<String, Object> clusterRequest =
-                mapBuilder()
+                taskVariables()
                         .put("profile", "jvz")
                         .put("clusterName", "magic-cluster")
                         .put("region", "us-west-2")
@@ -332,7 +341,7 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
                         .put("k8sVersion", "1.14")
                         .put("clusterLogging", true)
                         .put("builder",
-                                mapBuilder()
+                                taskVariables()
                                         .put("nodeGroups", nodeGroup)
                                         .build())
                         .build();
@@ -346,16 +355,17 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
         try (InputStream inputStream = new FileInputStream(clusterYml)) {
             Map<String, Object> yaml = mapper.readValue(inputStream, Map.class);
             assertEquals("all", ((List) ((Map) ((Map) yaml.get("cloudWatch")).get("clusterLogging")).get("enableTypes")).get(0));
-
         }
     }
 
     @Test
-    public void validateAbsentNodeGroupLabelShouldUseTheNodeGroupName() throws Exception {
+    public void validateAbsentNodeGroupLabelShouldUseTheNodeGroupName()
+            throws Exception
+    {
 
         EksCtlYamlData cluster = new EksCtlYamlData(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
 
-        List<Map<String, Object>> nodeGroup = ImmutableList.of(mapBuilder()
+        List<Map<String, Object>> nodeGroup = ImmutableList.of(taskVariables()
                 .put("id", "eksctl")
                 .put("version", "0.7.0")
                 .put("nodeGroupName", "standard-worker-group-1")
@@ -366,14 +376,14 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
                 .put("volumeSize", "200").build());
 
         Map<String, Object> clusterRequest =
-                mapBuilder()
+                taskVariables()
                         .put("profile", "jvz")
                         .put("clusterName", "magic-cluster")
                         .put("region", "us-west-2")
                         .put("user", "automation")
                         .put("k8sVersion", "1.14")
                         .put("builder",
-                                mapBuilder()
+                                taskVariables()
                                         .put("nodeGroups", nodeGroup)
                                         .build())
                         .build();
@@ -389,13 +399,14 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
         }
     }
 
-
     @Test
-    public void validateNodeGroupLabelShouldUseTheNodeGroupLabel() throws Exception {
+    public void validateNodeGroupLabelShouldUseTheNodeGroupLabel()
+            throws Exception
+    {
 
         EksCtlYamlData cluster = new EksCtlYamlData(new File(basedir, "src/test/resources/eksctl/terraform-output.json"));
 
-        List<Map<String, Object>> nodeGroup = ImmutableList.of(mapBuilder()
+        List<Map<String, Object>> nodeGroup = ImmutableList.of(taskVariables()
                 .put("id", "eksctl")
                 .put("version", "0.7.0")
                 .put("nodeGroupName", "standard-worker-group-1")
@@ -407,14 +418,14 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
                 .put("volumeSize", "200").build());
 
         Map<String, Object> clusterRequest =
-                mapBuilder()
+                taskVariables()
                         .put("profile", "jvz")
                         .put("clusterName", "magic-cluster")
                         .put("region", "us-west-2")
                         .put("user", "automation")
                         .put("k8sVersion", "1.14")
                         .put("builder",
-                                mapBuilder()
+                                taskVariables()
                                         .put("nodeGroups", nodeGroup)
                                         .build())
                         .build();
@@ -429,5 +440,4 @@ public class EksCtlClusterYamlGeneratorTest extends ConcordTestSupport {
             assertEquals("ubuntu", ((Map) ((Map) ((List) yaml.get("nodeGroups")).get(0)).get("labels")).get("pool"));
         }
     }
-
 }

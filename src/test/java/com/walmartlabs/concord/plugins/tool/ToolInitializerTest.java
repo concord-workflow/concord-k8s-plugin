@@ -8,7 +8,8 @@ import java.nio.file.Path;
 
 import static org.junit.Assert.assertTrue;
 
-public class ToolInitializerTest extends ConcordTestSupport {
+public class ToolInitializerTest extends ConcordTestSupport
+{
 
     @Test
     public void validateToolInitializerWithHelm() throws Exception {

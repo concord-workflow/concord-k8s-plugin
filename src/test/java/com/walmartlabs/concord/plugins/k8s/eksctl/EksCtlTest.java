@@ -20,7 +20,8 @@ import static com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class EksCtlTest extends ConcordTestSupport {
+public class EksCtlTest extends ConcordTestSupport
+{
 
     private Configurator toolConfigurator;
 
@@ -49,10 +50,10 @@ public class EksCtlTest extends ConcordTestSupport {
     @Test
     public void validateConfiguratorUsingConfigFile() throws Exception {
 
-        Map<String, Object> input = mapBuilder()
+        Map<String, Object> input = taskVariables()
                 .put("command", "create")
                 .put("cluster",
-                        mapBuilder()
+                        taskVariables()
                                 .put("configFile", "cluster.yaml")
                                 .put("kubeconfig", "/home/concord/.kube/config")
                                 .build())
@@ -68,10 +69,10 @@ public class EksCtlTest extends ConcordTestSupport {
     @Test
     public void validateConfiguratorUsingNameAndVersion() throws Exception {
 
-        Map<String, Object> input = mapBuilder()
+        Map<String, Object> input = taskVariables()
                 .put("command", "create")
                 .put("cluster",
-                        mapBuilder()
+                        taskVariables()
                                 .put("name", "cluster-001")
                                 .put("version", "1.14")
                                 .put("kubeconfig", "/home/concord/.kube/config")
@@ -91,11 +92,11 @@ public class EksCtlTest extends ConcordTestSupport {
 
         Configurator toolConfigurator = new Configurator();
 
-        Map<String, Object> configuration = Maps.newHashMap(mapBuilder()
+        Map<String, Object> configuration = Maps.newHashMap(taskVariables()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
                 .put("command", "create")
                 .put("cluster",
-                        mapBuilder()
+                        taskVariables()
                                 .put("configFile", "cluster.yaml")
                                 .put("kubeconfig", "/home/concord/.kube/config")
                                 .build())
@@ -120,11 +121,11 @@ public class EksCtlTest extends ConcordTestSupport {
 
         Configurator toolConfigurator = new Configurator();
 
-        Map<String, Object> configuration = Maps.newHashMap(mapBuilder()
+        Map<String, Object> configuration = Maps.newHashMap(taskVariables()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
                 .put("command", "create")
                 .put("cluster",
-                        mapBuilder()
+                        taskVariables()
                                 .put("name", "cluster-001")
                                 .put("version", "1.14")
                                 .put("kubeconfig", "/home/concord/.kube/config")
@@ -163,12 +164,12 @@ public class EksCtlTest extends ConcordTestSupport {
         //       kubeconfig: /home/concord/.kube/config
         //
 
-        Map<String, Object> args = Maps.newHashMap(mapBuilder()
+        Map<String, Object> args = Maps.newHashMap(taskVariables()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
                 .put("dryRun", true)
                 .put("command", "create")
                 .put("cluster",
-                        mapBuilder()
+                        taskVariables()
                                 .put("configFile", "cluster.yaml")
                                 .put("kubeconfig", "/home/concord/.kube/config")
                                 .build())
@@ -201,19 +202,19 @@ public class EksCtlTest extends ConcordTestSupport {
         //       kubeconfig: /home/concord/.kube/config
         //
 
-        Map<String, Object> args = Maps.newHashMap(mapBuilder()
+        Map<String, Object> args = Maps.newHashMap(taskVariables()
                 .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
                 .put("dryRun", true)
                 .put("command", "create")
                 .put("cluster",
-                        mapBuilder()
+                        taskVariables()
                                 .put("name", "cluster-001")
                                 .put("region", "us-west-2")
                                 .put("version", "1.14")
                                 .put("kubeconfig", "/home/concord/.kube/config")
                                 .build())
                 .put("envars",
-                        mapBuilder()
+                        taskVariables()
                                 .put("AWS_ACCESS_KEY_ID", "aws-access-key")
                                 .put("AWS_SECRET_ACCESS_KEY", "aws-secret-key")
                                 .build())

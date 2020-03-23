@@ -30,7 +30,8 @@ import static org.junit.Assert.assertTrue;
 //          variables:
 //            cluster_name: jvz-cluster
 //
-public class TerraformProcessorTest extends TestSupport {
+public class TerraformProcessorTest extends TestSupport
+{
 
     @Test
     public void validateTerraformProcessorWithYaml() throws Exception {

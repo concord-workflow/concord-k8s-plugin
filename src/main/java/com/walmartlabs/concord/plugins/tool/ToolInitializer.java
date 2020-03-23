@@ -84,6 +84,14 @@ public class ToolInitializer {
             throw new IllegalArgumentException("Your operating system is not supported: " + os);
         }
 
+        // The os name is capitalized as in darwin needs to become Darwin for the URL as is the case with EKSCTL
+        // where the URL is something like:
+        //
+        // https://github.com/weaveworks/eksctl/releases/download/0.7.0/eksctl_Darwin_amd64.tar.gz
+        //
+        // NOTE: On Linux/OS getting $(uname) is already capitalized which is where this convention likely
+        // comes from.
+        //
         if (toolDescriptor.namingStyle().equals(NamingStyle.CAPITALIZE)) {
             return os.substring(0, 1).toUpperCase() + os.substring(1);
         }
