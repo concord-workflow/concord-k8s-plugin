@@ -79,7 +79,7 @@
         <dependency>
             <groupId>ca.vanzyl.concord.plugins</groupId>
             <artifactId>concord-plugin-support</artifactId>
-            <version>0.0.4-SNAPSHOT</version>
+            <version>0.0.4</version>
         </dependency>
         <!-- Jackson -->
         <dependency>
@@ -176,7 +176,7 @@
         <dependency>
             <groupId>ca.vanzyl.concord.plugins</groupId>
             <artifactId>concord-plugin-testing</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
             <scope>test</scope>
         </dependency>
         <!-- Testing -->
