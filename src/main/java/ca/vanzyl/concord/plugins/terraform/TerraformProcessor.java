@@ -1,11 +1,11 @@
 package ca.vanzyl.concord.plugins.terraform;
 
+import ca.vanzyl.concord.plugins.Configurator;
 import com.bertramlabs.plugins.hcl4j.HCLParser;
 import com.bertramlabs.plugins.hcl4j.RuntimeSymbols.Variable;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import ca.vanzyl.concord.plugins.Configurator;
-import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

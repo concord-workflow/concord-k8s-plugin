@@ -1,6 +1,6 @@
 package ca.vanzyl.concord.plugins.directory;
 
-import org.apache.commons.compress.utils.Lists;
+import com.google.common.collect.Lists;
 
 import java.io.IOException;
 import java.nio.file.Files;

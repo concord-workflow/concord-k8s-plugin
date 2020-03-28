@@ -1,7 +1,7 @@
 package ca.vanzyl.concord.plugins.terraform;
 
-import ca.vanzyl.concord.plugins.TaskSupport;
 import ca.vanzyl.concord.plugins.Configurator;
+import ca.vanzyl.concord.plugins.TaskSupport;
 import com.walmartlabs.concord.sdk.Context;
 
 import javax.inject.Named;

@@ -1,9 +1,9 @@
 package ca.vanzyl.concord.plugins.k8s.eksctl;
 
+import ca.vanzyl.concord.plugins.Configurator;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.walmartlabs.concord.plugins.ConcordTestSupport;
-import ca.vanzyl.concord.plugins.Configurator;
 import ca.vanzyl.concord.plugins.k8s.eksctl.commands.Create;
 import ca.vanzyl.concord.plugins.tool.*;
 import com.walmartlabs.concord.sdk.Context;
@@ -36,7 +36,7 @@ public class EksCtlTest extends ConcordTestSupport
         Path workingDirectory = Files.createTempDirectory("concord");
         deleteDirectory(workingDirectory);
 
-        ToolInitializer toolInitializer = new ToolInitializer(new ToolInitializerTest.OKHttpDownloadManager("eksctl"));
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("eksctl"));
         ToolDescriptor toolDescriptor = ToolTaskSupport.fromResource("eksctl");
         ToolInitializationResult result = toolInitializer.initialize(workingDirectory, toolDescriptor);
 
@@ -146,7 +146,7 @@ public class EksCtlTest extends ConcordTestSupport
     @Test
     public void validateEksCtlTaskUsingConfigFile() throws Exception {
 
-        ToolInitializer toolInitializer = new ToolInitializer(new ToolInitializerTest.OKHttpDownloadManager("eksctl"));
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("eksctl"));
         Map<String, ToolCommand> commands = ImmutableMap.of("eksctl/create", new Create());
         EksCtlTask task = new EksCtlTask(commands, lockService, toolInitializer);
 
@@ -183,7 +183,7 @@ public class EksCtlTest extends ConcordTestSupport
     @Test
     public void validateEksCtlTaskUsingNameAndVersion() throws Exception {
 
-        ToolInitializer toolInitializer = new ToolInitializer(new ToolInitializerTest.OKHttpDownloadManager("eksctl"));
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("eksctl"));
         Map<String, ToolCommand> commands = ImmutableMap.of("eksctl/create", new Create());
         EksCtlTask task = new EksCtlTask(commands, lockService, toolInitializer);
 

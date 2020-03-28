@@ -1,10 +1,10 @@
 package ca.vanzyl.concord.plugins.k8s.context;
 
+import ca.vanzyl.concord.plugins.Configurator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.walmartlabs.concord.ApiClient;
 import com.walmartlabs.concord.ApiException;
-import ca.vanzyl.concord.plugins.Configurator;
 import ca.vanzyl.concord.plugins.inventory.ConcordClientSupport;
 import ca.vanzyl.concord.plugins.inventory.ConcordInventoryClient;
 

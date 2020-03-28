@@ -1,8 +1,6 @@
 package ca.vanzyl.concord.plugins.inventory;
 
-import com.squareup.okhttp.OkHttpClient;
 import com.walmartlabs.concord.ApiClient;
-import com.walmartlabs.concord.client.ConcordApiClient;
 import com.walmartlabs.concord.client.InventoriesApi;
 import com.walmartlabs.concord.client.InventoryDataApi;
 import com.walmartlabs.concord.client.InventoryEntry;
@@ -42,17 +40,5 @@ public class ConcordInventoryClient extends ConcordClientSupport {
     public Object getAllItems(String orgName, String inventoryName) throws Exception {
         InventoryDataApi dataApi = new InventoryDataApi(client);
         return dataApi.get(orgName, inventoryName, inventoryName, false);
-    }
-
-    public static ApiClient createClient(String baseUrl, String apiKey) {
-        ApiClient c = new ConcordApiClient(baseUrl, new OkHttpClient());
-        c.setReadTimeout(60000);
-        c.setConnectTimeout(10000);
-        c.setWriteTimeout(60000);
-
-        if (apiKey != null) {
-            c.setApiKey(apiKey);
-        }
-        return c;
     }
 }

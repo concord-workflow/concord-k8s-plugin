@@ -1,9 +1,9 @@
 package ca.vanzyl.concord.plugins.k8s.kubectl;
 
+import ca.vanzyl.concord.plugins.Configurator;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.walmartlabs.concord.plugins.ConcordTestSupport;
-import ca.vanzyl.concord.plugins.Configurator;
 import com.walmartlabs.concord.plugins.InterpolatingMockContext;
 import ca.vanzyl.concord.plugins.k8s.kubectl.commands.Apply;
 import ca.vanzyl.concord.plugins.k8s.kubectl.commands.Create;
