@@ -245,28 +245,4 @@ public class HelmTest extends ConcordTestSupport
         String expectedCommandLine = "helm repo add jetstack https://charts.jetstack.io";
         assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
     }
-
-    @Test
-    public void validateHelmDestroy() throws Exception {
-
-        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("helm"));
-        Map<String, ToolCommand> commands = ImmutableMap.of("helm/destroy", new Destroy());
-        HelmTask task = new HelmTask(commands, lockService, toolInitializer);
-
-        Map<String, Object> args = Maps.newHashMap(mapBuilder()
-                .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
-                .put("dryRun", true)
-                .put("command", "destroy")
-                .build());
-
-        Context context = new MockContext(args);
-        task.execute(context);
-        String commandLine = varAsString(context, "commandLineArguments");
-
-        System.out.println(commandLine);
-
-        String expectedCommandLine = "helm list --short | xargs -L1 helm delete";
-        assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
-    }
-
 }
