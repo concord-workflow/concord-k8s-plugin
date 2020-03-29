@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import com.walmartlabs.concord.plugins.ConcordTestSupport;
 import ca.vanzyl.concord.plugins.k8s.eksctl.commands.Create;
 import ca.vanzyl.concord.plugins.tool.*;
+import com.walmartlabs.concord.plugins.OKHttpDownloadManager;
 import com.walmartlabs.concord.sdk.Context;
 import com.walmartlabs.concord.sdk.MockContext;
 import org.junit.Before;

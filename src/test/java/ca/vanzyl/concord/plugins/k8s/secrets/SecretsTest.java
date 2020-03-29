@@ -1,6 +1,6 @@
 package ca.vanzyl.concord.plugins.k8s.secrets;
 
-import com.walmartlabs.concord.plugins.TestSupport;
+import com.walmartlabs.concord.plugins.ConcordTestSupport;
 import org.junit.Test;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import static io.airlift.security.pem.PemReader.isPem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class SecretsTest extends TestSupport
+public class SecretsTest extends ConcordTestSupport
 {
 
     @Test

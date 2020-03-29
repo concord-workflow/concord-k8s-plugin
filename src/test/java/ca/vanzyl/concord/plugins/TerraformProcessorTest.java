@@ -4,7 +4,7 @@ import ca.vanzyl.concord.plugins.terraform.TerraformProcessingResult;
 import ca.vanzyl.concord.plugins.terraform.TerraformProcessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.walmartlabs.concord.plugins.TestSupport;
+import com.walmartlabs.concord.plugins.ConcordTestSupport;
 import org.junit.Test;
 
 import java.io.File;
@@ -30,7 +30,7 @@ import static org.junit.Assert.assertTrue;
 //          variables:
 //            cluster_name: jvz-cluster
 //
-public class TerraformProcessorTest extends TestSupport
+public class TerraformProcessorTest extends ConcordTestSupport
 {
 
     @Test

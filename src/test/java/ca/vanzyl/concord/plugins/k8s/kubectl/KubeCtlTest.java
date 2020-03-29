@@ -9,6 +9,7 @@ import ca.vanzyl.concord.plugins.k8s.kubectl.commands.Apply;
 import ca.vanzyl.concord.plugins.k8s.kubectl.commands.Create;
 import ca.vanzyl.concord.plugins.k8s.kubectl.commands.Delete;
 import ca.vanzyl.concord.plugins.tool.*;
+import com.walmartlabs.concord.plugins.OKHttpDownloadManager;
 import com.walmartlabs.concord.sdk.Context;
 import com.walmartlabs.concord.sdk.MockContext;
 import org.junit.Before;
