@@ -78,7 +78,7 @@
         <dependency>
             <groupId>ca.vanzyl.concord.plugins</groupId>
             <artifactId>concord-plugin-support</artifactId>
-            <version>0.0.5</version>
+            <version>0.0.7</version>
         </dependency>
         <!-- Jackson -->
         <dependency>
@@ -150,9 +150,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.15.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>ca.vanzyl.concord.plugins</groupId>
             <artifactId>concord-plugin-testing</artifactId>
-            <version>0.0.3</version>
+            <version>0.0.5</version>
             <scope>test</scope>
         </dependency>
         <!-- PEM file detection support -->

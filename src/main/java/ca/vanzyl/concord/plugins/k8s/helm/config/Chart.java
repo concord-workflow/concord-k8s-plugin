@@ -1,5 +1,6 @@
 package ca.vanzyl.concord.plugins.k8s.helm.config;
 
+import ca.vanzyl.concord.plugins.tool.annotations.Value;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import ca.vanzyl.concord.plugins.k8s.helm.commands.Upgrade;
 import ca.vanzyl.concord.plugins.tool.annotations.KeyValue;
@@ -30,6 +31,7 @@ public class Chart {
     private String name;
 
     @JsonProperty
+    @Value
     private String value;
 
     public Chart() {

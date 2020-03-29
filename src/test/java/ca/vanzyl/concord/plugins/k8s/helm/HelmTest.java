@@ -19,7 +19,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import static com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class HelmTest extends ConcordTestSupport
@@ -61,8 +61,8 @@ public class HelmTest extends ConcordTestSupport
         Init init = new Init();
         toolConfigurator.configure(init, input);
 
-        assertEquals("tiller", init.serviceAccount());
-        assertTrue("tiller", init.waitForCompletion());
+        assertThat(init.serviceAccount()).isEqualTo("tiller");
+        assertThat(init.waitForCompletion()).isTrue();
     }
 
     @Test
@@ -88,19 +88,16 @@ public class HelmTest extends ConcordTestSupport
 
         Context context = new MockContext(args);
         task.execute(context);
-        String commandLine = varAsString(context, "commandLineArguments");
-
-        System.out.println(commandLine);
 
         String expectedCommandLine = "helm init --service-account tiller --wait";
-        assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
+        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
 
         System.out.println(context.getVariable("envars"));
 
         // If these were placed in the context, then they were added to the environment of the executed command
-        assertEquals("/workspace/_attachments/k8s-cluster0-kubeconfig", varAsMap(context, "envars").get("KUBECONFIG"));
-        assertEquals("aws-access-key", varAsMap(context, "envars").get("AWS_ACCESS_KEY_ID"));
-        assertEquals("aws-secret-key", varAsMap(context, "envars").get("AWS_SECRET_ACCESS_KEY"));
+        assertThat(varAsMap(context, "envars").get("KUBECONFIG")).isEqualTo("/workspace/_attachments/k8s-cluster0-kubeconfig");
+        assertThat(varAsMap(context, "envars").get("AWS_ACCESS_KEY_ID")).isEqualTo("aws-access-key");
+        assertThat(varAsMap(context, "envars").get("AWS_SECRET_ACCESS_KEY")).isEqualTo("aws-secret-key");
     }
 
     @Test
@@ -148,17 +145,17 @@ public class HelmTest extends ConcordTestSupport
 
         // Make sure our values.yaml file was interpolated correctly by the Helm install command
         String interpolatedContent = new String(Files.readAllBytes(valuesYaml));
-        assertTrue(interpolatedContent.contains("hostname: awesome.concord.io"));
+        assertThat(interpolatedContent).contains("hostname: awesome.concord.io");
 
         String expectedCommandLine = String.format("helm install --atomic --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com --values %s --name sealed-secrets stable/sealed-secrets", valuesYaml.toString());
-        assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
+        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
 
         System.out.println(context.getVariable("envars"));
 
         // If these were placed in the context, then they were added to the environment of the executed command
-        assertEquals("/workspace/_attachments/k8s-cluster0-kubeconfig", varAsMap(context, "envars").get("KUBECONFIG"));
-        assertEquals("aws-access-key", varAsMap(context, "envars").get("AWS_ACCESS_KEY_ID"));
-        assertEquals("aws-secret-key", varAsMap(context, "envars").get("AWS_SECRET_ACCESS_KEY"));
+        assertThat(varAsMap(context, "envars").get("KUBECONFIG")).isEqualTo("/workspace/_attachments/k8s-cluster0-kubeconfig");
+        assertThat(varAsMap(context, "envars").get("AWS_ACCESS_KEY_ID")).isEqualTo("aws-access-key");
+        assertThat(varAsMap(context, "envars").get("AWS_SECRET_ACCESS_KEY")).isEqualTo("aws-secret-key");
     }
 
     @Test
@@ -206,17 +203,17 @@ public class HelmTest extends ConcordTestSupport
 
         // Make sure our values.yaml file was interpolated correctly by the Helm install command
         String interpolatedContent = new String(Files.readAllBytes(valuesYaml));
-        assertTrue(interpolatedContent.contains("hostname: awesome.concord.io"));
+        assertThat(interpolatedContent).contains("hostname: awesome.concord.io");
 
         String expectedCommandLine = String.format("helm upgrade --install --atomic --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com --values %s sealed-secrets stable/sealed-secrets", valuesYaml.toString());
-        assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
+        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
 
         System.out.println(context.getVariable("envars"));
 
         // If these were placed in the context, then they were added to the environment of the executed command
-        assertEquals("/workspace/_attachments/k8s-cluster0-kubeconfig", varAsMap(context, "envars").get("KUBECONFIG"));
-        assertEquals("aws-access-key", varAsMap(context, "envars").get("AWS_ACCESS_KEY_ID"));
-        assertEquals("aws-secret-key", varAsMap(context, "envars").get("AWS_SECRET_ACCESS_KEY"));
+        assertThat(varAsMap(context, "envars").get("KUBECONFIG")).isEqualTo("/workspace/_attachments/k8s-cluster0-kubeconfig");
+        assertThat(varAsMap(context, "envars").get("AWS_ACCESS_KEY_ID")).isEqualTo("aws-access-key");
+        assertThat(varAsMap(context, "envars").get("AWS_SECRET_ACCESS_KEY")).isEqualTo("aws-secret-key");
     }
 
     @Test
@@ -239,11 +236,8 @@ public class HelmTest extends ConcordTestSupport
 
         Context context = new MockContext(args);
         task.execute(context);
-        String commandLine = varAsString(context, "commandLineArguments");
-
-        System.out.println(commandLine);
 
         String expectedCommandLine = "helm repo add jetstack https://charts.jetstack.io";
-        assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
+        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
     }
 }

@@ -15,7 +15,6 @@ public class Repo extends ToolCommandSupport {
 
     public Add add() { return add; }
 
-
     @JsonProperty
     private Update update;
 

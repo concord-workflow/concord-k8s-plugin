@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -112,14 +113,14 @@ public class TerraformProcessorTest extends ConcordTestSupport
 
         System.out.println(result.terraformVariablesJson());
 
-        assertEquals("xxx", json.get("aws_access_key"));
-        assertEquals("yyy", json.get("aws_secret_key"));
-        assertEquals("jvz-cluster", json.get("cluster_name"));
-        assertEquals("10.206.0.0/18", json.get("vpc_cidr"));
-        assertEquals("jvz-vpc", json.get("vpc_name"));
+        assertThat(json.get("aws_access_key")).isEqualTo("xxx");
+        assertThat(json.get("aws_secret_key")).isEqualTo("yyy");
+        assertThat(json.get("cluster_name")).isEqualTo("jvz-cluster");
+        assertThat(json.get("vpc_cidr")).isEqualTo("10.206.0.0/18");
+        assertThat(json.get("vpc_name")).isEqualTo("jvz-vpc");
 
         // Make sure all policy files are copied into the workdir
         Path policyFile = workDir.resolve("eks-policy-aws-s3.json");
-        assertTrue(Files.exists(policyFile));
+        assertThat(Files.exists(policyFile)).isTrue();
     }
 }

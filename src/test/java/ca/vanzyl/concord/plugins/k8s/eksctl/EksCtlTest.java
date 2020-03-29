@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import static com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -41,8 +42,8 @@ public class EksCtlTest extends ConcordTestSupport
         ToolDescriptor toolDescriptor = ToolTaskSupport.fromResource("eksctl");
         ToolInitializationResult result = toolInitializer.initialize(workingDirectory, toolDescriptor);
 
-        assertTrue(result.executable().toFile().exists());
-        assertTrue(Files.isExecutable(result.executable()));
+        assertThat(result.executable().toFile().exists()).isTrue();
+        assertThat(Files.isExecutable(result.executable())).isTrue();
 
         deleteDirectory(workingDirectory);
     }
@@ -62,8 +63,8 @@ public class EksCtlTest extends ConcordTestSupport
         Create create = new Create();
         toolConfigurator.configure(create, input);
 
-        assertEquals("cluster.yaml", create.cluster().configFile());
-        assertEquals("/home/concord/.kube/config", create.cluster().kubeconfig());
+        assertThat(create.cluster().configFile()).isEqualTo("cluster.yaml");
+        assertThat(create.cluster().kubeconfig()).isEqualTo("/home/concord/.kube/config");
     }
 
     @Test
@@ -82,9 +83,9 @@ public class EksCtlTest extends ConcordTestSupport
         Create create = new Create();
         toolConfigurator.configure(create, input);
 
-        assertEquals("cluster-001", create.cluster().name());
-        assertEquals("1.14", create.cluster().version());
-        assertEquals("/home/concord/.kube/config", create.cluster().kubeconfig());
+        assertThat(create.cluster().name()).isEqualTo("cluster-001");
+        assertThat(create.cluster().version()).isEqualTo("1.14");
+        assertThat(create.cluster().kubeconfig()).isEqualTo("/home/concord/.kube/config");
     }
 
     @Test
@@ -107,12 +108,9 @@ public class EksCtlTest extends ConcordTestSupport
 
         Context context = new MockContext(configuration);
         task.execute(context);
-        String commandLine = varAsString(context, "commandLineArguments");
 
-        System.out.println(commandLine);
-
-        String expectedCommandLine = "create cluster --config-file cluster.yaml --kubeconfig /home/concord/.kube/config";
-        assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
+        String expectedCommandLine = "eksctl create cluster --config-file cluster.yaml --kubeconfig /home/concord/.kube/config --wait";
+        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
     }
 
     @Test
@@ -140,8 +138,8 @@ public class EksCtlTest extends ConcordTestSupport
 
         System.out.println(commandLine);
 
-        String expectedCommandLine = "create cluster --name cluster-001 --version 1.14 --kubeconfig /home/concord/.kube/config";
-        assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
+        String expectedCommandLine = "eksctl create cluster --name cluster-001 --version 1.14 --kubeconfig /home/concord/.kube/config --wait";
+        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
     }
 
     @Test
@@ -177,8 +175,8 @@ public class EksCtlTest extends ConcordTestSupport
 
         System.out.println(commandLine);
 
-        String expectedCommandLine = "eksctl create cluster --config-file cluster.yaml --kubeconfig /home/concord/.kube/config";
-        assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
+        String expectedCommandLine = "eksctl create cluster --config-file cluster.yaml --kubeconfig /home/concord/.kube/config --wait";
+        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
     }
 
     @Test
@@ -218,17 +216,14 @@ public class EksCtlTest extends ConcordTestSupport
 
         Context context = new MockContext(args);
         task.execute(context);
-        String commandLine = varAsString(context, "commandLineArguments");
 
-        System.out.println(commandLine);
-
-        String expectedCommandLine = "eksctl create cluster --name cluster-001 --region us-west-2 --version 1.14 --kubeconfig /home/concord/.kube/config";
-        assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
+        String expectedCommandLine = "eksctl create cluster --name cluster-001 --region us-west-2 --version 1.14 --kubeconfig /home/concord/.kube/config --wait";
+        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
 
         System.out.println(context.getVariable("envars"));
 
         // If these were placed in the context, then they were added to the environment of the executed command
-        assertEquals("aws-access-key", varAsMap(context, "envars").get("AWS_ACCESS_KEY_ID"));
-        assertEquals("aws-secret-key", varAsMap(context, "envars").get("AWS_SECRET_ACCESS_KEY"));
+        assertThat(varAsMap(context, "envars").get("AWS_ACCESS_KEY_ID")).isEqualTo("aws-access-key");
+        assertThat(varAsMap(context, "envars").get("AWS_SECRET_ACCESS_KEY")).isEqualTo("aws-secret-key");
     }
 }

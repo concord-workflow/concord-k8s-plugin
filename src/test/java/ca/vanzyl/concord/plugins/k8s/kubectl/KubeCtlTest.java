@@ -20,8 +20,8 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import static com.walmartlabs.concord.sdk.Constants.Context.WORK_DIR_KEY;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class KubeCtlTest extends ConcordTestSupport
 {
@@ -44,8 +44,8 @@ public class KubeCtlTest extends ConcordTestSupport
         ToolDescriptor toolDescriptor = ToolTaskSupport.fromResource("kubectl");
         ToolInitializationResult result = toolInitializer.initialize(workingDirectory, toolDescriptor);
 
-        assertTrue(result.executable().toFile().exists());
-        assertTrue(Files.isExecutable(result.executable()));
+        assertThat(result.executable().toFile().exists()).isTrue();
+        assertThat(Files.isExecutable(result.executable())).isTrue();
 
         deleteDirectory(workingDirectory);
     }
@@ -61,7 +61,7 @@ public class KubeCtlTest extends ConcordTestSupport
         Apply apply = new Apply();
         toolConfigurator.configure(apply, input);
 
-        assertEquals("00-helm/tiller-rbac.yml", apply.file());
+        assertThat(apply.file()).isEqualTo("00-helm/tiller-rbac.yml");
     }
 
     @Test
@@ -103,16 +103,13 @@ public class KubeCtlTest extends ConcordTestSupport
 
         Context context = new InterpolatingMockContext(args);
         task.execute(context);
-        String commandLine = varAsString(context, "commandLineArguments");
-
-        System.out.println(commandLine);
 
         // Make sure our values.yaml file was interpolated correctly by the Helm install command
         String interpolatedContent = new String(Files.readAllBytes(manifestYamlFile));
-        assertTrue(interpolatedContent.contains("targetPort: 123456789"));
+        assertThat(interpolatedContent).contains("targetPort: 123456789");
 
         String expectedCommandLine = String.format("kubectl apply -f %s", manifestYamlFile.toString());
-        assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
+        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
 
         System.out.println(context.getVariable("envars"));
 
@@ -141,12 +138,9 @@ public class KubeCtlTest extends ConcordTestSupport
 
         Context context = new MockContext(args);
         task.execute(context);
-        String commandLine = varAsString(context, "commandLineArguments");
-
-        System.out.println(commandLine);
 
         String expectedCommandLine = "kubectl apply --validate=false -f 00-helm/tiller-rbac.yml";
-        assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
+        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
 
         System.out.println(context.getVariable("envars"));
 
@@ -173,12 +167,9 @@ public class KubeCtlTest extends ConcordTestSupport
 
         Context context = new MockContext(args);
         task.execute(context);
-        String commandLine = varAsString(context, "commandLineArguments");
-
-        System.out.println(commandLine);
 
         String expectedCommandLine = "kubectl create namespace cert-manager";
-        assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
+        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
     }
 
     @Test
@@ -197,11 +188,8 @@ public class KubeCtlTest extends ConcordTestSupport
 
         Context context = new MockContext(args);
         task.execute(context);
-        String commandLine = varAsString(context, "commandLineArguments");
-
-        System.out.println(commandLine);
 
         String expectedCommandLine = "kubectl delete crd alertmanagers.monitoring.coreos.com";
-        assertTrue(varAsString(context, "commandLineArguments").contains(expectedCommandLine));
+        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
     }
 }
