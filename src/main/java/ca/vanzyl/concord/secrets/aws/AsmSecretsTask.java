@@ -1,10 +1,10 @@
 package ca.vanzyl.concord.secrets.aws;
 
 import ca.vanzyl.concord.plugins.TaskSupport;
-import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
 import ca.vanzyl.concord.plugins.k8s.secrets.Secret;
 import ca.vanzyl.concord.plugins.k8s.secrets.SecretsManager;
+import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
 import com.walmartlabs.concord.sdk.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,10 +29,20 @@ public class AsmSecretsTask extends TaskSupport {
         String region = varAsString(context, "homeRegion");
         String awsAccessKey = varAsString(context, "awsAccessKey");
         String awsSecretKey = varAsString(context, "awsSecretKey");
+        logger.info("Successfully retrieved the aws session for '{} .", context.toMap());
+        String awsSessionToken = varAsString(context, "awsSessionToken");
+
+
         String organization = orgName(context);
 
         try {
-            AsmClient asmClient = new AsmClient(region, awsAccessKey, awsSecretKey);
+            AsmClient asmClient;
+            if (awsSessionToken != null && awsSessionToken != "") {
+                asmClient = new AsmClient(region, awsAccessKey, awsSecretKey, awsSessionToken);
+            } else {
+                asmClient = new AsmClient(region, awsAccessKey, awsSecretKey);
+            }
+
 
             String organizationSecretsYaml = asmClient.get(organization);
             if (!Strings.isNullOrEmpty(organizationSecretsYaml)) {
@@ -46,7 +56,7 @@ public class AsmSecretsTask extends TaskSupport {
                             secretsMap.put(secret.name(), adjust(secret.value()));
                         }
                         // We take the map that we created and store the secrets in the Concord context
-                        Map<String,String> bootstrapSecrets = (Map<String,String>) context.getVariable("bootstrap");
+                        Map<String, String> bootstrapSecrets = (Map<String, String>) context.getVariable("bootstrap");
                         secretsMap.putAll(bootstrapSecrets);
                         context.setVariable("secrets", secretsMap);
                         logger.info("Successfully injected the organization secrets for '{}' into the context. A specific secret is available as '${secrets.XXX}'.", organization);

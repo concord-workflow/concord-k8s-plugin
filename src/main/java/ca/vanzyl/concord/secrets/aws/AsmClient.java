@@ -1,8 +1,6 @@
 package ca.vanzyl.concord.secrets.aws;
 
-import com.amazonaws.auth.AWSCredentialsProviderChain;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.*;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
@@ -47,6 +45,17 @@ public class AsmClient implements SecretsProvider {
                         new AWSStaticCredentialsProvider(new BasicAWSCredentials(awsAccessKey, awsSecretKey)),
                         new ProfileCredentialsProvider(), // check the local ~/.aws/credentials
                         new ConcordCredentialsProvider()))) // check Concord's secrets store
+                .build();
+    }
+
+
+    public AsmClient(String region, String awsAccessKey, String awsSecretKey , String awsSessionKey) {
+        String endpoint = String.format("secretsmanager.%s.amazonaws.com", region);
+        AwsClientBuilder.EndpointConfiguration endpointConfiguration = new AwsClientBuilder.EndpointConfiguration(endpoint, region);
+        client = AWSSecretsManagerClientBuilder.standard()
+                .withEndpointConfiguration(endpointConfiguration)
+                .withCredentials(new AWSStaticCredentialsProvider(
+                        new BasicSessionCredentials(awsAccessKey,awsSecretKey,awsSessionKey)))
                 .build();
     }
 
