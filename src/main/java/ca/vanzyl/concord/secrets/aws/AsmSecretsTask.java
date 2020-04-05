@@ -29,9 +29,7 @@ public class AsmSecretsTask extends TaskSupport {
         String region = varAsString(context, "homeRegion");
         String awsAccessKey = varAsString(context, "awsAccessKey");
         String awsSecretKey = varAsString(context, "awsSecretKey");
-        logger.info("Successfully retrieved the aws session for '{} .", context.toMap());
         String awsSessionToken = varAsString(context, "awsSessionToken");
-
 
         String organization = orgName(context);
 
