@@ -1,5 +1,6 @@
 package ca.vanzyl.concord.plugins.k8s.eksctl.config;
 
+import ca.vanzyl.concord.plugins.k8s.eksctl.commands.Create;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import ca.vanzyl.concord.plugins.tool.annotations.Flag;
 import ca.vanzyl.concord.plugins.tool.annotations.Option;
@@ -26,8 +27,11 @@ public class Cluster {
     @Option(name = {"--kubeconfig"})
     private String kubeconfig;
 
+    // There is no --wait command for the create command but there is for the delete command. If you don't use the --wait
+    // flag when destroying clusters the command will return while the CloudFormation stack is being deleted and then the
+    // terraform destroy call will fail because the CloudFormation stack still has an upstream dependency on the VPC.
     @JsonProperty
-    @Flag(name = {"--wait"})
+    @Flag(name = {"--wait"}, omitFor = Create.class)
     private boolean wait;
 
     public String name() {

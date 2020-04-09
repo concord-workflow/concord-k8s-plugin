@@ -1,6 +1,7 @@
 package ca.vanzyl.concord.plugins.k8s.eksctl;
 
 import ca.vanzyl.concord.plugins.Configurator;
+import ca.vanzyl.concord.plugins.k8s.eksctl.commands.Delete;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.walmartlabs.concord.plugins.ConcordTestSupport;
@@ -109,7 +110,7 @@ public class EksCtlTest extends ConcordTestSupport
         Context context = new MockContext(configuration);
         task.execute(context);
 
-        String expectedCommandLine = "eksctl create cluster --config-file cluster.yaml --kubeconfig /home/concord/.kube/config --wait";
+        String expectedCommandLine = "eksctl create cluster --config-file cluster.yaml --kubeconfig /home/concord/.kube/config";
         assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
     }
 
@@ -138,7 +139,7 @@ public class EksCtlTest extends ConcordTestSupport
 
         System.out.println(commandLine);
 
-        String expectedCommandLine = "eksctl create cluster --name cluster-001 --version 1.14 --kubeconfig /home/concord/.kube/config --wait";
+        String expectedCommandLine = "eksctl create cluster --name cluster-001 --version 1.14 --kubeconfig /home/concord/.kube/config";
         assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
     }
 
@@ -175,7 +176,7 @@ public class EksCtlTest extends ConcordTestSupport
 
         System.out.println(commandLine);
 
-        String expectedCommandLine = "eksctl create cluster --config-file cluster.yaml --kubeconfig /home/concord/.kube/config --wait";
+        String expectedCommandLine = "eksctl create cluster --config-file cluster.yaml --kubeconfig /home/concord/.kube/config";
         assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
     }
 
@@ -217,7 +218,7 @@ public class EksCtlTest extends ConcordTestSupport
         Context context = new MockContext(args);
         task.execute(context);
 
-        String expectedCommandLine = "eksctl create cluster --name cluster-001 --region us-west-2 --version 1.14 --kubeconfig /home/concord/.kube/config --wait";
+        String expectedCommandLine = "eksctl create cluster --name cluster-001 --region us-west-2 --version 1.14 --kubeconfig /home/concord/.kube/config";
         assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
 
         System.out.println(context.getVariable("envars"));
@@ -226,4 +227,34 @@ public class EksCtlTest extends ConcordTestSupport
         assertThat(varAsMap(context, "envars").get("AWS_ACCESS_KEY_ID")).isEqualTo("aws-access-key");
         assertThat(varAsMap(context, "envars").get("AWS_SECRET_ACCESS_KEY")).isEqualTo("aws-secret-key");
     }
+
+    @Test
+    public void validateEksCtlTaskDelete() throws Exception {
+
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("eksctl"));
+        Map<String, ToolCommand> commands = ImmutableMap.of("eksctl/delete", new Delete());
+        EksCtlTask task = new EksCtlTask(commands, lockService, toolInitializer);
+
+        Map<String, Object> args = Maps.newHashMap(mapBuilder()
+                .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
+                .put("dryRun", true)
+                .put("command", "delete")
+                .put("cluster",
+                        mapBuilder()
+                                .put("name", "jvz-001")
+                                .put("region", "us-east-2")
+                                .put("wait", true)
+                                .build())
+                .build());
+
+        Context context = new MockContext(args);
+        task.execute(context);
+        String commandLine = varAsString(context, "commandLineArguments");
+
+        System.out.println(commandLine);
+
+        String expectedCommandLine = "eksctl delete cluster --name jvz-001 --region us-east-2 --wait";
+        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
+    }
+
 }
