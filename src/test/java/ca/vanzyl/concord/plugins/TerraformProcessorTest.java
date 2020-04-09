@@ -71,8 +71,9 @@ public class TerraformProcessorTest extends ConcordTestSupport
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         Map<String, Object> map = mapper.readValue(yaml, Map.class);
 
-        Path source = new File(basedir, "src/test/terraform/00-aws/terraform").toPath();
-        Path target = new File(basedir,"target/workdir/terraform").toPath();
+        //Path source = new File(basedir, "src/test/terraform/00-aws/terraform").toPath();
+        Path source = new File("/Users/jvanzyl/js/concord/concord-terraform").toPath();
+        Path target = new File(basedir,"target/workdir/concord-terraform").toPath();
         Path workDir = new File(basedir,"target/workdir").toPath();
 
         TerraformProcessor processor = new TerraformProcessor(source, target, workDir);

@@ -48,12 +48,6 @@ public class TerraformProcessorTask extends TaskSupport {
     private final static String OUTPUT_DIRECTORY = "outputDirectory";
     private final static String CONFIGURATION = "configuration";
 
-    private final Configurator configurator;
-
-    public TerraformProcessorTask() {
-        configurator = new Configurator();
-    }
-
     @Override
     public void execute(Context context) throws Exception {
 

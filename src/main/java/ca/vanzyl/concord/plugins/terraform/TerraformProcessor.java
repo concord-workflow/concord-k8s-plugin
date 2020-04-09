@@ -147,7 +147,9 @@ public class TerraformProcessor {
         Files.walk(src).forEach(s -> {
             try {
                 if (Files.isRegularFile(s)) {
-                    Files.copy(s, dest.resolve(src.relativize(s)), REPLACE_EXISTING);
+                    if(!s.toAbsolutePath().toString().contains("tests")) {
+                        Files.copy(s, dest.resolve(src.relativize(s)), REPLACE_EXISTING);
+                    }
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage(), e);
@@ -155,12 +157,15 @@ public class TerraformProcessor {
         });
     }
 
-    // This flattens everything into one directory for Terraform to process
+    // This flattens everything into one directory for Terraform to process. This is only required because
+    // The terraform task only works correctly when resources are in the workDir
     private void copyPoliciesToWorkDir(Path src, Path workDir) throws IOException {
         Files.walk(src).forEach(s -> {
             try {
                 if (s.getFileName().toString().contains("policy")) {
-                    Files.copy(s, workDir.resolve(src.relativize(s)), REPLACE_EXISTING);
+                    if(!s.toAbsolutePath().toString().contains("tests")) {
+                        Files.copy(s, workDir.resolve(src.relativize(s)), REPLACE_EXISTING);
+                    }
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage(), e);
