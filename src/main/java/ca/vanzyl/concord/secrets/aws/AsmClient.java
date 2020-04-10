@@ -1,13 +1,26 @@
 package ca.vanzyl.concord.secrets.aws;
 
-import com.amazonaws.auth.*;
+import ca.vanzyl.concord.secrets.SecretsProvider;
+import com.amazonaws.auth.AWSCredentialsProviderChain;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.BasicSessionCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
-import com.amazonaws.services.secretsmanager.model.*;
+import com.amazonaws.services.secretsmanager.model.CreateSecretRequest;
+import com.amazonaws.services.secretsmanager.model.CreateSecretResult;
+import com.amazonaws.services.secretsmanager.model.DeleteSecretRequest;
+import com.amazonaws.services.secretsmanager.model.DeleteSecretResult;
+import com.amazonaws.services.secretsmanager.model.DescribeSecretRequest;
+import com.amazonaws.services.secretsmanager.model.DescribeSecretResult;
+import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
+import com.amazonaws.services.secretsmanager.model.GetSecretValueResult;
+import com.amazonaws.services.secretsmanager.model.ListSecretsRequest;
+import com.amazonaws.services.secretsmanager.model.ResourceNotFoundException;
+import com.amazonaws.services.secretsmanager.model.SecretListEntry;
 import com.google.common.collect.ImmutableList;
-import ca.vanzyl.concord.secrets.SecretsProvider;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -87,10 +100,15 @@ public class AsmClient implements SecretsProvider {
         DeleteSecretResult result = client.deleteSecret(request);
     }
 
-    public String get(String secretName) {
-
+    public String get(String secretName)
+    {
         GetSecretValueRequest request = new GetSecretValueRequest().withSecretId(secretName);
-        GetSecretValueResult result = client.getSecretValue(request);
-        return result.getSecretString();
+        try {
+            GetSecretValueResult result = client.getSecretValue(request);
+            return result.getSecretString();
+        }
+        catch (ResourceNotFoundException e) {
+            return null;
+        }
     }
 }
