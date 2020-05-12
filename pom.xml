@@ -78,7 +78,7 @@
         <dependency>
             <groupId>ca.vanzyl.concord.plugins</groupId>
             <artifactId>concord-plugin-support</artifactId>
-            <version>0.0.8</version>
+            <version>0.0.9</version>
         </dependency>
         <!-- Jackson -->
         <dependency>
