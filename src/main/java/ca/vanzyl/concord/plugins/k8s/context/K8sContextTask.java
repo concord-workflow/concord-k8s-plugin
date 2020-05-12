@@ -1,5 +1,6 @@
 package ca.vanzyl.concord.plugins.k8s.context;
 
+import ca.vanzyl.concord.plugins.ImmutablesYamlMapper;
 import ca.vanzyl.concord.plugins.TaskSupport;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -13,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -148,6 +151,17 @@ public class K8sContextTask extends TaskSupport {
     // --------------------------------------------------------------------------------------------------------------------
     // Helpers
     // --------------------------------------------------------------------------------------------------------------------
+
+    public void showClusterRequest() throws IOException
+    {
+        System.out.println();
+        Map<String,Object> clusterRequest = varAsMap(context, "clusterRequest");
+        ImmutablesYamlMapper yamlMapper = new ImmutablesYamlMapper();
+        String clusterRequestString = yamlMapper.write(clusterRequest);
+        clusterRequestString = clusterRequestString.replaceAll("accessKey: \".*\"", "accessKey: \"***\"");
+        clusterRequestString = clusterRequestString.replaceAll("secretKey: \".*\"", "secretKey: \"***\"");
+        System.out.println(clusterRequestString);
+    }
 
     private ClusterInventoryClient client(Context context) {
         return new ClusterInventoryClient(apiClient(clientFactory, context));
