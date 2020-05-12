@@ -147,7 +147,7 @@ public class HelmTest extends ConcordTestSupport
         String interpolatedContent = new String(Files.readAllBytes(valuesYaml));
         assertThat(interpolatedContent).contains("hostname: awesome.concord.io");
 
-        String expectedCommandLine = String.format("helm install --atomic --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com --values %s --name sealed-secrets stable/sealed-secrets", valuesYaml.toString());
+        String expectedCommandLine = String.format("helm install --atomic --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com --values %s --timeout 300 --name sealed-secrets stable/sealed-secrets", valuesYaml.toString());
         assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
 
         System.out.println(context.getVariable("envars"));
@@ -205,7 +205,7 @@ public class HelmTest extends ConcordTestSupport
         String interpolatedContent = new String(Files.readAllBytes(valuesYaml));
         assertThat(interpolatedContent).contains("hostname: awesome.concord.io");
 
-        String expectedCommandLine = String.format("helm upgrade --install --atomic --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com --values %s sealed-secrets stable/sealed-secrets", valuesYaml.toString());
+        String expectedCommandLine = String.format("helm upgrade --install --atomic --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com --values %s --timeout 300 sealed-secrets stable/sealed-secrets", valuesYaml.toString());
         assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
 
         System.out.println(context.getVariable("envars"));
@@ -240,4 +240,32 @@ public class HelmTest extends ConcordTestSupport
         String expectedCommandLine = "helm repo add jetstack https://charts.jetstack.io";
         assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
     }
+
+    @Test
+    public void validateHelmAddRepoRequiringAuthentication() throws Exception {
+
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("helm"));
+        Map<String, ToolCommand> commands = ImmutableMap.of("helm/repo", new Repo());
+        HelmTask task = new HelmTask(commands, lockService, toolInitializer);
+
+        Map<String, Object> args = Maps.newHashMap(mapBuilder()
+                .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
+                .put("dryRun", true)
+                .put("command", "repo")
+                .put("add",
+                        mapBuilder()
+                                .put("username", "admin")
+                                .put("password", "secret")
+                                .put("name", "private")
+                                .put("url", "https://charts.private.io")
+                                .build())
+                .build());
+
+        Context context = new MockContext(args);
+        task.execute(context);
+
+        String expectedCommandLine = "helm repo add --username=admin --password=secret private https://charts.private.io";
+        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
+    }
+
 }

@@ -1,5 +1,6 @@
 package ca.vanzyl.concord.plugins.k8s.helm.config;
 
+import ca.vanzyl.concord.plugins.tool.annotations.OptionWithEquals;
 import ca.vanzyl.concord.plugins.tool.annotations.Value;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import ca.vanzyl.concord.plugins.k8s.helm.commands.Upgrade;
@@ -25,6 +26,10 @@ public class Chart {
     @JsonProperty
     @Option(name = {"--values"})
     private String values;
+
+    @JsonProperty
+    @Option(name = {"--timeout"})
+    private String timeout = "300";
 
     @JsonProperty
     @Option(name = {"--name"}, omitFor=Upgrade.class)
