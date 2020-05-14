@@ -27,6 +27,10 @@ public class Install extends ToolCommandSupport {
     @Flag(name = {"--atomic"})
     private boolean atomic = true;
 
+    @JsonProperty("create-namespace")
+    @Flag(name = {"--create-namespace"})
+    private boolean createNamespace = true;
+
     @Override
     public String idempotencyCheckCommand(Context context) {
         return String.format("{{executable}} status %s", chart.name());

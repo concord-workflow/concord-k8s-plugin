@@ -99,7 +99,7 @@ public class Helm3Test extends ConcordTestSupport
         String interpolatedContent = new String(Files.readAllBytes(valuesYaml));
         assertThat(interpolatedContent).contains("hostname: awesome.concord.io");
 
-        String expectedCommandLine = String.format("helm install --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com -f %s sealed-secrets stable/sealed-secrets --atomic", valuesYaml.toString());
+        String expectedCommandLine = String.format("helm install --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com -f %s sealed-secrets stable/sealed-secrets --atomic --create-namespace", valuesYaml.toString());
         assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
 
         System.out.println(context.getVariable("envars"));
@@ -157,7 +157,7 @@ public class Helm3Test extends ConcordTestSupport
         String interpolatedContent = new String(Files.readAllBytes(valuesYaml));
         assertThat(interpolatedContent).contains("hostname: awesome.concord.io");
 
-        String expectedCommandLine = String.format("helm upgrade --install --atomic --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com -f %s sealed-secrets stable/sealed-secrets", valuesYaml.toString());
+        String expectedCommandLine = String.format("helm upgrade --install --atomic --create-namespace --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com -f %s sealed-secrets stable/sealed-secrets", valuesYaml.toString());
         assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
 
         System.out.println(context.getVariable("envars"));

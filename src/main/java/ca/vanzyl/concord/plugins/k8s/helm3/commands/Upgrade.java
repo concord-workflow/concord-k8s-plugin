@@ -23,6 +23,12 @@ public class Upgrade extends ToolCommandSupport {
     @Flag(name = {"--atomic"})
     private boolean atomic = true;
 
+
+    @JsonProperty("create-namespace")
+    @Flag(name = {"--create-namespace"})
+    private boolean createNamespace = true;
+
+
     @JsonProperty("chart")
     @Omit
     private Chart chart;

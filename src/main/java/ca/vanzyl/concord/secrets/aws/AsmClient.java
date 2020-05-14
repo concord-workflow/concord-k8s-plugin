@@ -39,7 +39,7 @@ public class AsmClient implements SecretsProvider {
     private final AWSSecretsManager client;
 
     public AsmClient(String region) {
-        String endpoint = String.format("secretsmanager.%s.amazonaws.com", region);
+        String endpoint = getSecretsmanagerEndpoint(region);
         AwsClientBuilder.EndpointConfiguration endpointConfiguration = new AwsClientBuilder.EndpointConfiguration(endpoint, region);
         client = AWSSecretsManagerClientBuilder.standard()
                 .withEndpointConfiguration(endpointConfiguration)
@@ -49,8 +49,12 @@ public class AsmClient implements SecretsProvider {
                 .build();
     }
 
+    private String getSecretsmanagerEndpoint(String region) {
+        return String.format("secretsmanager.%s.amazonaws.com", region);
+    }
+
     public AsmClient(String region, String awsAccessKey, String awsSecretKey) {
-        String endpoint = String.format("secretsmanager.%s.amazonaws.com", region);
+        String endpoint = getSecretsmanagerEndpoint(region);
         AwsClientBuilder.EndpointConfiguration endpointConfiguration = new AwsClientBuilder.EndpointConfiguration(endpoint, region);
         client = AWSSecretsManagerClientBuilder.standard()
                 .withEndpointConfiguration(endpointConfiguration)
@@ -63,7 +67,7 @@ public class AsmClient implements SecretsProvider {
 
 
     public AsmClient(String region, String awsAccessKey, String awsSecretKey , String awsSessionKey) {
-        String endpoint = String.format("secretsmanager.%s.amazonaws.com", region);
+        String endpoint = getSecretsmanagerEndpoint(region);
         AwsClientBuilder.EndpointConfiguration endpointConfiguration = new AwsClientBuilder.EndpointConfiguration(endpoint, region);
         client = AWSSecretsManagerClientBuilder.standard()
                 .withEndpointConfiguration(endpointConfiguration)
