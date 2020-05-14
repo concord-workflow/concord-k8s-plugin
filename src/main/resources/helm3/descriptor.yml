@@ -5,5 +5,5 @@ executable: helm
 architecture: amd64
 namingStyle: LOWER
 packaging: TARGZ_STRIP
-defaultVersion: v3.1.2
+defaultVersion: v3.2.1
 urlTemplate: https://get.helm.sh/helm-{version}-{os}-{arch}.tar.gz
