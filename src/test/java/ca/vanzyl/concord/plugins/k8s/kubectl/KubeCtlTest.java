@@ -26,11 +26,15 @@ import static org.junit.Assert.assertEquals;
 public class KubeCtlTest extends ConcordTestSupport
 {
 
+    private static final String TOOL_NAME = "kubectl";
+
+    private ToolDescriptor toolDescriptor;
     private Configurator toolConfigurator;
 
     @Before
     public void setUp() throws Exception {
         toolConfigurator = new Configurator();
+        toolDescriptor = ToolTaskSupport.fromResource(TOOL_NAME);
         super.setUp();
     }
 
@@ -40,8 +44,7 @@ public class KubeCtlTest extends ConcordTestSupport
         Path workingDirectory = Files.createTempDirectory("concord");
         deleteDirectory(workingDirectory);
 
-        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("kubectl"));
-        ToolDescriptor toolDescriptor = ToolTaskSupport.fromResource("kubectl");
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager(TOOL_NAME));
         ToolInitializationResult result = toolInitializer.initialize(workingDirectory, toolDescriptor);
 
         assertThat(result.executable().toFile().exists()).isTrue();
@@ -67,7 +70,7 @@ public class KubeCtlTest extends ConcordTestSupport
     @Test
     public void validateKubeCtlApply() throws Exception {
 
-        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("kubectl"));
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager(TOOL_NAME));
         Map<String, ToolCommand> commands = ImmutableMap.of("kubectl/apply", new Apply());
         KubeCtlTask task = new KubeCtlTask(commands, lockService, toolInitializer);
 
@@ -108,8 +111,11 @@ public class KubeCtlTest extends ConcordTestSupport
         String interpolatedContent = new String(Files.readAllBytes(manifestYamlFile));
         assertThat(interpolatedContent).contains("targetPort: 123456789");
 
-        String expectedCommandLine = String.format("kubectl apply -f %s", manifestYamlFile.toString());
-        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
+        String expectedCommandLine = String.format(
+                "%s apply -f %s",
+                toolDescriptor.executable(),
+                manifestYamlFile.toString());
+        assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
 
         System.out.println(context.getVariable("envars"));
 
@@ -120,7 +126,7 @@ public class KubeCtlTest extends ConcordTestSupport
     @Test
     public void validateKubeCtlApplyWithValidateFalse() throws Exception {
 
-        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("kubectl"));
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager(TOOL_NAME));
         Map<String, ToolCommand> commands = ImmutableMap.of("kubectl/apply", new Apply());
         KubeCtlTask task = new KubeCtlTask(commands, lockService, toolInitializer);
 
@@ -139,8 +145,8 @@ public class KubeCtlTest extends ConcordTestSupport
         Context context = new MockContext(args);
         task.execute(context);
 
-        String expectedCommandLine = "kubectl apply --validate=false -f 00-helm/tiller-rbac.yml";
-        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
+        String expectedCommandLine = toolDescriptor.executable() + " apply --validate=false -f 00-helm/tiller-rbac.yml";
+        assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
 
         System.out.println(context.getVariable("envars"));
 
@@ -151,7 +157,7 @@ public class KubeCtlTest extends ConcordTestSupport
     @Test
     public void validateKubeCtlCreateNamespace() throws Exception {
 
-        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("kubectl"));
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager(TOOL_NAME));
         Map<String, ToolCommand> commands = ImmutableMap.of("kubectl/create", new Create());
         KubeCtlTask task = new KubeCtlTask(commands, lockService, toolInitializer);
 
@@ -168,14 +174,14 @@ public class KubeCtlTest extends ConcordTestSupport
         Context context = new MockContext(args);
         task.execute(context);
 
-        String expectedCommandLine = "kubectl create namespace cert-manager";
-        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
+        String expectedCommandLine = toolDescriptor.executable() + " create namespace cert-manager";
+        assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
     }
 
     @Test
     public void validateKubeCtlDelete() throws Exception {
 
-        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("kubectl"));
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager(TOOL_NAME));
         Map<String, ToolCommand> commands = ImmutableMap.of("kubectl/delete", new Delete());
         KubeCtlTask task = new KubeCtlTask(commands, lockService, toolInitializer);
 
@@ -189,7 +195,7 @@ public class KubeCtlTest extends ConcordTestSupport
         Context context = new MockContext(args);
         task.execute(context);
 
-        String expectedCommandLine = "kubectl delete crd alertmanagers.monitoring.coreos.com";
-        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
+        String expectedCommandLine = toolDescriptor.executable() + " delete crd alertmanagers.monitoring.coreos.com";
+        assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
     }
 }

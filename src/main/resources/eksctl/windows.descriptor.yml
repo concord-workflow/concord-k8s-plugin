@@ -1,0 +1,9 @@
+---
+id: eksctl
+name: EksCtl
+executable: eksctl.exe
+architecture: amd64
+namingStyle: CAPITALIZE
+packaging: ZIP
+defaultVersion: 0.11.1
+urlTemplate: https://github.com/weaveworks/eksctl/releases/download/{version}/eksctl_{os}_{arch}.zip

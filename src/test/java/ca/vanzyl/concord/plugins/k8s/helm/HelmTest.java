@@ -1,13 +1,20 @@
 package ca.vanzyl.concord.plugins.k8s.helm;
 
 import ca.vanzyl.concord.plugins.Configurator;
+import ca.vanzyl.concord.plugins.k8s.helm.commands.Init;
+import ca.vanzyl.concord.plugins.k8s.helm.commands.Install;
+import ca.vanzyl.concord.plugins.k8s.helm.commands.Repo;
+import ca.vanzyl.concord.plugins.k8s.helm.commands.Upgrade;
+import ca.vanzyl.concord.plugins.tool.ToolCommand;
+import ca.vanzyl.concord.plugins.tool.ToolDescriptor;
+import ca.vanzyl.concord.plugins.tool.ToolInitializationResult;
+import ca.vanzyl.concord.plugins.tool.ToolInitializer;
+import ca.vanzyl.concord.plugins.tool.ToolTaskSupport;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.walmartlabs.concord.plugins.ConcordTestSupport;
 import com.walmartlabs.concord.plugins.InterpolatingMockContext;
-import ca.vanzyl.concord.plugins.k8s.helm.commands.*;
-import ca.vanzyl.concord.plugins.tool.*;
 import com.walmartlabs.concord.plugins.OKHttpDownloadManager;
 import com.walmartlabs.concord.sdk.Context;
 import com.walmartlabs.concord.sdk.MockContext;
@@ -25,11 +32,15 @@ import static org.junit.Assert.assertTrue;
 public class HelmTest extends ConcordTestSupport
 {
 
+    private static final String TOOL_NAME = "helm";
+
+    private ToolDescriptor toolDescriptor;
     private Configurator toolConfigurator;
 
     @Before
     public void setUp() throws Exception {
         toolConfigurator = new Configurator();
+        toolDescriptor = ToolTaskSupport.fromResource(TOOL_NAME);
         super.setUp();
     }
 
@@ -39,8 +50,7 @@ public class HelmTest extends ConcordTestSupport
         Path workingDirectory = Files.createTempDirectory("concord");
         deleteDirectory(workingDirectory);
 
-        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("helm"));
-        ToolDescriptor toolDescriptor = ToolTaskSupport.fromResource("helm");
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager(TOOL_NAME));
         ToolInitializationResult result = toolInitializer.initialize(workingDirectory, toolDescriptor);
 
         assertTrue(result.executable().toFile().exists());
@@ -68,7 +78,7 @@ public class HelmTest extends ConcordTestSupport
     @Test
     public void validateHelmInit() throws Exception {
 
-        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("helm"));
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager(TOOL_NAME));
         Map<String, ToolCommand> commands = ImmutableMap.of("helm/init", new Init());
         HelmTask task = new HelmTask(commands, lockService, toolInitializer);
 
@@ -89,8 +99,8 @@ public class HelmTest extends ConcordTestSupport
         Context context = new MockContext(args);
         task.execute(context);
 
-        String expectedCommandLine = "helm init --service-account tiller --wait";
-        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
+        String expectedCommandLine = toolDescriptor.executable() + " init --service-account tiller --wait";
+        assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
 
         System.out.println(context.getVariable("envars"));
 
@@ -103,7 +113,7 @@ public class HelmTest extends ConcordTestSupport
     @Test
     public void validateHelmInstall() throws Exception {
 
-        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("helm"));
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager(TOOL_NAME));
         Map<String, ToolCommand> commands = ImmutableMap.of("helm/install", new Install());
         HelmTask task = new HelmTask(commands, lockService, toolInitializer);
 
@@ -147,8 +157,11 @@ public class HelmTest extends ConcordTestSupport
         String interpolatedContent = new String(Files.readAllBytes(valuesYaml));
         assertThat(interpolatedContent).contains("hostname: awesome.concord.io");
 
-        String expectedCommandLine = String.format("helm install --atomic --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com --values %s --timeout 300 --name sealed-secrets stable/sealed-secrets", valuesYaml.toString());
-        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
+        String expectedCommandLine = String.format(
+                "%s install --atomic --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com --values %s --timeout 300 --name sealed-secrets stable/sealed-secrets",
+                toolDescriptor.executable(),
+                valuesYaml.toString());
+        assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
 
         System.out.println(context.getVariable("envars"));
 
@@ -161,7 +174,7 @@ public class HelmTest extends ConcordTestSupport
     @Test
     public void validateHelmUpgrade() throws Exception {
 
-        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("helm"));
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager(TOOL_NAME));
         Map<String, ToolCommand> commands = ImmutableMap.of("helm/upgrade", new Upgrade());
         HelmTask task = new HelmTask(commands, lockService, toolInitializer);
 
@@ -205,8 +218,11 @@ public class HelmTest extends ConcordTestSupport
         String interpolatedContent = new String(Files.readAllBytes(valuesYaml));
         assertThat(interpolatedContent).contains("hostname: awesome.concord.io");
 
-        String expectedCommandLine = String.format("helm upgrade --install --atomic --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com --values %s --timeout 300 sealed-secrets stable/sealed-secrets", valuesYaml.toString());
-        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
+        String expectedCommandLine = String.format(
+                "%s upgrade --install --atomic --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com --values %s --timeout 300 sealed-secrets stable/sealed-secrets",
+                toolDescriptor.executable(),
+                valuesYaml.toString());
+        assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
 
         System.out.println(context.getVariable("envars"));
 
@@ -219,7 +235,7 @@ public class HelmTest extends ConcordTestSupport
     @Test
     public void validateHelmAddRepo() throws Exception {
 
-        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("helm"));
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager(TOOL_NAME));
         Map<String, ToolCommand> commands = ImmutableMap.of("helm/repo", new Repo());
         HelmTask task = new HelmTask(commands, lockService, toolInitializer);
 
@@ -237,14 +253,14 @@ public class HelmTest extends ConcordTestSupport
         Context context = new MockContext(args);
         task.execute(context);
 
-        String expectedCommandLine = "helm repo add jetstack https://charts.jetstack.io";
-        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
+        String expectedCommandLine = toolDescriptor.executable() + " repo add jetstack https://charts.jetstack.io";
+        assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
     }
 
     @Test
     public void validateHelmAddRepoRequiringAuthentication() throws Exception {
 
-        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("helm"));
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager(TOOL_NAME));
         Map<String, ToolCommand> commands = ImmutableMap.of("helm/repo", new Repo());
         HelmTask task = new HelmTask(commands, lockService, toolInitializer);
 
@@ -264,8 +280,8 @@ public class HelmTest extends ConcordTestSupport
         Context context = new MockContext(args);
         task.execute(context);
 
-        String expectedCommandLine = "helm repo add --username=admin --password=secret private https://charts.private.io";
-        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
+        String expectedCommandLine = toolDescriptor.executable() + " repo add --username=admin --password=secret private https://charts.private.io";
+        assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
     }
 
 }
