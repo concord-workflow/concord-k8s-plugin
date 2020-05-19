@@ -1,0 +1,9 @@
+---
+id: kubectl
+name: KubeCtl
+executable: kubectl.exe
+architecture: amd64
+namingStyle: LOWER
+packaging: FILE
+defaultVersion: v1.16.0
+urlTemplate: https://storage.googleapis.com/kubernetes-release/release/{version}/bin/{os}/{arch}/kubectl.exe

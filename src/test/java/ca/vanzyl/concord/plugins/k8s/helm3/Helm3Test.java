@@ -27,11 +27,15 @@ import static org.junit.Assert.assertTrue;
 public class Helm3Test extends ConcordTestSupport
 {
 
+    private static final String TOOL_NAME = "helm3";
+
+    private ToolDescriptor toolDescriptor;
     private Configurator toolConfigurator;
 
     @Before
     public void setUp() throws Exception {
         toolConfigurator = new Configurator();
+        toolDescriptor = ToolTaskSupport.fromResource(TOOL_NAME);
         super.setUp();
     }
 
@@ -41,8 +45,7 @@ public class Helm3Test extends ConcordTestSupport
         Path workingDirectory = Files.createTempDirectory("concord");
         deleteDirectory(workingDirectory);
 
-        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("helm"));
-        ToolDescriptor toolDescriptor = ToolTaskSupport.fromResource("helm3");
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager(TOOL_NAME));
         ToolInitializationResult result = toolInitializer.initialize(workingDirectory, toolDescriptor);
 
         assertTrue(result.executable().toFile().exists());
@@ -55,7 +58,7 @@ public class Helm3Test extends ConcordTestSupport
     @Test
     public void validateHelmInstall() throws Exception {
 
-        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("helm3"));
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager(TOOL_NAME));
         Map<String, ToolCommand> commands = ImmutableMap.of("helm3/install", new Install());
         HelmTask task = new HelmTask(commands, lockService, toolInitializer);
 
@@ -99,8 +102,11 @@ public class Helm3Test extends ConcordTestSupport
         String interpolatedContent = new String(Files.readAllBytes(valuesYaml));
         assertThat(interpolatedContent).contains("hostname: awesome.concord.io");
 
-        String expectedCommandLine = String.format("helm install --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com -f %s sealed-secrets stable/sealed-secrets --atomic --create-namespace", valuesYaml.toString());
-        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
+        String expectedCommandLine = String.format(
+                "%s install --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com -f %s sealed-secrets stable/sealed-secrets --atomic --create-namespace",
+                toolDescriptor.executable(),
+                valuesYaml.toString());
+        assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
 
         System.out.println(context.getVariable("envars"));
 
@@ -113,7 +119,7 @@ public class Helm3Test extends ConcordTestSupport
     @Test
     public void validateHelmUpgrade() throws Exception {
 
-        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("helm3"));
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager(TOOL_NAME));
         Map<String, ToolCommand> commands = ImmutableMap.of("helm3/upgrade", new Upgrade());
         HelmTask task = new HelmTask(commands, lockService, toolInitializer);
 
@@ -157,8 +163,11 @@ public class Helm3Test extends ConcordTestSupport
         String interpolatedContent = new String(Files.readAllBytes(valuesYaml));
         assertThat(interpolatedContent).contains("hostname: awesome.concord.io");
 
-        String expectedCommandLine = String.format("helm upgrade --install --atomic --create-namespace --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com -f %s sealed-secrets stable/sealed-secrets", valuesYaml.toString());
-        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
+        String expectedCommandLine = String.format(
+                "%s upgrade --install --atomic --create-namespace --namespace kube-system --version 1.4.2 --set expose.ingress.host.core=bob.fetesting.com -f %s sealed-secrets stable/sealed-secrets",
+                toolDescriptor.executable(),
+                valuesYaml.toString());
+        assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
 
         System.out.println(context.getVariable("envars"));
 
@@ -171,7 +180,7 @@ public class Helm3Test extends ConcordTestSupport
     @Test
     public void validateHelmAddRepo() throws Exception {
 
-        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("helm3"));
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager(TOOL_NAME));
         Map<String, ToolCommand> commands = ImmutableMap.of("helm3/repo", new Repo());
         HelmTask task = new HelmTask(commands, lockService, toolInitializer);
 
@@ -189,7 +198,7 @@ public class Helm3Test extends ConcordTestSupport
         Context context = new MockContext(args);
         task.execute(context);
 
-        String expectedCommandLine = "helm repo add jetstack https://charts.jetstack.io";
-        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
+        String expectedCommandLine = toolDescriptor.executable() + " repo add jetstack https://charts.jetstack.io";
+        assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
     }
 }

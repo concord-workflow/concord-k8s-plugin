@@ -25,11 +25,15 @@ import static org.junit.Assert.assertTrue;
 public class EksCtlTest extends ConcordTestSupport
 {
 
+    private static final String TOOL_NAME = "eksctl";
+
     private Configurator toolConfigurator;
+    private ToolDescriptor toolDescriptor;
 
     @Before
     public void setUp() throws Exception {
         toolConfigurator = new Configurator();
+        toolDescriptor = ToolTaskSupport.fromResource(TOOL_NAME);
         super.setUp();
     }
 
@@ -39,8 +43,7 @@ public class EksCtlTest extends ConcordTestSupport
         Path workingDirectory = Files.createTempDirectory("concord");
         deleteDirectory(workingDirectory);
 
-        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("eksctl"));
-        ToolDescriptor toolDescriptor = ToolTaskSupport.fromResource("eksctl");
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager(TOOL_NAME));
         ToolInitializationResult result = toolInitializer.initialize(workingDirectory, toolDescriptor);
 
         assertThat(result.executable().toFile().exists()).isTrue();
@@ -110,8 +113,8 @@ public class EksCtlTest extends ConcordTestSupport
         Context context = new MockContext(configuration);
         task.execute(context);
 
-        String expectedCommandLine = "eksctl create cluster --config-file cluster.yaml --kubeconfig /home/concord/.kube/config";
-        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
+        String expectedCommandLine = toolDescriptor.executable() + " create cluster --config-file cluster.yaml --kubeconfig /home/concord/.kube/config";
+        assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
     }
 
     @Test
@@ -139,8 +142,8 @@ public class EksCtlTest extends ConcordTestSupport
 
         System.out.println(commandLine);
 
-        String expectedCommandLine = "eksctl create cluster --name cluster-001 --version 1.14 --kubeconfig /home/concord/.kube/config";
-        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
+        String expectedCommandLine = toolDescriptor.executable() + " create cluster --name cluster-001 --version 1.14 --kubeconfig /home/concord/.kube/config";
+        assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
     }
 
     @Test
@@ -176,8 +179,8 @@ public class EksCtlTest extends ConcordTestSupport
 
         System.out.println(commandLine);
 
-        String expectedCommandLine = "eksctl create cluster --config-file cluster.yaml --kubeconfig /home/concord/.kube/config";
-        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
+        String expectedCommandLine = toolDescriptor.executable() + " create cluster --config-file cluster.yaml --kubeconfig /home/concord/.kube/config";
+        assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
     }
 
     @Test
@@ -218,8 +221,8 @@ public class EksCtlTest extends ConcordTestSupport
         Context context = new MockContext(args);
         task.execute(context);
 
-        String expectedCommandLine = "eksctl create cluster --name cluster-001 --region us-west-2 --version 1.14 --kubeconfig /home/concord/.kube/config";
-        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
+        String expectedCommandLine = toolDescriptor.executable() + " create cluster --name cluster-001 --region us-west-2 --version 1.14 --kubeconfig /home/concord/.kube/config";
+        assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
 
         System.out.println(context.getVariable("envars"));
 
@@ -230,8 +233,7 @@ public class EksCtlTest extends ConcordTestSupport
 
     @Test
     public void validateEksCtlTaskDelete() throws Exception {
-
-        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager("eksctl"));
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager(TOOL_NAME));
         Map<String, ToolCommand> commands = ImmutableMap.of("eksctl/delete", new Delete());
         EksCtlTask task = new EksCtlTask(commands, lockService, toolInitializer);
 
@@ -253,8 +255,8 @@ public class EksCtlTest extends ConcordTestSupport
 
         System.out.println(commandLine);
 
-        String expectedCommandLine = "eksctl delete cluster --name jvz-001 --region us-east-2 --wait";
-        assertThat(normalizedCommandLineArguments(context)).isEqualTo(expectedCommandLine);
+        String expectedCommandLine = toolDescriptor.executable() + " delete cluster --name jvz-001 --region us-east-2 --wait";
+        assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
     }
 
 }
