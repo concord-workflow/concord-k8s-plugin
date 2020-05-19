@@ -21,7 +21,7 @@
             <dependency>
                 <groupId>com.walmartlabs.concord</groupId>
                 <artifactId>concord-targetplatform</artifactId>
-                <version>1.36.0</version>
+                <version>1.49.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -78,7 +78,7 @@
         <dependency>
             <groupId>ca.vanzyl.concord.plugins</groupId>
             <artifactId>concord-plugin-support</artifactId>
-            <version>0.0.9</version>
+            <version>0.0.10</version>
         </dependency>
         <!-- Jackson -->
         <dependency>
