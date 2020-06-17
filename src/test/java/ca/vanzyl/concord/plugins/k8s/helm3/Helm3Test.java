@@ -201,4 +201,31 @@ public class Helm3Test extends ConcordTestSupport
         String expectedCommandLine = toolDescriptor.executable() + " repo add jetstack https://charts.jetstack.io";
         assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
     }
+
+    @Test
+    public void validateHelmAddRepoAuth() throws Exception {
+
+        ToolInitializer toolInitializer = new ToolInitializer(new OKHttpDownloadManager(TOOL_NAME));
+        Map<String, ToolCommand> commands = ImmutableMap.of("helm3/repo", new Repo());
+        HelmTask task = new HelmTask(commands, lockService, toolInitializer);
+
+        Map<String, Object> args = Maps.newHashMap(mapBuilder()
+                .put(WORK_DIR_KEY, workDir.toAbsolutePath().toString())
+                .put("dryRun", true)
+                .put("command", "repo")
+                .put("add",
+                        mapBuilder()
+                                .put("name", "jetstack")
+                                .put("url", "https://charts.jetstack.io")
+                                .put("username", "admin")
+                                .put("password", "secret")
+                                .build())
+                .build());
+
+        Context context = new MockContext(args);
+        task.execute(context);
+
+        String expectedCommandLine = toolDescriptor.executable() + " repo add --username=admin --password=secret jetstack https://charts.jetstack.io";
+        assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
+    }
 }
