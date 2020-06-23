@@ -7,20 +7,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Add {
 
     @JsonProperty
-    @OptionWithEquals(name = "--username")
-    private String username;
-
-    @JsonProperty
-    @OptionWithEquals(name = "--password")
-    private String password;
-
-    @JsonProperty
     @Value
     private String name;
 
     @JsonProperty
     @Value
     private String url;
+
+    @JsonProperty
+    @OptionWithEquals(name = "--username")
+    private String username;
+
+    @JsonProperty
+    @OptionWithEquals(name = "--password")
+    private String password;
 
     public String name() { return name; }
 

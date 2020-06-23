@@ -202,6 +202,15 @@ public class Helm3Test extends ConcordTestSupport
         assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
     }
 
+    //
+    // helm3
+    // helm repo add [NAME] [URL] [flags]
+    //
+    // vs
+    //
+    // helm2
+    // helm repo add [flags] [NAME] [URL]
+    //
     @Test
     public void validateHelmAddRepoAuth() throws Exception {
 
@@ -225,7 +234,7 @@ public class Helm3Test extends ConcordTestSupport
         Context context = new MockContext(args);
         task.execute(context);
 
-        String expectedCommandLine = toolDescriptor.executable() + " repo add --username=admin --password=secret jetstack https://charts.jetstack.io";
+        String expectedCommandLine = toolDescriptor.executable() + " repo add jetstack https://charts.jetstack.io --username=admin --password=secret";
         assertThat(normalizedCommandLineArguments(context)).endsWith(expectedCommandLine);
     }
 }
