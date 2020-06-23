@@ -9,7 +9,7 @@
     </parent>
     <artifactId>concord-k8s-plugin</artifactId>
     <groupId>ca.vanzyl.concord.plugins</groupId>
-    <version>0.9.8-SNAPSHOT</version>
+    <version>0.9.8</version>
     <packaging>takari-jar</packaging>
 
     <properties>
@@ -213,4 +213,8 @@
             </plugins>
         </pluginManagement>
     </build>
+
+  <scm>
+    <tag>concord-k8s-plugin-0.9.8</tag>
+  </scm>
 </project>
